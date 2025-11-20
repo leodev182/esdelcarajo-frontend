@@ -4,6 +4,7 @@ import type { Product, PaginatedResponse } from "../types";
 export interface ProductFilters {
   search?: string;
   categoryId?: string;
+  categorySlug?: string;
   subcategoryId?: string;
   gender?: "UNISEX" | "MALE" | "FEMALE" | "KIDS";
   size?: string;
@@ -51,4 +52,12 @@ export async function getFeaturedProducts(
     }
   );
   return data.data;
+}
+
+/**
+ * Obtener producto por slug
+ */
+export async function getProductBySlug(slug: string): Promise<Product> {
+  const { data } = await apiClient.get<Product>(`/products/slug/${slug}`);
+  return data;
 }

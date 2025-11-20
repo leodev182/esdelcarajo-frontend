@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import {
   getProducts,
   getProductById,
+  getProductBySlug,
   getFeaturedProducts,
   type ProductFilters,
 } from "../api/products.api";
@@ -37,6 +38,18 @@ export function useFeaturedProducts(limit: number = 8) {
   return useQuery({
     queryKey: ["products", "featured", limit],
     queryFn: () => getFeaturedProducts(limit),
+    staleTime: CACHE_TIME.LONG,
+  });
+}
+
+/**
+ * Hook para obtener un producto por slug
+ */
+export function useProductBySlug(slug: string) {
+  return useQuery({
+    queryKey: ["products", "slug", slug],
+    queryFn: () => getProductBySlug(slug),
+    enabled: !!slug,
     staleTime: CACHE_TIME.LONG,
   });
 }
