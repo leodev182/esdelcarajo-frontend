@@ -1,24 +1,24 @@
-import { CatalogoPage } from "@/src/components/catalogo/CatalogoPage";
+import { ProductDetailPage } from "@/src/components/product/ProductDetailPage";
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ categoria: string }>;
+  params: Promise<{ slug: string }>;
 }) {
-  const { categoria } = await params;
-  const categoriaName = categoria.replace("-", " ").toUpperCase();
+  const { slug } = await params;
+  const productName = slug.replace(/-/g, " ").toUpperCase();
 
   return {
-    title: `${categoriaName} - Del Carajo`,
-    description: `Explora nuestra colección de ${categoriaName}`,
+    title: `${productName} - Del Carajo`,
+    description: `Compra ${productName} en Del Carajo`,
   };
 }
 
-export default async function CategoriaPage({
+export default async function ProductPage({
   params,
 }: {
-  params: Promise<{ categoria: string }>;
+  params: Promise<{ slug: string }>;
 }) {
-  const { categoria } = await params;
-  return <CatalogoPage categoria={categoria} />;
+  const { slug } = await params;
+  return <ProductDetailPage slug={slug} />;
 }
