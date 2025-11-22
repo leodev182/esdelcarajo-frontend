@@ -141,7 +141,9 @@ export interface CartItem {
   expiresAt: string;
   createdAt: string;
   variant: ProductVariant & {
-    product: Pick<Product, "id" | "name" | "slug">;
+    product: Pick<Product, "id" | "name" | "slug"> & {
+      images: ProductImage[];
+    };
   };
 }
 
