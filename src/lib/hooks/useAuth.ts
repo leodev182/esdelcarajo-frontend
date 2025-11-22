@@ -1,47 +1,12 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getProfile, initiateGoogleLogin, logout } from "../api/auth.api";
-import type { User } from "../types";
+import { useContext } from "react";
+import { AuthContext } from "@/src/context/AuthContext";
 
-/**
- * Hook para manejar autenticación
- */
 export function useAuth() {
-  const queryClient = useQueryClient();
+  const context = useContext(AuthContext);
 
-  // Verificar si hay token
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
-  const isAuthenticated = !!token;
+  if (!context) {
+    throw new Error("useAuth debe usarse dentro de AuthProvider");
+  }
 
-  // Query para obtener el perfil del usuario
-  const {
-    data: user,
-    isLoading,
-    error,
-  } = useQuery<User>({
-    queryKey: ["auth", "profile"],
-    queryFn: getProfile,
-    enabled: isAuthenticated, // Solo ejecuta si hay token
-    retry: false,
-  });
-
-  // Función para login
-  const login = () => {
-    initiateGoogleLogin();
-  };
-
-  // Función para logout
-  const handleLogout = () => {
-    queryClient.clear(); // Limpia todo el caché de React Query
-    logout();
-  };
-
-  return {
-    user,
-    isAuthenticated,
-    isLoading,
-    error,
-    login,
-    logout: handleLogout,
-  };
+  return context;
 }

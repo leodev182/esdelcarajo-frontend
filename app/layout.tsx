@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { QueryProvider } from "@/src/lib/providers/QueryProvider";
+import { AuthProvider } from "@/src/context/AuthContext"; // 👈 AGREGAR
 import { Header } from "@/src/components/layout/Header";
 import { Footer } from "@/src/components/layout/Footer";
 
@@ -30,13 +31,18 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <QueryProvider>
-          <div className="flex min-h-screen flex-col">
-            <Header />
-            <main className="flex-1">{children}</main>
-            <Footer />
-          </div>
-        </QueryProvider>
+        <AuthProvider>
+          {" "}
+          {/* 👈 AGREGAR */}
+          <QueryProvider>
+            <div className="flex min-h-screen flex-col">
+              <Header />
+              <main className="flex-1">{children}</main>
+              <Footer />
+            </div>
+          </QueryProvider>
+        </AuthProvider>{" "}
+        {/* 👈 AGREGAR */}
       </body>
     </html>
   );
