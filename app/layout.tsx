@@ -1,20 +1,11 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { QueryProvider } from "@/src/lib/providers/QueryProvider";
-import { AuthProvider } from "@/src/context/AuthContext"; // 👈 AGREGAR
+import { AuthProvider } from "@/src/context/AuthContext";
 import { Header } from "@/src/components/layout/Header";
 import { Footer } from "@/src/components/layout/Footer";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { zuumeRough } from "@/src/lib/fonts/fonts";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "Del Carajo - Devotos del Arte",
@@ -27,13 +18,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+    <html lang="es" className={zuumeRough.variable}>
+      <body className="antialiased">
         <AuthProvider>
-          {" "}
-          {/* 👈 AGREGAR */}
           <QueryProvider>
             <div className="flex min-h-screen flex-col">
               <Header />
@@ -41,8 +28,8 @@ export default function RootLayout({
               <Footer />
             </div>
           </QueryProvider>
-        </AuthProvider>{" "}
-        {/* 👈 AGREGAR */}
+        </AuthProvider>
+        <Toaster position="top-right" />
       </body>
     </html>
   );

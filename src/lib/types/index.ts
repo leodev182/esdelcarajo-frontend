@@ -11,7 +11,12 @@ export type OrderStatus =
   | "ENTREGADO"
   | "CANCELADO";
 
-export type PaymentMethod = "MOBILE_PAYMENT" | "BANK_TRANSFER" | "CASH";
+export type PaymentMethod =
+  | "TRANSFERENCIA"
+  | "PAGO_MOVIL"
+  | "ZELLE"
+  | "EFECTIVO"
+  | "MERCADO_PAGO";
 
 // ==================== USER ====================
 
@@ -33,15 +38,15 @@ export interface User {
 export interface Address {
   id: string;
   userId: string;
-  label: string;
-  recipientName: string;
-  recipientPhone: string;
-  addressLine1: string;
-  addressLine2?: string;
-  city: string;
+  alias: string;
+  fullName: string;
+  phone: string;
   state: string;
-  postalCode?: string;
-  country: string;
+  city: string;
+  municipality?: string;
+  address: string;
+  zipCode?: string;
+  reference?: string;
   isDefault: boolean;
   isActive: boolean;
   createdAt: string;
