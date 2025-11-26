@@ -104,7 +104,7 @@ export function Header() {
                 <Button variant="ghost" size="sm" asChild>
                   <Link href="/perfil">
                     <User className="h-4 w-4 mr-2" />
-                    {user?.name}
+                    {user?.nickname || user?.name}
                   </Link>
                 </Button>
                 <Button variant="ghost" size="sm" onClick={logout}>

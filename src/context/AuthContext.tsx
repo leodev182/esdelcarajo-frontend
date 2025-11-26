@@ -4,6 +4,7 @@ import { createContext, useState, useEffect, ReactNode } from "react";
 import { User } from "@/src/lib/types";
 import { apiClient } from "@/src/lib/api/client";
 import { getProfile } from "@/src/lib/api/auth.api";
+import { AliasModal } from "@/src/components/auth/AliasModal";
 
 interface AuthContextType {
   user: User | null;
@@ -12,6 +13,7 @@ interface AuthContextType {
   login: () => void;
   logout: () => void;
   setToken: (token: string) => void;
+  refreshUser: () => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextType>({
@@ -21,6 +23,7 @@ export const AuthContext = createContext<AuthContextType>({
   login: () => {},
   logout: () => {},
   setToken: () => {},
+  refreshUser: async () => {},
 });
 
 const TOKEN_KEY = "access_token";
@@ -28,6 +31,7 @@ const TOKEN_KEY = "access_token";
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [showAliasModal, setShowAliasModal] = useState(false);
 
   const isAuthenticated = !!user;
 
@@ -46,12 +50,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       const userData = await getProfile();
       setUser(userData);
+
+      if (!userData.nickname) {
+        setShowAliasModal(true);
+      }
     } catch (error) {
       console.error("Error verificando autenticación:", error);
       localStorage.removeItem(TOKEN_KEY);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const refreshUser = async () => {
+    try {
+      const userData = await getProfile();
+      setUser(userData);
+    } catch (error) {
+      console.error("Error refrescando usuario:", error);
+    }
+  };
+
+  const handleAliasSuccess = async () => {
+    await refreshUser();
+    setShowAliasModal(false);
   };
 
   const setToken = (token: string) => {
@@ -78,9 +100,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         login,
         logout,
         setToken,
+        refreshUser,
       }}
     >
       {children}
+      {showAliasModal && <AliasModal onSuccess={handleAliasSuccess} />}
     </AuthContext.Provider>
   );
 }
