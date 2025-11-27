@@ -191,6 +191,7 @@ export interface Order {
   subtotal: number;
   total: number;
   paymentMethod: PaymentMethod;
+  paymentProof?: string;
   customerNotes?: string;
   adminNotes?: string;
   paidAt?: string;
