@@ -2,7 +2,7 @@
 
 export type Role = "USER" | "ADMIN" | "SUPER_ADMIN";
 
-export type Gender = "UNISEX" | "MALE" | "FEMALE" | "KIDS";
+export type Gender = "MEN" | "WOMEN" | "KIDS";
 
 export type OrderStatus =
   | "PENDING_PAYMENT"
@@ -60,11 +60,14 @@ export interface Category {
   name: string;
   slug: string;
   description?: string;
+  color: string;
+  icon?: string;
   imageUrl?: string;
   order: number;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+  subcategories?: Subcategory[];
 }
 
 export interface Subcategory {

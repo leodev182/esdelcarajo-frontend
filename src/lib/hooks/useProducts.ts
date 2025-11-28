@@ -53,3 +53,16 @@ export function useProductBySlug(slug: string) {
     staleTime: CACHE_TIME.LONG,
   });
 }
+
+/**
+ * Hook para obtener un producto por ID (alias)
+ */
+
+export function useProductById(productId: string) {
+  return useQuery({
+    queryKey: ["product", productId],
+    queryFn: () => getProductById(productId),
+    staleTime: CACHE_TIME.SHORT,
+    enabled: !!productId,
+  });
+}
