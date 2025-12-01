@@ -150,8 +150,7 @@ export function CheckoutPage() {
                     </p>
                   </div>
                   <p className="font-bold">
-                    Bs.S{" "}
-                    {(Number(item.variant.price) * item.quantity).toFixed(2)}
+                    $ {(Number(item.variant.price) * item.quantity).toFixed(2)}
                   </p>
                 </div>
               ))}
@@ -160,7 +159,7 @@ export function CheckoutPage() {
             <div className="border-t-2 border-dark pt-4 space-y-2">
               <div className="flex justify-between font-bold text-lg">
                 <span>Subtotal:</span>
-                <span>Bs.S {cart.subtotal.toFixed(2)}</span>
+                <span>$ {cart.subtotal.toFixed(2)}</span>
               </div>
               <p className="text-sm text-muted-foreground">
                 El costo de envío se acuerda por WhatsApp

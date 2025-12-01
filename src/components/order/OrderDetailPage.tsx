@@ -159,12 +159,12 @@ export function OrderDetailPage({ orderId }: OrderDetailPageProps) {
                     {item.variantGender}
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    Bs.S {Number(item.price).toFixed(2)} × {item.quantity}
+                    $ {Number(item.price).toFixed(2)} × {item.quantity}
                   </p>
                 </div>
                 <div className="text-right">
                   <p className="font-bold">
-                    Bs.S {Number(item.subtotal).toFixed(2)}
+                    $ {Number(item.subtotal).toFixed(2)}
                   </p>
                 </div>
               </div>
@@ -174,7 +174,7 @@ export function OrderDetailPage({ orderId }: OrderDetailPageProps) {
           <div className="border-t-2 border-dark pt-4 mt-4">
             <div className="flex justify-between font-bold text-xl">
               <span>Total:</span>
-              <span>Bs.S {Number(order.total).toFixed(2)}</span>
+              <span>$ {Number(order.total).toFixed(2)}</span>
             </div>
             <p className="text-sm text-muted-foreground mt-2">
               El costo de envío se acuerda por WhatsApp

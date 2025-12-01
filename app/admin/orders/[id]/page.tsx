@@ -138,7 +138,7 @@ export default function AdminOrderDetailPage() {
                     </p>
                   </div>
                   <p className="font-bold">
-                    Bs.S {Number(item.subtotal).toFixed(2)}
+                    $ {Number(item.subtotal).toFixed(2)}
                   </p>
                 </div>
               ))}
@@ -146,7 +146,7 @@ export default function AdminOrderDetailPage() {
             <div className="border-t-2 border-dark mt-4 pt-4">
               <div className="flex justify-between text-xl font-bold">
                 <span>Total:</span>
-                <span>Bs.S {Number(order.total).toFixed(2)}</span>
+                <span>$ {Number(order.total).toFixed(2)}</span>
               </div>
             </div>
           </div>

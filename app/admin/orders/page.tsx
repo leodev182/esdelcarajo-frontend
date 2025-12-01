@@ -111,7 +111,7 @@ export default function AdminOrdersPage() {
                         </p>
                       </td>
                       <td className="py-3 px-4 font-bold">
-                        Bs.S {Number(order.total).toFixed(2)}
+                        $ {Number(order.total).toFixed(2)}
                       </td>
                       <td className="py-3 px-4">
                         <span

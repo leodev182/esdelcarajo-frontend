@@ -185,7 +185,7 @@ export function PaymentProofUpload({
 
           <div className="mt-4 pt-4 border-t-2 border-dark">
             <p className="font-bold text-xl">
-              Monto a pagar: Bs.S {total.toFixed(2)}
+              Monto a pagar: $ {total.toFixed(2)}
             </p>
           </div>
         </div>
