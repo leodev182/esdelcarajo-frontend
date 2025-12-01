@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/src/lib/utils";
 import type { Product } from "@/src/lib/types";
 import { useAuth } from "@/src/lib/hooks/useAuth";
-import { useFavorites } from "@/src/lib/hooks/useFavorites";
+import { useFavorites, useIsFavorite } from "@/src/lib/hooks/useFavorites";
+import { toast } from "sonner";
 
 interface ProductCardProps {
   product: Product;
@@ -15,7 +16,7 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   const { isAuthenticated } = useAuth();
-  const { addFavorite, removeFavorite } = useFavorites();
+  const { addFavorite, removeFavorite, favorites } = useFavorites();
 
   // Obtener la primera imagen del producto
   const mainImage = product.images[0]?.url || "/placeholder.png";
@@ -26,10 +27,26 @@ export function ProductCard({ product }: ProductCardProps) {
   // Verificar si hay stock
   const hasStock = product.variants.some((v) => v.stock > 0);
 
+  // Verificar si el producto está en favoritos
+  const favoriteItem = favorites.find((fav) => fav.product.id === product.id);
+  const isFavorite = !!favoriteItem;
+
+  const handleToggleFavorite = (e: React.MouseEvent) => {
+    e.preventDefault();
+
+    if (isFavorite && favoriteItem) {
+      removeFavorite(favoriteItem.id);
+      toast.success("Eliminado de favoritos");
+    } else {
+      addFavorite({ productId: product.id });
+      toast.success("Agregado a favoritos");
+    }
+  };
+
   return (
     <div className="group relative">
       {/* Link al detalle del producto */}
-      <Link href={`/product/${product.slug}`}>
+      <Link href={`/producto/${product.slug}`}>
         <div className="relative aspect-square overflow-hidden rounded-lg border bg-muted">
           <Image
             src={mainImage}
@@ -59,7 +76,7 @@ export function ProductCard({ product }: ProductCardProps) {
       <div className="mt-4 space-y-2">
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
-            <Link href={`/product/${product.slug}`}>
+            <Link href={`/producto/${product.slug}`}>
               <h3 className="font-semibold truncate hover:text-primary transition-colors">
                 {product.name}
               </h3>
@@ -75,13 +92,13 @@ export function ProductCard({ product }: ProductCardProps) {
               variant="ghost"
               size="icon"
               className="shrink-0"
-              onClick={(e) => {
-                e.preventDefault();
-                // TODO: implementar toggle de favorito
-                console.log("Toggle favorite:", product.id);
-              }}
+              onClick={handleToggleFavorite}
             >
-              <Heart className="h-4 w-4" />
+              <Heart
+                className={`h-4 w-4 ${
+                  isFavorite ? "fill-red-500 text-red-500" : ""
+                }`}
+              />
             </Button>
           )}
         </div>

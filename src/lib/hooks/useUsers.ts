@@ -4,6 +4,7 @@ import {
   getUserById,
   updateUserRole,
   toggleUserBan,
+  updateMyProfile,
 } from "../api/users.api";
 import type { Role } from "../types";
 import { CACHE_TIME } from "../utils/constants";
@@ -48,6 +49,21 @@ export function useToggleUserBan() {
     onSuccess: (_, userId) => {
       queryClient.invalidateQueries({ queryKey: ["admin", "users"] });
       queryClient.invalidateQueries({ queryKey: ["admin", "users", userId] });
+    },
+  });
+}
+
+export function useUpdateUser() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload: {
+      name?: string;
+      nickname?: string;
+      phone?: string;
+    }) => updateMyProfile(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user", "me"] });
     },
   });
 }
