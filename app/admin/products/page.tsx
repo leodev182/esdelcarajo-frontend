@@ -164,7 +164,7 @@ export default function AdminProductsPage() {
                       </td>
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-2">
-                          <Link href={`/producto/${product.slug}`}>
+                          <Link href={`/product/${product.slug}`}>
                             <Button size="sm" variant="outline">
                               <Eye className="h-4 w-4" />
                             </Button>

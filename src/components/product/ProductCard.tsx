@@ -46,7 +46,7 @@ export function ProductCard({ product }: ProductCardProps) {
   return (
     <div className="group relative">
       {/* Link al detalle del producto */}
-      <Link href={`/producto/${product.slug}`}>
+      <Link href={`/product/${product.slug}`}>
         <div className="relative aspect-square overflow-hidden rounded-lg border bg-muted">
           <Image
             src={mainImage}
@@ -76,7 +76,7 @@ export function ProductCard({ product }: ProductCardProps) {
       <div className="mt-4 space-y-2">
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
-            <Link href={`/producto/${product.slug}`}>
+            <Link href={`/product/${product.slug}`}>
               <h3 className="font-semibold truncate hover:text-primary transition-colors">
                 {product.name}
               </h3>

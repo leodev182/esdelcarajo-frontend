@@ -3,6 +3,12 @@
 import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
+/**
+ * Página de callback después del login con Google
+ *
+ * El backend redirige aquí con el access_token en la URL.
+ * El refresh_token ya está guardado en una HttpOnly Cookie (seguro).
+ */
 export default function AuthCallbackPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -11,6 +17,7 @@ export default function AuthCallbackPage() {
     const token = searchParams.get("token");
 
     if (token) {
+      // Guardar solo el access_token (el refresh_token está en cookie)
       localStorage.setItem("access_token", token);
       router.push("/");
     } else {

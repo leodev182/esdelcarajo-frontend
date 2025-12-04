@@ -18,7 +18,7 @@ const MAIN_CATEGORIES = [
 ];
 
 export function Header() {
-  const { user, isAuthenticated, login, logout } = useAuth();
+  const { user, isAuthenticated, logout } = useAuth();
   const { cart } = useCart();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
@@ -115,10 +115,10 @@ export function Header() {
               <Button
                 variant="default"
                 size="sm"
-                onClick={login}
+                asChild
                 className="hidden lg:inline-flex"
               >
-                Iniciar Sesión
+                <Link href="/login">Iniciar Sesión</Link>
               </Button>
             )}
 
@@ -168,15 +168,13 @@ export function Header() {
                   </button>
                 </>
               ) : (
-                <button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    login();
-                  }}
-                  className="text-base font-bold hover:text-primary transition-colors text-left"
+                <Link
+                  href="/login"
+                  className="text-base font-bold hover:text-primary transition-colors"
+                  onClick={() => setMobileMenuOpen(false)}
                 >
                   Iniciar Sesión
-                </button>
+                </Link>
               )}
             </nav>
           </div>

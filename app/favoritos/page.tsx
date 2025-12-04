@@ -67,7 +67,7 @@ export default function FavoritosPage() {
                 key={favorite.id}
                 className="bg-white rounded-lg border-2 border-dark overflow-hidden"
               >
-                <Link href={`/producto/${product.slug}`}>
+                <Link href={`/product/${product.slug}`}>
                   <div className="aspect-square bg-gray-100 relative">
                     {mainImage ? (
                       <img
@@ -84,7 +84,7 @@ export default function FavoritosPage() {
                 </Link>
 
                 <div className="p-4">
-                  <Link href={`/producto/${product.slug}`}>
+                  <Link href={`/product/${product.slug}`}>
                     <h3 className="font-bold text-lg mb-2 hover:text-primary transition-colors">
                       {product.name}
                     </h3>
