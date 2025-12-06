@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Plus, MapPin, Check, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import type { Address } from "@/src/lib/types";
+import { logger } from "@/src/lib/utils/logger";
 
 interface AddressSelectorProps {
   selectedAddressId: string | null;
@@ -39,7 +40,7 @@ export function AddressSelector({
       }
     } catch (error) {
       toast.error("Error al eliminar dirección");
-      console.error(error);
+      logger.error(error);
     } finally {
       setDeletingId(null);
     }

@@ -1,4 +1,5 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
+import { logger } from "@/src/lib/utils/logger";
 
 export const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api",
@@ -118,7 +119,7 @@ apiClient.interceptors.response.use(
 
     // Log del error en desarrollo
     if (process.env.NODE_ENV === "development") {
-      console.error("API Error:", {
+      logger.error("API Error:", {
         message: error.response?.data || error.message,
         status: error.response?.status,
         url: error.config?.url,

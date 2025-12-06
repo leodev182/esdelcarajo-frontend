@@ -1,6 +1,6 @@
 "use client";
 
-import { Minus, Plus, Trash2, ShoppingBag, X } from "lucide-react";
+import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -12,9 +12,8 @@ import {
   SheetFooter,
 } from "@/components/ui/sheet";
 import { useCart } from "@/src/lib/hooks/useCart";
-import { formatPrice } from "@/src/lib/utils";
-import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { PriceDisplay } from "../product/PriceDisplay";
 
 interface CartDrawerProps {
   open: boolean;
@@ -123,9 +122,10 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
 
                       <div className="flex items-center justify-between mt-2">
                         {/* Price */}
-                        <p className="font-bold text-primary">
-                          {formatPrice(item.variant.price * item.quantity)}
-                        </p>
+                        <PriceDisplay
+                          priceEUR={Number(item.variant.price) * item.quantity}
+                          className="font-bold text-primary"
+                        />
 
                         {/* Quantity Controls */}
                         <div className="flex items-center gap-2">
@@ -186,7 +186,7 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
                 {/* Subtotal */}
                 <div className="flex items-center justify-between text-lg font-semibold">
                   <span>Subtotal:</span>
-                  <span className="text-primary">{formatPrice(subtotal)}</span>
+                  <PriceDisplay priceEUR={subtotal} className="text-primary" />
                 </div>
 
                 <p className="text-xs text-muted-foreground text-center">

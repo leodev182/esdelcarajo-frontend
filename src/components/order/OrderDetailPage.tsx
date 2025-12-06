@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Package, MapPin, CreditCard, FileText } from "lucide-react";
 import { PaymentProofUpload } from "./PaymentProofUpload";
+import { PriceDisplay } from "../product/PriceDisplay";
 
 interface OrderDetailPageProps {
   orderId: string;
@@ -159,13 +160,18 @@ export function OrderDetailPage({ orderId }: OrderDetailPageProps) {
                     {item.variantGender}
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    $ {Number(item.price).toFixed(2)} × {item.quantity}
+                    <PriceDisplay
+                      priceEUR={Number(item.price)}
+                      className="inline"
+                    />{" "}
+                    × {item.quantity}
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="font-bold">
-                    $ {Number(item.subtotal).toFixed(2)}
-                  </p>
+                  <PriceDisplay
+                    priceEUR={Number(item.subtotal)}
+                    className="font-bold"
+                  />
                 </div>
               </div>
             ))}
@@ -174,7 +180,7 @@ export function OrderDetailPage({ orderId }: OrderDetailPageProps) {
           <div className="border-t-2 border-dark pt-4 mt-4">
             <div className="flex justify-between font-bold text-xl">
               <span>Total:</span>
-              <span>$ {Number(order.total).toFixed(2)}</span>
+              <PriceDisplay priceEUR={Number(order.total)} />
             </div>
             <p className="text-sm text-muted-foreground mt-2">
               El costo de envío se acuerda por WhatsApp

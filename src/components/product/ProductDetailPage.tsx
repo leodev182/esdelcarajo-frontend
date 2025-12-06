@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button";
 import { useProductBySlug } from "@/src/lib/hooks/useProducts";
 import { useAuth } from "@/src/lib/hooks/useAuth";
 import { useCart } from "@/src/lib/hooks/useCart";
-import { formatPrice } from "@/src/lib/utils";
 import type { ProductVariant } from "@/src/lib/types";
+import { PriceDisplay } from "./PriceDisplay";
 
 interface ProductDetailPageProps {
   slug: string;
@@ -160,7 +160,7 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
           </div>
 
           {/* Precio */}
-          <div className="text-3xl font-bold">{formatPrice(price)}</div>
+          <PriceDisplay priceEUR={price} className="text-3xl font-bold" />
 
           {/* Descripción */}
           <p className="text-muted-foreground">{product.description}</p>

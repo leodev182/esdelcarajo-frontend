@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { apiClient } from "@/src/lib/api/client";
 import { toast } from "sonner";
+import { logger } from "@/src/lib/utils/logger";
 
 interface AliasModalProps {
   onSuccess: () => void;
@@ -35,7 +36,7 @@ export function AliasModal({ onSuccess }: AliasModalProps) {
       onSuccess();
     } catch (error) {
       toast.error("Error al guardar el alias");
-      console.error(error);
+      logger.error(error);
     } finally {
       setIsLoading(false);
     }

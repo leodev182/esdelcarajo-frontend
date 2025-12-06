@@ -12,6 +12,7 @@ import {
 } from "@/src/lib/hooks/useAddresses";
 import { toast } from "sonner";
 import type { Address } from "@/src/lib/types";
+import { logger } from "@/src/lib/utils/logger";
 
 const addressSchema = z.object({
   alias: z.string().min(1, "Alias es obligatorio").max(50),
@@ -90,7 +91,7 @@ export function AddressForm({
           ? "Error al actualizar dirección"
           : "Error al agregar dirección"
       );
-      console.error(error);
+      logger.error(error);
     }
   };
 

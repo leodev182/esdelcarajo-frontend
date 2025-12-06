@@ -9,6 +9,7 @@ import type { Product } from "@/src/lib/types";
 import { useAuth } from "@/src/lib/hooks/useAuth";
 import { useFavorites, useIsFavorite } from "@/src/lib/hooks/useFavorites";
 import { toast } from "sonner";
+import { PriceDisplay } from "./PriceDisplay";
 
 interface ProductCardProps {
   product: Product;
@@ -105,7 +106,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
         {/* Precio */}
         <div className="flex items-center justify-between">
-          <span className="text-lg font-bold">{formatPrice(minPrice)}</span>
+          <PriceDisplay priceEUR={minPrice} className="text-lg font-bold" />
           {hasStock && (
             <span className="text-xs text-muted-foreground">
               {product.variants.length} variante

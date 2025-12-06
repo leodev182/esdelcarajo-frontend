@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { logger } from "@/src/lib/utils/logger";
 
 /**
  * Página de callback después del login con Google
@@ -21,7 +22,7 @@ export default function AuthCallbackPage() {
       localStorage.setItem("access_token", token);
       router.push("/");
     } else {
-      console.error("No se recibió token");
+      logger.error("No se recibió token");
       router.push("/");
     }
   }, [searchParams, router]);

@@ -1,6 +1,6 @@
 import { apiClient } from "../api/client";
 import type { User } from "../types";
-
+import { logger } from "@/src/lib/utils/logger";
 export interface LoginResponse {
   access_token: string;
   token_type: "Bearer";
@@ -33,7 +33,7 @@ export async function logout(): Promise<void> {
     await apiClient.post("/auth/logout");
   } catch (error) {
     // Ignorar errores del logout del backend
-    console.error("Error en logout del backend:", error);
+    logger.error("Error en logout del backend:", error);
   } finally {
     // Siempre limpiar el cliente
     localStorage.removeItem("access_token");

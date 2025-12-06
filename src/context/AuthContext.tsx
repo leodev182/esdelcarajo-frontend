@@ -5,6 +5,7 @@ import { User } from "@/src/lib/types";
 import { apiClient } from "@/src/lib/api/client";
 import { getProfile } from "@/src/lib/api/auth.api";
 import { AliasModal } from "@/src/components/auth/AliasModal";
+import { logger } from "@/src/lib/utils/logger";
 
 interface AuthContextType {
   user: User | null;
@@ -55,7 +56,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setShowAliasModal(true);
       }
     } catch (error) {
-      console.error("Error verificando autenticación:", error);
+      logger.error("Error verificando autenticación:", error);
       localStorage.removeItem(TOKEN_KEY);
     } finally {
       setIsLoading(false);
@@ -67,7 +68,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const userData = await getProfile();
       setUser(userData);
     } catch (error) {
-      console.error("Error refrescando usuario:", error);
+      logger.error("Error refrescando usuario:", error);
     }
   };
 

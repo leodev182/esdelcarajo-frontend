@@ -12,7 +12,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import type { Address } from "@/src/lib/types";
-import { set } from "date-fns";
+import { logger } from "@/src/lib/utils/logger";
+import { PriceDisplay } from "../product/PriceDisplay";
 
 export function CheckoutPage() {
   const router = useRouter();
@@ -82,7 +83,7 @@ export function CheckoutPage() {
       router.push(`/order/${order.id}`);
     } catch (error) {
       toast.error("Error al crear el pedido");
-      console.error(error);
+      logger.error(error);
       setIsCreatingOrder(false);
     }
   };
@@ -149,9 +150,10 @@ export function CheckoutPage() {
                       {item.quantity}
                     </p>
                   </div>
-                  <p className="font-bold">
-                    $ {(Number(item.variant.price) * item.quantity).toFixed(2)}
-                  </p>
+                  <PriceDisplay
+                    priceEUR={Number(item.variant.price) * item.quantity}
+                    className="font-bold"
+                  />
                 </div>
               ))}
             </div>
@@ -159,7 +161,7 @@ export function CheckoutPage() {
             <div className="border-t-2 border-dark pt-4 space-y-2">
               <div className="flex justify-between font-bold text-lg">
                 <span>Subtotal:</span>
-                <span>$ {cart.subtotal.toFixed(2)}</span>
+                <PriceDisplay priceEUR={cart.subtotal} />
               </div>
               <p className="text-sm text-muted-foreground">
                 El costo de envío se acuerda por WhatsApp

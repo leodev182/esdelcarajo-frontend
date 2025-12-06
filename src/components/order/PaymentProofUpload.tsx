@@ -6,6 +6,7 @@ import { Upload, FileCheck } from "lucide-react";
 import { toast } from "sonner";
 import { useUploadPaymentProof } from "@/src/lib/hooks/useOrders";
 import { useRouter } from "next/navigation";
+import { logger } from "@/src/lib/utils/logger";
 
 interface PaymentProofUploadProps {
   orderId: string;
@@ -105,7 +106,7 @@ export function PaymentProofUpload({
       router.push("/");
     } catch (error) {
       toast.error("Error al subir el comprobante");
-      console.error(error);
+      logger.error(error);
     }
   };
 
