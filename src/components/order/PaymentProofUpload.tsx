@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { useUploadPaymentProof } from "@/src/lib/hooks/useOrders";
 import { useRouter } from "next/navigation";
 import { logger } from "@/src/lib/utils/logger";
+import { PriceDisplay } from "../product/PriceDisplay";
 
 interface PaymentProofUploadProps {
   orderId: string;
@@ -186,7 +187,8 @@ export function PaymentProofUpload({
 
           <div className="mt-4 pt-4 border-t-2 border-dark">
             <p className="font-bold text-xl">
-              Monto a pagar: $ {total.toFixed(2)}
+              Monto a pagar:{" "}
+              <PriceDisplay priceEUR={total} className="inline" />
             </p>
           </div>
         </div>
