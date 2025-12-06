@@ -15,25 +15,24 @@ export function HeroClient() {
         priority
       />
 
-      <div className="relative z-20 container px-6 py-20 min-h-screen flex flex-col justify-center items-center">
-        <div className="max-w-2xl w-full space-y-12">
+      <div className="relative z-20 w-full h-screen flex items-center justify-between px-10">
+        {/* IZQUIERDA - Contenido agrupado */}
+        <div className="flex flex-col gap-8 max-w-md items-center">
           {/* TASA BCV */}
-          <div className="flex justify-center">
-            <BcvDisplay />
-          </div>
+          <BcvDisplay />
 
-          {/* Caja VISIÓN */}
-          <div className="bg-white text-black p-8 border-4 border-black shadow-xl relative">
-            <div className="absolute -bottom-3 -right-3 w-full h-full border-4 border-orange-500 pointer-events-none"></div>
-            <h2 className="text-4xl font-black mb-4">VISIÓN</h2>
-            <p className="font-bold leading-relaxed text-lg">
+          {/* VISIÓN - Más delgado y alargado */}
+          <div className="bg-[#C9BEA5] text-black p-6 py-12 border-4 border-black shadow-xl relative max-w-sm">
+            <div className="absolute -bottom-3 -right-3 w-full h-full border-4 border-[#FF6501] pointer-events-none"></div>
+            <h2 className="text-3xl font-black mb-4 uppercase">Visión</h2>
+            <p className="font-bold leading-relaxed text-base">
               Ser la marca de ropa referente de aquellos que se atreven a
               vestirse diferente a través de prendas que cuenten una historia
             </p>
           </div>
 
           {/* ICONOS */}
-          <div className="flex justify-center gap-6">
+          <div className="flex gap-6">
             <a
               href="https://instagram.com/esdelcarajo"
               target="_blank"
@@ -50,6 +49,17 @@ export function HeroClient() {
               <Mail className="text-white w-7 h-7" />
             </a>
           </div>
+        </div>
+
+        {/* DERECHA - Modelo posicionada en la zona amarilla */}
+        <div className="hidden md:block absolute right-0 bottom-0 h-[105vh] w-[580px]">
+          <Image
+            src="/images/modelo1.png"
+            alt="Modelo Del Carajo"
+            fill
+            className="object-contain object-center"
+            priority
+          />
         </div>
       </div>
     </section>
