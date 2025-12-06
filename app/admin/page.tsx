@@ -64,7 +64,7 @@ export default function AdminDashboard() {
           <p className="text-3xl font-bold">
             $ {Number(stats?.sales.total || 0).toFixed(2)}
           </p>
-          <p className="text-xs text-gray-500 mt-1">Total en USD</p>
+          <p className="text-xs text-gray-500 mt-1">Total en EUR</p>
         </div>
       </div>
 

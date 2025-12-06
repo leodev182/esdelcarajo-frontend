@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { ShoppingCart, Heart, User, Menu, Search } from "lucide-react";
+import { ShoppingCart, Heart, User, Menu } from "lucide-react";
 import { useAuth } from "@/src/lib/hooks/useAuth";
 import { useCart } from "@/src/lib/hooks/useCart";
 import { Button } from "@/components/ui/button";
@@ -28,8 +28,8 @@ export function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 w-full border-b-2 border-dark bg-white shadow-sm">
-        <div className="container flex h-20 items-center justify-between px-6">
+      <header className="sticky top-0 z-50 w-full bg-transparent shadow-sm">
+        <div className="container flex h-14 items-center justify-between px-6">
           <Link href="/" className="flex items-center gap-3">
             <Image
               src="/rayitohd.svg"
@@ -52,13 +52,15 @@ export function Header() {
                 key={category.slug}
                 className="relative"
                 onMouseEnter={() => setActiveMegaMenu(category.slug)}
+                onMouseLeave={() => setActiveMegaMenu(null)}
               >
                 <Link
                   href={`/catalogo/${category.slug}`}
-                  className="px-6 py-2 text-base font-bold tracking-wide hover:text-primary transition-colors"
+                  className="px-6 py-2 text-base font-bold tracking-wide hover:text-primary transition-colors inline-block"
                 >
                   {category.name}
                 </Link>
+
                 <MegaMenu
                   categorySlug={category.slug}
                   isOpen={activeMegaMenu === category.slug}
@@ -68,13 +70,6 @@ export function Header() {
           </nav>
 
           <div className="flex items-center space-x-3">
-            <Button variant="ghost" size="icon" asChild>
-              <Link href="/buscar">
-                <Search className="h-5 w-5" />
-                <span className="sr-only">Buscar</span>
-              </Link>
-            </Button>
-
             {isAuthenticated && (
               <Button variant="ghost" size="icon" asChild>
                 <Link href="/favoritos">

@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import type { OrderStatus } from "@/src/lib/types";
+import { PriceDisplay } from "@/src/components/product/PriceDisplay";
 
 const STATUS_COLORS: Record<OrderStatus, string> = {
   PENDING_PAYMENT: "bg-yellow-100 text-yellow-800",
@@ -137,16 +138,17 @@ export default function AdminOrderDetailPage() {
                       {item.quantity}
                     </p>
                   </div>
-                  <p className="font-bold">
-                    $ {Number(item.subtotal).toFixed(2)}
-                  </p>
+                  <PriceDisplay
+                    priceEUR={Number(item.subtotal)}
+                    className="font-bold"
+                  />
                 </div>
               ))}
             </div>
             <div className="border-t-2 border-dark mt-4 pt-4">
               <div className="flex justify-between text-xl font-bold">
                 <span>Total:</span>
-                <span>$ {Number(order.total).toFixed(2)}</span>
+                <PriceDisplay priceEUR={Number(order.total)} />
               </div>
             </div>
           </div>

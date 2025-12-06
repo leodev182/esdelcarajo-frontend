@@ -6,18 +6,19 @@ import { BcvDisplay } from "@/src/components/bcv/BcvDisplay";
 
 export function HeroClient() {
   return (
-    <section className="relative w-full min-h-screen overflow-hidden bg-[#1a1a1a] text-white">
+    <section className="relative w-full min-h-screen overflow-hidden bg-[#1a1a1a] text-white -mt-20">
       <Image
         src="/images/hero.png"
         alt="background"
         fill
         className="object-cover opacity-40"
         priority
+        unoptimized
       />
 
-      <div className="relative z-20 w-full h-screen flex items-center justify-between px-10">
+      <div className="relative z-20 w-full h-screen flex items-center justify-between px-12 pt-20">
         {/* IZQUIERDA - Contenido agrupado */}
-        <div className="flex flex-col gap-8 max-w-md items-center">
+        <div className="flex flex-col gap-8 max-w-md">
           {/* TASA BCV */}
           <BcvDisplay />
 
@@ -52,12 +53,12 @@ export function HeroClient() {
         </div>
 
         {/* DERECHA - Modelo posicionada en la zona amarilla */}
-        <div className="hidden md:block absolute right-0 bottom-0 h-[105vh] w-[580px]">
+        <div className="hidden md:block absolute right-12 bottom-0 h-[90vh] w-[500px]">
           <Image
             src="/images/modelo1.png"
             alt="Modelo Del Carajo"
             fill
-            className="object-contain object-center"
+            className="object-contain object-bottom"
             priority
           />
         </div>

@@ -2,19 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getCategories } from "../api/categories.api";
 import { apiClient } from "../api/client";
 import { CACHE_TIME } from "../utils/constants";
-
-interface Subcategory {
-  id: string;
-  name: string;
-  slug: string;
-}
-
-interface Category {
-  id: string;
-  name: string;
-  slug: string;
-  subcategories: Subcategory[];
-}
+import type { Category } from "../types";
 
 export function useCategories() {
   return useQuery({

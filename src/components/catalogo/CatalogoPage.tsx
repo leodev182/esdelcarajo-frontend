@@ -11,36 +11,42 @@ import { PRODUCTS_PER_PAGE } from "@/src/lib/utils/constants";
 
 interface CatalogoPageProps {
   categoria?: string;
+  subcategoria?: string;
 }
 
-export function CatalogoPage({ categoria }: CatalogoPageProps) {
+export function CatalogoPage({ categoria, subcategoria }: CatalogoPageProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Obtener categorías
   const { data: categories } = useCategories();
 
-  // Calcular categoryId directamente (sin useState/useEffect)
-  const categoryId =
+  const category =
     categoria && categories
-      ? categories.find((cat) => cat.slug === categoria)?.id
+      ? categories.find((cat) => cat.slug === categoria)
       : undefined;
 
-  // Construir filtros
+  const categoryId = category?.id;
+
+  const subcategory =
+    subcategoria && category?.subcategories
+      ? category.subcategories.find((sub) => sub.slug === subcategoria)
+      : undefined;
+
+  const subcategoryId = subcategory?.id;
+
   const filters = {
     page: currentPage,
     limit: PRODUCTS_PER_PAGE,
     ...(searchTerm && { search: searchTerm }),
     ...(categoryId && { categoryId }),
+    ...(subcategoryId && { subcategoryId }),
   };
 
-  // Obtener productos con React Query
   const { data, isLoading, error } = useProducts(filters);
 
   const products = data?.data || [];
   const totalPages = data?.meta?.totalPages || 1;
 
-  // Traducir slug a nombre legible
   const getCategoryName = (slug?: string) => {
     if (!slug) return "Todos los productos";
 
@@ -54,15 +60,20 @@ export function CatalogoPage({ categoria }: CatalogoPageProps) {
     return names[slug] || slug.toUpperCase();
   };
 
+  const getSubcategoryName = (slug?: string) => {
+    if (!slug) return "";
+    return slug.split("-").slice(1).join(" ").toUpperCase();
+  };
+
+  const pageTitle = subcategoria
+    ? `${getSubcategoryName(subcategoria)} - ${getCategoryName(categoria)}`
+    : getCategoryName(categoria);
+
   return (
     <div className="container py-8">
-      {/* Header */}
       <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-4">
-          {getCategoryName(categoria)}
-        </h1>
+        <h1 className="text-4xl font-bold mb-4">{pageTitle}</h1>
 
-        {/* Buscador */}
         <div className="flex gap-4 max-w-xl">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -89,37 +100,31 @@ export function CatalogoPage({ categoria }: CatalogoPageProps) {
         </div>
       </div>
 
-      {/* Loading */}
       {isLoading && (
         <div className="text-center py-12">
           <p className="text-muted-foreground">Cargando productos...</p>
         </div>
       )}
 
-      {/* Error */}
       {error && (
         <div className="text-center py-12">
           <p className="text-destructive">Error al cargar productos</p>
         </div>
       )}
 
-      {/* Productos */}
       {!isLoading && !error && (
         <>
-          {/* Contador */}
           <div className="mb-4 text-sm text-muted-foreground">
             {data?.meta?.total || 0} producto
             {data?.meta?.total !== 1 ? "s" : ""} encontrado
             {data?.meta?.total !== 1 ? "s" : ""}
           </div>
 
-          {/* Grid */}
           <ProductGrid
             products={products}
             emptyMessage="No se encontraron productos que coincidan con tu búsqueda"
           />
 
-          {/* Paginación */}
           {totalPages > 1 && (
             <div className="mt-12 flex justify-center gap-2">
               <Button

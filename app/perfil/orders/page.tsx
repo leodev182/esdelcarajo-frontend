@@ -8,6 +8,7 @@ import { es } from "date-fns/locale";
 import { ArrowLeft, Eye, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { OrderStatus } from "@/src/lib/types";
+import { PriceDisplay } from "@/src/components/product/PriceDisplay";
 
 const STATUS_OPTIONS: { value: OrderStatus | "ALL"; label: string }[] = [
   { value: "ALL", label: "Todas" },
@@ -127,9 +128,10 @@ export default function MyOrdersPage() {
                       <p className="text-sm text-gray-600">
                         {order.items.length} producto(s)
                       </p>
-                      <p className="text-xl font-bold">
-                        $ {Number(order.total).toFixed(2)}
-                      </p>
+                      <PriceDisplay
+                        priceEUR={Number(order.total)}
+                        className="text-xl font-bold"
+                      />
                     </div>
                     <Link href={`/order/${order.id}`}>
                       <Button size="sm" variant="outline">
