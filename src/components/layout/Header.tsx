@@ -42,80 +42,81 @@ export function Header() {
               DEL CARAJO
             </span>
           </Link>
-
-          <nav
-            className="hidden lg:flex items-center gap-1"
-            onMouseLeave={() => setActiveMegaMenu(null)}
-          >
-            {MAIN_CATEGORIES.map((category) => (
-              <div
-                key={category.slug}
-                className="relative"
-                onMouseEnter={() => setActiveMegaMenu(category.slug)}
-                onMouseLeave={() => setActiveMegaMenu(null)}
-              >
-                <Link
-                  href={`/catalogo/${category.slug}`}
-                  className="px-6 py-2 text-base font-bold tracking-wide hover:text-primary transition-colors inline-block"
-                >
-                  {category.name}
-                </Link>
-
-                <MegaMenu
-                  categorySlug={category.slug}
-                  isOpen={activeMegaMenu === category.slug}
-                />
-              </div>
-            ))}
-          </nav>
-
-          <div className="flex items-center space-x-3">
-            {isAuthenticated && (
-              <Button variant="ghost" size="icon" asChild>
-                <Link href="/favoritos">
-                  <Heart className="h-5 w-5" />
-                  <span className="sr-only">Favoritos</span>
-                </Link>
-              </Button>
-            )}
-
-            <Button
-              variant="ghost"
-              size="icon"
-              className="relative"
-              onClick={() => setCartDrawerOpen(true)}
+          <div className="hidden lg:flex items-center gap-30 bg-[#FF6501]">
+            <nav
+              className="hidden lg:flex items-center gap-1"
+              onMouseLeave={() => setActiveMegaMenu(null)}
             >
-              <ShoppingCart className="h-5 w-5" />
-              {cartItemsCount > 0 && (
-                <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-white text-xs flex items-center justify-center font-bold">
-                  {cartItemsCount}
-                </span>
-              )}
-              <span className="sr-only">Carrito</span>
-            </Button>
+              {MAIN_CATEGORIES.map((category) => (
+                <div
+                  key={category.slug}
+                  className="relative"
+                  onMouseEnter={() => setActiveMegaMenu(category.slug)}
+                  onMouseLeave={() => setActiveMegaMenu(null)}
+                >
+                  <Link
+                    href={`/catalogo/${category.slug}`}
+                    className="px-6 py-2 text-xl font-bold tracking-wide text-white hover:text-[#E1D7D7] transition-colors inline-block"
+                  >
+                    {category.name}
+                  </Link>
 
-            {isAuthenticated ? (
-              <div className="hidden lg:flex items-center space-x-2">
-                <Button variant="ghost" size="sm" asChild>
-                  <Link href="/perfil">
-                    <User className="h-4 w-4 mr-2" />
-                    {user?.nickname || user?.name}
+                  <MegaMenu
+                    categorySlug={category.slug}
+                    isOpen={activeMegaMenu === category.slug}
+                  />
+                </div>
+              ))}
+            </nav>
+
+            <div className="flex items-center space-x-3">
+              {isAuthenticated && (
+                <Button variant="ghost" size="icon" asChild>
+                  <Link href="/favoritos">
+                    <Heart className="h-5 w-5" />
+                    <span className="sr-only">Favoritos</span>
                   </Link>
                 </Button>
-                <Button variant="ghost" size="sm" onClick={logout}>
-                  Salir
-                </Button>
-              </div>
-            ) : (
+              )}
+
               <Button
-                variant="default"
-                size="sm"
-                asChild
-                className="hidden lg:inline-flex"
+                variant="ghost"
+                size="icon"
+                className="relative"
+                onClick={() => setCartDrawerOpen(true)}
               >
-                <Link href="/login">Iniciar Sesión</Link>
+                <ShoppingCart className="h-5 w-5" />
+                {cartItemsCount > 0 && (
+                  <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-white text-xs flex items-center justify-center font-bold">
+                    {cartItemsCount}
+                  </span>
+                )}
+                <span className="sr-only">Carrito</span>
               </Button>
-            )}
+
+              {isAuthenticated ? (
+                <div className="hidden lg:flex items-center space-x-2">
+                  <Button variant="ghost" size="sm" asChild>
+                    <Link href="/perfil">
+                      <User className="h-4 w-4 mr-2" />
+                      {user?.nickname || user?.name}
+                    </Link>
+                  </Button>
+                  <Button variant="ghost" size="sm" onClick={logout}>
+                    Salir
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  variant="default"
+                  size="sm"
+                  asChild
+                  className="hidden lg:inline-flex"
+                >
+                  <Link href="/login">Iniciar Sesión</Link>
+                </Button>
+              )}
+            </div>
 
             <Button
               variant="ghost"

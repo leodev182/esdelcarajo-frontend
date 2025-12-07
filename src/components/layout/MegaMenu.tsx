@@ -18,8 +18,8 @@ export function MegaMenu({ categorySlug, isOpen }: MegaMenuProps) {
     <div
       className="
     absolute left-1/2 -translate-x-1/2 top-full
-    bg-white/70 backdrop-blur-md
-    border-2 border-dark
+    bg-[#C9BEA5]/20 backdrop-blur-md
+    border-1 border-dark 
     rounded-xl
     px-6 py-4
     shadow-lg
@@ -27,7 +27,7 @@ export function MegaMenu({ categorySlug, isOpen }: MegaMenuProps) {
     min-w-[220px]
   "
     >
-      <div className="container mx-auto px-6 py-6">
+      <div className="container text-[#2D2834] mx-auto px-6 py-6">
         {isLoading ? (
           <div className="text-center py-8">
             <p className="text-sm font-bold">Cargando...</p>

@@ -19,16 +19,10 @@ export function ProductCard({ product }: ProductCardProps) {
   const { isAuthenticated } = useAuth();
   const { addFavorite, removeFavorite, favorites } = useFavorites();
 
-  // Obtener la primera imagen del producto
   const mainImage = product.images[0]?.url || "/placeholder.png";
-
-  // Obtener precio mínimo de las variantes
   const minPrice = Math.min(...product.variants.map((v) => Number(v.price)));
-
-  // Verificar si hay stock
   const hasStock = product.variants.some((v) => v.stock > 0);
 
-  // Verificar si el producto está en favoritos
   const favoriteItem = favorites.find((fav) => fav.product.id === product.id);
   const isFavorite = !!favoriteItem;
 
@@ -46,7 +40,6 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <div className="group relative">
-      {/* Link al detalle del producto */}
       <Link href={`/product/${product.slug}`}>
         <div className="relative aspect-square overflow-hidden rounded-lg border bg-muted">
           <Image
@@ -57,37 +50,35 @@ export function ProductCard({ product }: ProductCardProps) {
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
 
-          {/* Badge si es destacado */}
           {product.isFeatured && (
             <div className="absolute top-2 left-2 bg-primary text-primary-foreground text-xs font-bold px-2 py-1 rounded">
               DESTACADO
             </div>
           )}
 
-          {/* Badge si no hay stock */}
           {!hasStock && (
             <div className="absolute inset-0 bg-background/80 flex items-center justify-center">
-              <span className="text-lg font-bold">AGOTADO</span>
+              <span className="text-lg font-bold">
+                DE VUELTA <br /> PRÓXIMAMENTE
+              </span>
             </div>
           )}
         </div>
       </Link>
 
-      {/* Info del producto */}
       <div className="mt-4 space-y-2">
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
             <Link href={`/product/${product.slug}`}>
-              <h3 className="font-semibold truncate hover:text-primary transition-colors">
+              <h3 className="font-semibold truncate hover:text-primary transition-colors text-[#FF6501]">
                 {product.name}
               </h3>
             </Link>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-[#FF6501] font-semibold">
               {product.category?.name}
             </p>
           </div>
 
-          {/* Botón de favoritos */}
           {isAuthenticated && (
             <Button
               variant="ghost"
@@ -104,11 +95,13 @@ export function ProductCard({ product }: ProductCardProps) {
           )}
         </div>
 
-        {/* Precio */}
         <div className="flex items-center justify-between">
-          <PriceDisplay priceEUR={minPrice} className="text-lg font-bold" />
+          <PriceDisplay
+            priceEUR={minPrice}
+            className="text-lg text-[#FF6501] font-bold"
+          />
           {hasStock && (
-            <span className="text-xs text-muted-foreground">
+            <span className="text-xs text-[#FF6501] font-semibold">
               {product.variants.length} variante
               {product.variants.length > 1 ? "s" : ""}
             </span>
