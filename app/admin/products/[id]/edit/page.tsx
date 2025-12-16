@@ -82,7 +82,7 @@ export default function EditProductPage() {
   if (!product) {
     return (
       <div className="text-center py-12">
-        <p className="text-red-600 text-[#FF6501]">Producto no encontrado</p>
+        <p className="text-red-600 text-[#FFFFFF]">Producto no encontrado</p>
         <Button onClick={() => router.push("/admin/products")} className="mt-4">
           Volver a productos
         </Button>

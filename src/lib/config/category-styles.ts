@@ -28,7 +28,7 @@ export const CATEGORY_STYLES: Record<string, CategoryStyle> = {
   carajas: {
     background: "bg-cover bg-center bg-no-repeat",
     backgroundImage: "/images/fondo-categorias.png",
-    textColor: "text-dark",
+    textColor: "text-white",
     sideImage: "/images/carajas-franelas.png", // Imagen por defecto
     subcategories: {
       "carajas-franelas": {
@@ -42,10 +42,10 @@ export const CATEGORY_STYLES: Record<string, CategoryStyle> = {
   carajitos: {
     background: "bg-cover bg-center bg-no-repeat",
     backgroundImage: "/images/fondo-categorias.png",
-    textColor: "text-dark",
-    sideImage: "/images/carajitos-franelas.png", // Necesitas esta imagen
+    textColor: "text-white",
+    sideImage: "/images/carajitos-franelas.png",
     subcategories: {
-      // Agrega subcategorías cuando tengas las imágenes
+      // Agregar subcategorias
     },
   },
   "otras-vainas": {
@@ -54,12 +54,11 @@ export const CATEGORY_STYLES: Record<string, CategoryStyle> = {
     textColor: "text-white",
     sideImage: "/images/devotowhite.png",
     subcategories: {
-      // Agrega subcategorías de otras vainas
+      // Agregar subcategorias
     },
   },
 };
 
-// Función helper para obtener la configuración
 export function getCategoryStyle(
   categorySlug?: string,
   subcategorySlug?: string
@@ -69,13 +68,12 @@ export function getCategoryStyle(
   const categoryConfig = CATEGORY_STYLES[categorySlug];
   if (!categoryConfig) return null;
 
-  // Si hay subcategoría, combinar configuraciones
   if (subcategorySlug && categoryConfig.subcategories) {
     const subcategoryConfig = categoryConfig.subcategories[subcategorySlug];
     if (subcategoryConfig) {
       return {
         ...categoryConfig,
-        sideImage: subcategoryConfig.sideImage, // Override con imagen de subcategoría
+        sideImage: subcategoryConfig.sideImage,
       };
     }
   }

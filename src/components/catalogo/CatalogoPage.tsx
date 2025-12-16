@@ -54,27 +54,11 @@ export function CatalogoPage({ categoria, subcategoria }: CatalogoPageProps) {
   const products = data?.data || [];
   const totalPages = data?.meta?.totalPages || 1;
 
-  const getCategoryName = (slug?: string) => {
-    if (!slug) return "Todos los productos";
-
-    const names: Record<string, string> = {
-      carajos: "CARAJOS",
-      carajas: "CARAJAS",
-      carajitos: "CARAJITOS",
-      "otras-vainas": "OTRAS VAINAS",
-    };
-
-    return names[slug] || slug.toUpperCase();
-  };
-
-  const getSubcategoryName = (slug?: string) => {
-    if (!slug) return "";
-    return slug.split("-").slice(1).join(" ").toUpperCase();
-  };
-
-  const pageTitle = subcategoria
-    ? `${getSubcategoryName(subcategoria)} - ${getCategoryName(categoria)}`
-    : getCategoryName(categoria);
+  const pageTitle = subcategory
+    ? `${category?.name.toUpperCase()} - ${subcategory.name.toUpperCase()}`
+    : category
+    ? category.name.toUpperCase()
+    : "TODOS LOS PRODUCTOS";
 
   return (
     <div
@@ -104,7 +88,7 @@ export function CatalogoPage({ categoria, subcategoria }: CatalogoPageProps) {
                       setSearchTerm(e.target.value);
                       setCurrentPage(1);
                     }}
-                    className="pl-10"
+                    className="pl-10 bg-white/90 border-4 border-dark shadow-brutal placeholder:text-gray-500 text-dark font-bold"
                   />
                 </div>
                 <Button
@@ -133,7 +117,7 @@ export function CatalogoPage({ categoria, subcategoria }: CatalogoPageProps) {
 
             {!isLoading && !error && (
               <>
-                <div className="mb-4 text-sm text-muted-foreground">
+                <div className="mb-4 text-sm text-white">
                   {data?.meta?.total || 0} producto
                   {data?.meta?.total !== 1 ? "s" : ""} encontrado
                   {data?.meta?.total !== 1 ? "s" : ""}

@@ -54,7 +54,7 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
     return (
       <div className="container py-12">
         <div className="text-center">
-          <p className="text-destructive">Producto no encontrado</p>
+          <p className="text-destructive text-white">Producto no encontrado</p>
           <Button className="mt-4" asChild>
             <a href="/catalogo">Volver al catálogo</a>
           </Button>

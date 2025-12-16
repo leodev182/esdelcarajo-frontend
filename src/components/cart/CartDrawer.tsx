@@ -3,6 +3,7 @@
 import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -12,6 +13,7 @@ import {
   SheetFooter,
 } from "@/components/ui/sheet";
 import { useCart } from "@/src/lib/hooks/useCart";
+import { useAuth } from "@/src/lib/hooks/useAuth";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { PriceDisplay } from "../product/PriceDisplay";
 
@@ -21,6 +23,8 @@ interface CartDrawerProps {
 }
 
 export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
+  const router = useRouter();
+  const { isAuthenticated } = useAuth();
   const { cart, isLoading, removeCartItem, updateCartItem } = useCart();
 
   const items = cart?.items || [];
@@ -36,13 +40,22 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
     await removeCartItem(itemId);
   };
 
+  const handleCheckout = () => {
+    if (!isAuthenticated) {
+      onOpenChange(false);
+      router.push("/login?redirect=/checkout");
+      return;
+    }
+    router.push("/checkout");
+    onOpenChange(false);
+  };
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
         className="w-full sm:max-w-lg flex flex-col p-0"
       >
-        {/* Header */}
         <SheetHeader className="px-6 py-4 border-b">
           <div className="flex items-center justify-between">
             <SheetTitle className="flex items-center gap-2 text-xl">
@@ -57,7 +70,6 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
           </div>
         </SheetHeader>
 
-        {/* Content */}
         {isLoading ? (
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center">
@@ -76,18 +88,16 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
                 Agrega productos del carajo para empezar a comprar
               </p>
               <Button asChild onClick={() => onOpenChange(false)}>
-                <Link href="/tienda">Ver Productos</Link>
+                <Link href="/catalogo">Ver Productos</Link>
               </Button>
             </div>
           </div>
         ) : (
           <>
-            {/* Items List */}
             <ScrollArea className="flex-1 px-6">
               <div className="space-y-4 py-4">
                 {items.map((item) => (
                   <div key={item.id} className="flex gap-4">
-                    {/* Image */}
                     <div className="relative h-24 w-24 flex-shrink-0 rounded-md overflow-hidden bg-muted">
                       <Image
                         src={
@@ -100,10 +110,9 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
                       />
                     </div>
 
-                    {/* Info */}
                     <div className="flex-1 min-w-0">
                       <Link
-                        href={`/tienda/${item.variant.product.slug}`}
+                        href={`/product/${item.variant.product.slug}`}
                         onClick={() => onOpenChange(false)}
                         className="font-semibold hover:text-primary transition-colors line-clamp-2"
                       >
@@ -121,13 +130,11 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
                       </div>
 
                       <div className="flex items-center justify-between mt-2">
-                        {/* Price */}
                         <PriceDisplay
                           priceEUR={Number(item.variant.price) * item.quantity}
                           className="font-bold text-primary"
                         />
 
-                        {/* Quantity Controls */}
                         <div className="flex items-center gap-2">
                           <Button
                             variant="outline"
@@ -168,7 +175,6 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
                         </div>
                       </div>
 
-                      {/* Stock warning */}
                       {item.quantity >= item.variant.stock && (
                         <p className="text-xs text-amber-600 mt-1">
                           Stock máximo alcanzado
@@ -180,10 +186,8 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
               </div>
             </ScrollArea>
 
-            {/* Footer */}
             <SheetFooter className="px-6 py-4 border-t mt-auto">
               <div className="w-full space-y-4">
-                {/* Subtotal */}
                 <div className="flex items-center justify-between text-lg font-semibold">
                   <span>Subtotal:</span>
                   <PriceDisplay priceEUR={subtotal} className="text-primary" />
@@ -193,12 +197,11 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
                   El costo de envío se calculará en el checkout
                 </p>
 
-                {/* Action Buttons */}
                 <div className="space-y-2">
-                  <Button asChild className="w-full" size="lg">
-                    <Link href="/checkout" onClick={() => onOpenChange(false)}>
-                      Proceder al Checkout
-                    </Link>
+                  <Button onClick={handleCheckout} className="w-full" size="lg">
+                    {isAuthenticated
+                      ? "Proceder al Checkout"
+                      : "Iniciar Sesión para Comprar"}
                   </Button>
 
                   <Button
@@ -207,7 +210,7 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
                     onClick={() => onOpenChange(false)}
                     asChild
                   >
-                    <Link href="/tienda">Seguir Comprando</Link>
+                    <Link href="/catalogo">Seguir Comprando</Link>
                   </Button>
                 </div>
               </div>

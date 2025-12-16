@@ -11,6 +11,7 @@ import {
   Users,
   FolderTree,
   LogOut,
+  Sparkles,
 } from "lucide-react";
 
 export default function AdminLayout({
@@ -86,6 +87,14 @@ export default function AdminLayout({
               >
                 <FolderTree className="h-5 w-5" />
                 <span>Categorías</span>
+              </Link>
+
+              <Link
+                href="/admin/landing"
+                className="flex items-center gap-3 px-4 py-3 rounded-lg text-[#FF6501] hover:bg-[#FF6501] hover:text-white transition-colors font-bold"
+              >
+                <Sparkles className="h-5 w-5" />
+                <span>Landing</span>
               </Link>
 
               <Link
