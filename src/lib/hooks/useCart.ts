@@ -9,15 +9,12 @@ import {
   type UpdateCartItemPayload,
 } from "../api/cart.api";
 import { useAuth } from "./useAuth";
+import { logger } from "../utils/logger";
 
-/**
- * Hook para manejar el carrito de compras
- */
 export function useCart() {
   const queryClient = useQueryClient();
   const { isAuthenticated } = useAuth();
 
-  // Query para obtener el carrito
   const {
     data: cart,
     isLoading,
@@ -26,18 +23,22 @@ export function useCart() {
     queryKey: ["cart"],
     queryFn: getCart,
     enabled: isAuthenticated,
-    staleTime: 1000 * 30, // 30 segundos
+    staleTime: 1000 * 30,
   });
 
-  // Mutation para agregar al carrito
   const addToCartMutation = useMutation({
     mutationFn: (payload: AddToCartPayload) => addToCart(payload),
-    onSuccess: () => {
+    onSuccess: (data) => {
+      logger.info(
+        `Producto agregado al carrito - Variant: ${data.items.length} items`
+      );
       queryClient.invalidateQueries({ queryKey: ["cart"] });
+    },
+    onError: (error) => {
+      logger.error("Error agregando al carrito:", error);
     },
   });
 
-  // Mutation para actualizar cantidad
   const updateCartItemMutation = useMutation({
     mutationFn: ({
       itemId,
@@ -46,24 +47,36 @@ export function useCart() {
       itemId: string;
       payload: UpdateCartItemPayload;
     }) => updateCartItem(itemId, payload),
-    onSuccess: () => {
+    onSuccess: (data) => {
+      logger.info(
+        `Cantidad actualizada en carrito - Total items: ${data.totalItems}`
+      );
       queryClient.invalidateQueries({ queryKey: ["cart"] });
+    },
+    onError: (error) => {
+      logger.error("Error actualizando cantidad:", error);
     },
   });
 
-  // Mutation para eliminar item
   const removeCartItemMutation = useMutation({
     mutationFn: (itemId: string) => removeCartItem(itemId),
     onSuccess: () => {
+      logger.info("Producto eliminado del carrito");
       queryClient.invalidateQueries({ queryKey: ["cart"] });
+    },
+    onError: (error) => {
+      logger.error("Error eliminando producto:", error);
     },
   });
 
-  // Mutation para vaciar carrito
   const clearCartMutation = useMutation({
     mutationFn: clearCart,
     onSuccess: () => {
+      logger.info("Carrito vaciado");
       queryClient.invalidateQueries({ queryKey: ["cart"] });
+    },
+    onError: (error) => {
+      logger.error("Error vaciando carrito:", error);
     },
   });
 

@@ -11,15 +11,20 @@ import {
 } from "../api/orders.api";
 import { uploadPaymentProof } from "../api/upload.api";
 import { CACHE_TIME } from "../utils/constants";
+import { logger } from "../utils/logger";
 
 export function useCreateOrder() {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (payload: CreateOrderPayload) => createOrder(payload),
-    onSuccess: () => {
+    onSuccess: (order) => {
+      logger.info(`Orden creada exitosamente - ID: ${order.id}`);
       queryClient.invalidateQueries({ queryKey: ["cart"] });
       queryClient.invalidateQueries({ queryKey: ["orders"] });
+    },
+    onError: (error) => {
+      logger.error("Error creando orden:", error);
     },
   });
 }
@@ -48,8 +53,12 @@ export function useUploadPaymentProof() {
     mutationFn: ({ orderId, file }: { orderId: string; file: File }) =>
       uploadPaymentProof(orderId, file),
     onSuccess: (_, variables) => {
+      logger.info(`Comprobante de pago subido - Orden: ${variables.orderId}`);
       queryClient.invalidateQueries({ queryKey: ["order", variables.orderId] });
       queryClient.invalidateQueries({ queryKey: ["orders"] });
+    },
+    onError: (error) => {
+      logger.error("Error subiendo comprobante de pago:", error);
     },
   });
 }
@@ -75,10 +84,16 @@ export function useUpdateOrderStatus() {
       orderId: string;
       payload: UpdateOrderStatusPayload;
     }) => updateOrderStatus(orderId, payload),
-    onSuccess: (_, variables) => {
+    onSuccess: (order, variables) => {
+      logger.info(
+        `Estado de orden actualizado - ID: ${variables.orderId}, Estado: ${variables.payload.status}`
+      );
       queryClient.invalidateQueries({ queryKey: ["order", variables.orderId] });
       queryClient.invalidateQueries({ queryKey: ["admin", "orders"] });
       queryClient.invalidateQueries({ queryKey: ["orders"] });
+    },
+    onError: (error) => {
+      logger.error("Error actualizando estado de orden:", error);
     },
   });
 }

@@ -7,34 +7,37 @@ import {
   type AddFavoritePayload,
 } from "../api/favorites.api";
 import { useAuth } from "./useAuth";
+import { logger } from "../utils/logger";
 
-/**
- * Hook para manejar favoritos
- */
 export function useFavorites() {
   const queryClient = useQueryClient();
   const { isAuthenticated } = useAuth();
 
-  // Query para obtener favoritos
   const { data, isLoading, error } = useQuery({
     queryKey: ["favorites"],
     queryFn: getFavorites,
     enabled: isAuthenticated,
   });
 
-  // Mutation para agregar favorito
   const addFavoriteMutation = useMutation({
     mutationFn: (payload: AddFavoritePayload) => addFavorite(payload),
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
+      logger.info(`Producto agregado a favoritos - ID: ${variables.productId}`);
       queryClient.invalidateQueries({ queryKey: ["favorites"] });
+    },
+    onError: (error) => {
+      logger.error("Error agregando a favoritos:", error);
     },
   });
 
-  // Mutation para eliminar favorito
   const removeFavoriteMutation = useMutation({
     mutationFn: (favoriteId: string) => removeFavorite(favoriteId),
-    onSuccess: () => {
+    onSuccess: (_, favoriteId) => {
+      logger.info(`Producto eliminado de favoritos - ID: ${favoriteId}`);
       queryClient.invalidateQueries({ queryKey: ["favorites"] });
+    },
+    onError: (error) => {
+      logger.error("Error eliminando de favoritos:", error);
     },
   });
 
@@ -49,9 +52,6 @@ export function useFavorites() {
   };
 }
 
-/**
- * Hook para verificar si un producto está en favoritos
- */
 export function useIsFavorite(productId: string) {
   const { isAuthenticated } = useAuth();
 

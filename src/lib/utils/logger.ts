@@ -1,10 +1,4 @@
-/**
- * Logger liviano para el frontend
- *
- * - En desarrollo: muestra logs en consola
- * - En producción: silencioso (cero overhead)
- * - Preparado para integración con Sentry
- */
+import * as Sentry from "@sentry/nextjs";
 
 type LogLevel = "log" | "info" | "warn" | "error" | "debug";
 
@@ -25,20 +19,33 @@ class Logger {
     if (this.shouldLog()) {
       console.info("[INFO]", ...args);
     }
+    // En producción, enviar a Sentry como breadcrumb
+    Sentry.addBreadcrumb({
+      category: "info",
+      message: String(args[0]),
+      level: "info",
+    });
   }
 
   warn(...args: unknown[]): void {
     if (this.shouldLog()) {
       console.warn("[WARN]", ...args);
     }
+    // Enviar warning a Sentry
+    Sentry.captureMessage(String(args[0]), "warning");
   }
 
   error(...args: unknown[]): void {
     if (this.shouldLog()) {
       console.error("[ERROR]", ...args);
     }
-    // TODO: Cuando integremos Sentry, agregar:
-    // Sentry.captureException(args[0]);
+    // Siempre enviar errores a Sentry
+    const error = args[0];
+    if (error instanceof Error) {
+      Sentry.captureException(error);
+    } else {
+      Sentry.captureMessage(String(error), "error");
+    }
   }
 
   debug(...args: unknown[]): void {
@@ -48,7 +55,7 @@ class Logger {
   }
 
   /**
-   * Log agrupado (útil para objetos complejos)
+   * Log agrupado
    */
   group(label: string, data: unknown): void {
     if (this.shouldLog()) {

@@ -45,14 +45,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const token = localStorage.getItem(TOKEN_KEY);
 
       if (!token) {
+        logger.info("No hay token, usuario no autenticado");
         setIsLoading(false);
         return;
       }
 
+      logger.info("Verificando autenticación...");
       const userData = await getProfile();
       setUser(userData);
+      logger.info(`Usuario autenticado: ${userData.email}`);
 
       if (!userData.nickname) {
+        logger.warn("Usuario sin nickname, mostrando modal");
         setShowAliasModal(true);
       }
     } catch (error) {
@@ -65,28 +69,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const refreshUser = async () => {
     try {
+      logger.info("Refrescando datos del usuario...");
       const userData = await getProfile();
       setUser(userData);
+      logger.info("Datos del usuario actualizados");
     } catch (error) {
       logger.error("Error refrescando usuario:", error);
     }
   };
 
   const handleAliasSuccess = async () => {
+    logger.info("Nickname configurado exitosamente");
     await refreshUser();
     setShowAliasModal(false);
   };
 
   const setToken = (token: string) => {
+    logger.info("Token guardado, verificando autenticación");
     localStorage.setItem(TOKEN_KEY, token);
     checkAuth();
   };
 
   const login = () => {
+    logger.info("Iniciando login con Google");
     window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
   };
 
   const logout = () => {
+    logger.info("Usuario cerrando sesión");
     localStorage.removeItem(TOKEN_KEY);
     setUser(null);
     window.location.href = "/";

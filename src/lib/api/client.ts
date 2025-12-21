@@ -6,7 +6,7 @@ export const apiClient = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials: true, // 🆕 IMPORTANTE: Envía cookies automáticamente
+  withCredentials: true,
   timeout: 10000,
 });
 
@@ -40,16 +40,26 @@ apiClient.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
 
+    logger.info(`API Request: ${config.method?.toUpperCase()} ${config.url}`);
+
     return config;
   },
   (error: AxiosError) => {
+    logger.error("Request interceptor error:", error);
     return Promise.reject(error);
   }
 );
 
 // Interceptor para manejar errores y refresh automático
 apiClient.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    logger.info(
+      `API Response: ${response.config.method?.toUpperCase()} ${
+        response.config.url
+      } - ${response.status}`
+    );
+    return response;
+  },
   async (error: AxiosError) => {
     const originalRequest = error.config as InternalAxiosRequestConfig & {
       _retry?: boolean;
@@ -62,8 +72,9 @@ apiClient.interceptors.response.use(
       !originalRequest._retry &&
       !originalRequest.url?.includes("/auth/refresh")
     ) {
+      logger.warn("Token expirado, intentando refresh...");
+
       if (isRefreshing) {
-        // Si ya estamos refrescando, encolar la petición
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         })
@@ -82,24 +93,25 @@ apiClient.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        // Intentar refrescar el token (la cookie se envía automáticamente)
         const { data } = await apiClient.post("/auth/refresh");
         const newToken = data.access_token;
 
-        // Guardar el nuevo token
         localStorage.setItem("access_token", newToken);
+        logger.info("Token refrescado exitosamente");
 
-        // Procesar la cola de peticiones fallidas
         processQueue(null, newToken);
 
-        // Reintentar la petición original
         if (originalRequest.headers) {
           originalRequest.headers.Authorization = `Bearer ${newToken}`;
         }
 
         return apiClient(originalRequest);
       } catch (refreshError) {
-        // Si el refresh falla, limpiar todo y redirigir al login
+        logger.error(
+          "Error refrescando token, redirigiendo a login",
+          refreshError
+        );
+
         processQueue(refreshError as AxiosError, null);
         localStorage.removeItem("access_token");
         localStorage.removeItem("user");
@@ -117,14 +129,13 @@ apiClient.interceptors.response.use(
       }
     }
 
-    // Log del error en desarrollo
-    if (process.env.NODE_ENV === "development") {
-      logger.error("API Error:", {
-        message: error.response?.data || error.message,
-        status: error.response?.status,
-        url: error.config?.url,
-      });
-    }
+    // Log del error
+    logger.error("API Error:", {
+      message: error.response?.data || error.message,
+      status: error.response?.status,
+      url: error.config?.url,
+      method: error.config?.method,
+    });
 
     return Promise.reject(error);
   }
