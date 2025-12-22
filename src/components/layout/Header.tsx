@@ -29,22 +29,33 @@ export function Header() {
   return (
     <>
       <header className="sticky top-0 z-50 w-full bg-transparent shadow-sm">
-        <div className="container flex h-14 items-center justify-between px-6">
-          <Link href="/" className="flex items-center gap-3">
+        <div className="container flex h-auto py-2 items-center justify-around px-15 mx-auto">
+          {/* Logo */}
+          <Link href="/" className="flex items-center">
+            {/* Mobile Logo */}
             <Image
-              src="/rayitohd.svg"
+              src="/Logo.svg"
               alt="Del Carajo"
-              width={32}
-              height={32}
-              className="w-8 h-8"
+              width={150}
+              height={144}
+              className="lg:hidden"
             />
-            <span className="text-2xl font-bold tracking-tight">
-              DEL CARAJO
-            </span>
+
+            {/* Desktop Logo */}
+            <Image
+              src="/Logo.svg"
+              alt="Del Carajo"
+              width={150}
+              height={50}
+              className="hidden lg:block absolute bottom-[-30px]"
+              style={{ width: "290px", height: "auto" }}
+            />
           </Link>
-          <div className="hidden lg:flex items-center gap-30 bg-[#FF6501]">
+
+          {/* Desktop Navigation */}
+          <div className="hidden lg:flex items-center gap-6 bg-[#FF6501]">
             <nav
-              className="hidden lg:flex items-center gap-1"
+              className="flex items-center gap-1"
               onMouseLeave={() => setActiveMegaMenu(null)}
             >
               {MAIN_CATEGORIES.map((category) => (
@@ -95,7 +106,7 @@ export function Header() {
               </Button>
 
               {isAuthenticated ? (
-                <div className="hidden lg:flex items-center space-x-2">
+                <div className="flex items-center space-x-2">
                   <Button variant="ghost" size="sm" asChild>
                     <Link href="/perfil">
                       <User className="h-4 w-4 mr-2" />
@@ -107,37 +118,57 @@ export function Header() {
                   </Button>
                 </div>
               ) : (
-                <Button
-                  variant="default"
-                  size="sm"
-                  asChild
-                  className="hidden lg:inline-flex"
-                >
+                <Button variant="default" size="sm" asChild>
                   <Link href="/login">Iniciar Sesión</Link>
                 </Button>
               )}
             </div>
+          </div>
+
+          {/* Mobile Actions */}
+          <div className="flex lg:hidden items-center gap-3">
+            {isAuthenticated && (
+              <Button variant="ghost" size="icon" asChild>
+                <Link href="/favoritos">
+                  <Heart className="h-5 w-5 text-[#FF6501] hover:text-[#FF6501]/80" />
+                </Link>
+              </Button>
+            )}
 
             <Button
               variant="ghost"
               size="icon"
-              className="lg:hidden"
+              className="relative"
+              onClick={() => setCartDrawerOpen(true)}
+            >
+              <ShoppingCart className="h-5 w-5 text-[#FF6501] hover:text-[#FF6501]/80" />
+              {cartItemsCount > 0 && (
+                <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-white text-xs flex items-center justify-center font-bold">
+                  {cartItemsCount}
+                </span>
+              )}
+            </Button>
+
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-[#FF6501] hover:text-[#FF6501]/80"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
-              <Menu className="h-5 w-5" />
-              <span className="sr-only">Menú</span>
+              <Menu className="h-6 w-6" />
             </Button>
           </div>
         </div>
 
+        {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="lg:hidden border-t-2 border-dark">
-            <nav className="container flex flex-col space-y-4 py-6 px-6">
+          <div className="lg:hidden bg-white border-t-2 border-dark w-full">
+            <nav className="flex flex-col py-4">
               {MAIN_CATEGORIES.map((category) => (
                 <Link
                   key={category.slug}
                   href={`/catalogo/${category.slug}`}
-                  className="text-base font-bold hover:text-primary transition-colors"
+                  className="px-6 py-3 text-base font-bold hover:bg-gray-100 transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {category.name}
@@ -148,7 +179,7 @@ export function Header() {
                 <>
                   <Link
                     href="/perfil"
-                    className="text-base font-bold hover:text-primary transition-colors"
+                    className="px-6 py-3 text-base font-bold hover:bg-gray-100 transition-colors"
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     Mi Perfil
@@ -158,7 +189,7 @@ export function Header() {
                       setMobileMenuOpen(false);
                       logout();
                     }}
-                    className="text-base font-bold hover:text-primary transition-colors text-left"
+                    className="px-6 py-3 text-base font-bold hover:bg-gray-100 transition-colors text-left"
                   >
                     Cerrar Sesión
                   </button>
@@ -166,7 +197,7 @@ export function Header() {
               ) : (
                 <Link
                   href="/login"
-                  className="text-base font-bold hover:text-primary transition-colors"
+                  className="px-6 py-3 text-base font-bold hover:bg-gray-100 transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Iniciar Sesión
