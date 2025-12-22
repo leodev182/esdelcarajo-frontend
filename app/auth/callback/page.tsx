@@ -3,22 +3,29 @@
 import { useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { logger } from "@/src/lib/utils/logger";
+import { useAuth } from "@/src/lib/hooks/useAuth";
 
 function AuthCallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { setToken } = useAuth();
 
   useEffect(() => {
     const token = searchParams.get("token");
 
     if (token) {
-      localStorage.setItem("access_token", token);
-      router.push("/");
+      // Usar setToken del AuthContext en lugar de localStorage directo
+      setToken(token);
+      logger.info("Token guardado, redirigiendo...");
+      // Redirigir después de un pequeño delay para que el context actualice
+      setTimeout(() => {
+        router.push("/");
+      }, 100);
     } else {
       logger.error("No se recibió token");
       router.push("/");
     }
-  }, [searchParams, router]);
+  }, [searchParams, router, setToken]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">

@@ -29,7 +29,7 @@ export function Header() {
   return (
     <>
       <header className="sticky top-0 z-50 w-full bg-transparent shadow-sm">
-        <div className="container flex h-auto py-2 items-center justify-around px-15 mx-auto">
+        <div className="container flex h-auto py-2 items-center justify-around px-10 mx-auto">
           {/* Logo */}
           <Link href="/" className="flex items-center">
             {/* Mobile Logo */}
