@@ -36,7 +36,7 @@ export function AddressSelector({
       toast.success("Dirección eliminada");
 
       if (selectedAddressId === addressId) {
-        onSelectAddress(null);
+        onSelectAddress(""); // ✅ FIX: String vacío en lugar de null
       }
     } catch (error) {
       toast.error("Error al eliminar dirección");
