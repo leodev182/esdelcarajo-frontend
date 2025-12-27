@@ -6,6 +6,7 @@ import type { Product, ProductVariant, ProductImage } from "../types";
 export interface CreateProductPayload {
   name: string;
   description: string;
+  longDescription?: string;
   categoryId: string;
   subcategoryId?: string;
   isFeatured?: boolean;
@@ -14,6 +15,7 @@ export interface CreateProductPayload {
 export interface UpdateProductPayload {
   name?: string;
   description?: string;
+  longDescription?: string;
   categoryId?: string;
   subcategoryId?: string;
   isFeatured?: boolean;
@@ -28,6 +30,8 @@ export interface CreateVariantPayload {
   gender: "MEN" | "WOMEN" | "KIDS";
   price: number;
   stock: number;
+  shortDescription?: string;
+  features?: string;
 }
 
 export interface UpdateVariantPayload {
@@ -37,11 +41,13 @@ export interface UpdateVariantPayload {
   gender?: "MEN" | "WOMEN" | "KIDS";
   price?: number;
   stock?: number;
+  shortDescription?: string;
+  features?: string;
 }
 
 export interface CreateProductImagePayload {
   productId: string;
-  variantId?: string;
+  variantIds?: string[];
   url: string;
   publicId: string;
   alt: string;

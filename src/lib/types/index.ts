@@ -95,17 +95,30 @@ export interface Tag {
 
 // ==================== PRODUCT ====================
 
+export interface ProductImageVariant {
+  id: string;
+  imageId: string;
+  variantId: string;
+  variant: {
+    id: string;
+    sku: string;
+    color: string;
+    size: string;
+    gender: Gender;
+  };
+}
+
 export interface ProductImage {
   id: string;
   productId: string;
-  variantId?: string | null;
   url: string;
   publicId: string;
-  altText?: string;
+  alt?: string;
   order: number;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+  variants?: ProductImageVariant[];
 }
 
 export interface ProductVariant {
@@ -117,10 +130,17 @@ export interface ProductVariant {
   gender: Gender;
   price: number;
   stock: number;
+  shortDescription?: string;
+  features?: string;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
-  images?: ProductImage[];
+  images?: Array<{
+    id: string;
+    imageId: string;
+    variantId: string;
+    image: ProductImage;
+  }>;
 }
 
 export interface Product {
@@ -128,6 +148,7 @@ export interface Product {
   name: string;
   slug: string;
   description: string;
+  longDescription?: string;
   categoryId: string;
   subcategoryId?: string;
   isFeatured: boolean;

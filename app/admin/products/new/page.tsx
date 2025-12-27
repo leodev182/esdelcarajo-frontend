@@ -19,6 +19,7 @@ export default function NewProductPage() {
   const [form, setForm] = useState({
     name: "",
     description: "",
+    longDescription: "",
     categoryId: "",
     subcategoryId: "",
     isFeatured: false,
@@ -38,6 +39,7 @@ export default function NewProductPage() {
       const product = await createProduct.mutateAsync({
         name: form.name,
         description: form.description,
+        longDescription: form.longDescription || undefined,
         categoryId: form.categoryId,
         subcategoryId: form.subcategoryId || undefined,
         isFeatured: form.isFeatured,
@@ -86,17 +88,37 @@ export default function NewProductPage() {
 
           <div>
             <label className="block text-sm font-bold mb-2">
-              Descripción *
+              Descripción Corta *
             </label>
             <Textarea
               value={form.description}
               onChange={(e) =>
                 setForm({ ...form, description: e.target.value })
               }
-              placeholder="Descripción del producto..."
-              rows={4}
+              placeholder="Descripción breve que aparece en listados..."
+              rows={3}
               required
             />
+            <p className="text-xs text-gray-500 mt-1">
+              Descripción principal del producto
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-bold mb-2">
+              Descripción Larga SEO (opcional)
+            </label>
+            <Textarea
+              value={form.longDescription}
+              onChange={(e) =>
+                setForm({ ...form, longDescription: e.target.value })
+              }
+              placeholder="Descripción detallada para SEO, historia de la marca, inspiración del diseño..."
+              rows={6}
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              Aparece al final de la página del producto para mejorar SEO
+            </p>
           </div>
 
           <div>

@@ -8,6 +8,7 @@ import { useProductBySlug } from "@/src/lib/hooks/useProducts";
 import { useAuth } from "@/src/lib/hooks/useAuth";
 import { useCart } from "@/src/lib/hooks/useCart";
 import { PriceDisplay } from "./PriceDisplay";
+import Link from "next/link";
 
 interface ProductDetailPageProps {
   slug: string;
@@ -53,25 +54,27 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
         <div className="text-center">
           <p className="text-destructive text-white">Producto no encontrado</p>
           <Button className="mt-4" asChild>
-            <a href="/catalogo">Volver al catálogo</a>
+            <Link href="/catalogo">Volver al catálogo</Link>
           </Button>
         </div>
       </div>
     );
   }
 
+  // ✅ FIX 1: Obtener imágenes asociadas a la variante seleccionada
   const variantImages =
-    selectedVariant?.images?.filter((img) => img.isActive) || [];
-  const productGeneralImages = product.images.filter(
-    (img) => !img.variantId && img.isActive
-  );
+    selectedVariant?.images
+      ?.map((iv) => iv.image)
+      .filter((img) => img.isActive) || [];
+
+  const productGeneralImages = product.images.filter((img) => img.isActive);
 
   const images =
     variantImages.length > 0
       ? variantImages
       : productGeneralImages.length > 0
       ? productGeneralImages
-      : [{ url: "/placeholder.png", altText: product.name }];
+      : [{ url: "/placeholder.png", alt: product.name }];
 
   const currentImage = images[selectedImageIndex];
 
@@ -87,6 +90,18 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
   const price = selectedVariant ? Number(selectedVariant.price) : 0;
   const hasStock = selectedVariant ? selectedVariant.stock > 0 : false;
 
+  // ✅ FIX 2: Parsear características JSON
+  const parseFeatures = (featuresJson?: string) => {
+    if (!featuresJson) return null;
+    try {
+      return JSON.parse(featuresJson) as Record<string, string>;
+    } catch {
+      return null;
+    }
+  };
+
+  const features = parseFeatures(selectedVariant?.features);
+
   const handleSizeChange = (size: string) => {
     const variant = product.variants.find(
       (v) =>
@@ -96,7 +111,10 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
         v.stock > 0
     );
 
-    if (variant) setSelectedVariantId(variant.id);
+    if (variant) {
+      setSelectedVariantId(variant.id);
+      setSelectedImageIndex(0); // Reset image index cuando cambia variante
+    }
   };
 
   const handleColorChange = (color: string) => {
@@ -109,7 +127,10 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
           v.stock > 0
       ) || product.variants.find((v) => v.color === color && v.stock > 0);
 
-    if (variant) setSelectedVariantId(variant.id);
+    if (variant) {
+      setSelectedVariantId(variant.id);
+      setSelectedImageIndex(0); // Reset image index cuando cambia variante
+    }
   };
 
   const handleGenderChange = (gender: string) => {
@@ -121,17 +142,21 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
         v.stock > 0
     );
 
-    if (variant) setSelectedVariantId(variant.id);
+    if (variant) {
+      setSelectedVariantId(variant.id);
+      setSelectedImageIndex(0); // Reset image index cuando cambia variante
+    }
   };
 
   return (
     <div className="container py-8">
       <div className="grid md:grid-cols-2 gap-8">
+        {/* GALERÍA DE IMÁGENES */}
         <div className="space-y-4">
           <div className="relative aspect-square overflow-hidden rounded-lg border bg-muted">
             <Image
               src={currentImage.url}
-              alt={currentImage.altText || product.name}
+              alt={currentImage.alt || product.name}
               fill
               className="object-cover"
               priority
@@ -181,7 +206,7 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
                 >
                   <Image
                     src={image.url}
-                    alt={image.altText || `${product.name} - ${index + 1}`}
+                    alt={image.alt || `${product.name} - ${index + 1}`}
                     fill
                     className="object-cover"
                   />
@@ -191,6 +216,7 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
           )}
         </div>
 
+        {/* INFORMACIÓN DEL PRODUCTO */}
         <div className="space-y-6">
           <div>
             <p className="text-sm text-muted-foreground mb-2">
@@ -201,9 +227,30 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
 
           <PriceDisplay priceEUR={price} className="text-3xl font-bold" />
 
-          <p className="text-muted-foreground">{product.description}</p>
+          {/* ✅ DESCRIPCIÓN CORTA DE VARIANTE O DESCRIPCIÓN GENERAL */}
+          <div className="text-muted-foreground">
+            {selectedVariant?.shortDescription || product.description}
+          </div>
 
-          <div className="space-y-4">
+          {/* ✅ CARACTERÍSTICAS DE LA VARIANTE */}
+          {features && (
+            <div className="border-t pt-4">
+              <h3 className="font-semibold mb-3">Características:</h3>
+              <ul className="space-y-2">
+                {Object.entries(features).map(([key, value]) => (
+                  <li key={key} className="flex items-start gap-2 text-sm">
+                    <span className="text-primary">•</span>
+                    <span>
+                      <strong className="capitalize">{key}:</strong> {value}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* SELECTORES DE VARIANTE */}
+          <div className="space-y-4 border-t pt-4">
             {availableSizes.length > 0 && (
               <div>
                 <label className="text-sm font-semibold mb-2 block">
@@ -294,6 +341,7 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
             )}
           </div>
 
+          {/* STOCK */}
           {selectedVariant && (
             <div className="text-sm">
               {hasStock ? (
@@ -306,6 +354,7 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
             </div>
           )}
 
+          {/* BOTONES DE ACCIÓN */}
           <div className="flex gap-4">
             <Button
               size="lg"
@@ -336,6 +385,18 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
           )}
         </div>
       </div>
+
+      {/* ✅ DESCRIPCIÓN LARGA SEO AL FINAL */}
+      {product.longDescription && (
+        <div className="mt-16 border-t pt-8">
+          <h2 className="text-2xl font-bold mb-4">Acerca de este producto</h2>
+          <div className="prose prose-gray max-w-none">
+            <p className="text-muted-foreground whitespace-pre-line">
+              {product.longDescription}
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
