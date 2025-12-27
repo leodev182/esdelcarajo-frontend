@@ -448,14 +448,15 @@ export default function EditProductPage() {
                       const selector = document.getElementById(
                         "variant-selector"
                       ) as HTMLSelectElement;
-                      const selectedVariantId = selector.value || null;
+                      const selectedVariantId =
+                        selector.value.trim() !== "" ? selector.value : null;
 
                       try {
                         const uploadResponse = await uploadProductImage(file);
 
                         await addImage.mutateAsync({
                           productId,
-                          variantId: selectedVariantId,
+                          variantId: selectedVariantId || undefined,
                           url: uploadResponse.url,
                           publicId: uploadResponse.publicId,
                           alt: product.name,
