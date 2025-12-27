@@ -55,8 +55,8 @@ export default function EditProductPage() {
     size: "M" as "S" | "M" | "L" | "XL",
     color: "",
     gender: "MEN" as "MEN" | "WOMEN" | "KIDS",
-    price: "" as any,
-    stock: "" as any,
+    price: 0,
+    stock: 0,
   });
 
   useEffect(() => {
@@ -69,7 +69,7 @@ export default function EditProductPage() {
         isFeatured: product.isFeatured,
       });
     }
-  }, [product, setProductForm]);
+  }, [product]);
 
   if (isLoading) {
     return (
@@ -133,8 +133,8 @@ export default function EditProductPage() {
         size: variantForm.size,
         color: variantForm.color,
         gender: variantForm.gender,
-        price: parseFloat(variantForm.price as any) || 0,
-        stock: parseInt(variantForm.stock as any) || 0,
+        price: variantForm.price,
+        stock: variantForm.stock,
       });
       toast.success("Variante creada");
       setIsCreatingVariant(false);
@@ -143,8 +143,8 @@ export default function EditProductPage() {
         size: "M",
         color: "",
         gender: "MEN",
-        price: "" as any,
-        stock: "" as any,
+        price: 0,
+        stock: 0,
       });
     } catch {
       toast.error("Error al crear variante");
@@ -162,8 +162,8 @@ export default function EditProductPage() {
           size: variantForm.size,
           color: variantForm.color,
           gender: variantForm.gender,
-          price: parseFloat(variantForm.price as any) || 0,
-          stock: parseInt(variantForm.stock as any) || 0,
+          price: variantForm.price,
+          stock: variantForm.stock,
         },
       });
       toast.success("Variante actualizada");
@@ -173,8 +173,8 @@ export default function EditProductPage() {
         size: "M",
         color: "",
         gender: "MEN",
-        price: "" as any,
-        stock: "" as any,
+        price: 0,
+        stock: 0,
       });
     } catch {
       toast.error("Error al actualizar variante");
@@ -199,8 +199,8 @@ export default function EditProductPage() {
       size: variant.size as "S" | "M" | "L" | "XL",
       color: variant.color,
       gender: variant.gender as "MEN" | "WOMEN" | "KIDS",
-      price: variant.price as any,
-      stock: variant.stock as any,
+      price: Number(variant.price),
+      stock: variant.stock,
     });
     setIsCreatingVariant(false);
   };
@@ -415,67 +415,108 @@ export default function EditProductPage() {
             </h2>
 
             {product.images.length < 5 && (
-              <div className="mb-6">
-                <label className="block text-sm font-bold mb-2">
-                  Subir nueva imagen
-                </label>
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={async (e) => {
-                    const file = e.target.files?.[0];
-                    if (!file) return;
+              <div className="mb-6 space-y-4">
+                <div>
+                  <label className="block text-sm font-bold mb-2">
+                    Asociar imagen a:
+                  </label>
+                  <select
+                    id="variant-selector"
+                    className="w-full px-3 py-2 border-2 border-dark rounded-lg mb-4"
+                    defaultValue=""
+                  >
+                    <option value="">Imagen general del producto</option>
+                    {product.variants.map((v) => (
+                      <option key={v.id} value={v.id}>
+                        {v.sku} ({v.size} - {v.color} - {v.gender})
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-                    try {
-                      const uploadResponse = await uploadProductImage(file);
+                <div>
+                  <label className="block text-sm font-bold mb-2">
+                    Subir nueva imagen
+                  </label>
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
 
-                      await addImage.mutateAsync({
-                        productId,
-                        url: uploadResponse.url,
-                        publicId: uploadResponse.publicId,
-                        alt: product.name,
-                        order: product.images.length + 1,
-                      });
+                      const selector = document.getElementById(
+                        "variant-selector"
+                      ) as HTMLSelectElement;
+                      const selectedVariantId = selector.value || null;
 
-                      toast.success("Imagen agregada");
-                      e.target.value = "";
-                    } catch {
-                      toast.error("Error al subir imagen");
-                    }
-                  }}
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  Formatos: JPG, PNG, WEBP · Máximo 5MB
-                </p>
+                      try {
+                        const uploadResponse = await uploadProductImage(file);
+
+                        await addImage.mutateAsync({
+                          productId,
+                          variantId: selectedVariantId,
+                          url: uploadResponse.url,
+                          publicId: uploadResponse.publicId,
+                          alt: product.name,
+                          order: product.images.length + 1,
+                        });
+
+                        toast.success(
+                          selectedVariantId
+                            ? "Imagen asociada a variante"
+                            : "Imagen general agregada"
+                        );
+                        e.target.value = "";
+                        selector.value = "";
+                      } catch {
+                        toast.error("Error al subir imagen");
+                      }
+                    }}
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Formatos: JPG, PNG, WEBP · Máximo 5MB
+                  </p>
+                </div>
               </div>
             )}
 
             {product.images.length > 0 ? (
               <div className="grid grid-cols-3 gap-4">
-                {product.images.map((image) => (
-                  <div key={image.id} className="relative group">
-                    <img
-                      src={image.url}
-                      alt={product.name}
-                      className="w-full h-32 object-cover rounded border"
-                    />
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={async () => {
-                        try {
-                          await deleteImage.mutateAsync(image.id);
-                          toast.success("Imagen eliminada");
-                        } catch {
-                          toast.error("Error al eliminar imagen");
-                        }
-                      }}
-                      className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-white"
-                    >
-                      <Trash2 className="h-3 w-3 text-red-600" />
-                    </Button>
-                  </div>
-                ))}
+                {product.images.map((image) => {
+                  const variant = product.variants.find(
+                    (v) => v.id === image.variantId
+                  );
+                  return (
+                    <div key={image.id} className="relative group">
+                      <img
+                        src={image.url}
+                        alt={product.name}
+                        className="w-full h-32 object-cover rounded border"
+                      />
+                      {variant && (
+                        <div className="absolute bottom-0 left-0 right-0 bg-black/70 text-white text-xs p-1 text-center">
+                          {variant.sku}
+                        </div>
+                      )}
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={async () => {
+                          try {
+                            await deleteImage.mutateAsync(image.id);
+                            toast.success("Imagen eliminada");
+                          } catch {
+                            toast.error("Error al eliminar imagen");
+                          }
+                        }}
+                        className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-white"
+                      >
+                        <Trash2 className="h-3 w-3 text-red-600" />
+                      </Button>
+                    </div>
+                  );
+                })}
               </div>
             ) : (
               <p className="text-gray-500 text-center py-8">
@@ -513,7 +554,7 @@ export default function EditProductPage() {
                     onChange={(e) =>
                       setVariantForm({
                         ...variantForm,
-                        size: e.target.value as any,
+                        size: e.target.value as "S" | "M" | "L" | "XL",
                       })
                     }
                     className="w-full px-3 py-2 border-2 border-dark rounded-lg"
@@ -547,7 +588,7 @@ export default function EditProductPage() {
                     onChange={(e) =>
                       setVariantForm({
                         ...variantForm,
-                        gender: e.target.value as any,
+                        gender: e.target.value as "MEN" | "WOMEN" | "KIDS",
                       })
                     }
                     className="w-full px-3 py-2 border-2 border-dark rounded-lg"
@@ -569,7 +610,7 @@ export default function EditProductPage() {
                     onChange={(e) =>
                       setVariantForm({
                         ...variantForm,
-                        price: e.target.value as any,
+                        price: parseFloat(e.target.value) || 0,
                       })
                     }
                     placeholder="0.00"
@@ -586,7 +627,7 @@ export default function EditProductPage() {
                     onChange={(e) =>
                       setVariantForm({
                         ...variantForm,
-                        stock: e.target.value as any,
+                        stock: parseInt(e.target.value) || 0,
                       })
                     }
                     placeholder="0"
@@ -615,8 +656,8 @@ export default function EditProductPage() {
                         size: "M",
                         color: "",
                         gender: "MEN",
-                        price: "" as any,
-                        stock: "" as any,
+                        price: 0,
+                        stock: 0,
                       });
                     }}
                   >

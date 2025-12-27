@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { useProductBySlug } from "@/src/lib/hooks/useProducts";
 import { useAuth } from "@/src/lib/hooks/useAuth";
 import { useCart } from "@/src/lib/hooks/useCart";
-import type { ProductVariant } from "@/src/lib/types";
 import { PriceDisplay } from "./PriceDisplay";
 
 interface ProductDetailPageProps {
@@ -15,21 +14,19 @@ interface ProductDetailPageProps {
 }
 
 export function ProductDetailPage({ slug }: ProductDetailPageProps) {
-  // Por ahora el backend no tiene endpoint por slug, usaremos el ID
-  // TODO: Cambiar esto cuando el backend tenga endpoint por slug
   const { data: product, isLoading, error } = useProductBySlug(slug);
   const { isAuthenticated } = useAuth();
   const { addToCart, isAddingToCart } = useCart();
 
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(
+  const [selectedVariantId, setSelectedVariantId] = useState<string | null>(
     null
   );
 
-  // Cuando cargue el producto, seleccionar la primera variante disponible
-  if (product && !selectedVariant && product.variants.length > 0) {
-    setSelectedVariant(product.variants[0]);
-  }
+  const selectedVariant =
+    product?.variants.find((v) => v.id === selectedVariantId) ||
+    product?.variants[0] ||
+    null;
 
   const handleAddToCart = () => {
     if (!selectedVariant) return;
@@ -63,27 +60,74 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
     );
   }
 
+  const variantImages =
+    selectedVariant?.images?.filter((img) => img.isActive) || [];
+  const productGeneralImages = product.images.filter(
+    (img) => !img.variantId && img.isActive
+  );
+
   const images =
-    product.images.length > 0
-      ? product.images
+    variantImages.length > 0
+      ? variantImages
+      : productGeneralImages.length > 0
+      ? productGeneralImages
       : [{ url: "/placeholder.png", altText: product.name }];
+
   const currentImage = images[selectedImageIndex];
 
-  // Agrupar variantes por atributos
-  const availableSizes = [...new Set(product.variants.map((v) => v.size))];
+  const sizeOrder = { S: 1, M: 2, L: 3, XL: 4 };
+  const availableSizes = [...new Set(product.variants.map((v) => v.size))].sort(
+    (a, b) =>
+      sizeOrder[a as keyof typeof sizeOrder] -
+      sizeOrder[b as keyof typeof sizeOrder]
+  );
   const availableColors = [...new Set(product.variants.map((v) => v.color))];
   const availableGenders = [...new Set(product.variants.map((v) => v.gender))];
 
-  // Obtener precio de la variante seleccionada
   const price = selectedVariant ? Number(selectedVariant.price) : 0;
   const hasStock = selectedVariant ? selectedVariant.stock > 0 : false;
+
+  const handleSizeChange = (size: string) => {
+    const variant = product.variants.find(
+      (v) =>
+        v.size === size &&
+        v.color === selectedVariant?.color &&
+        v.gender === selectedVariant?.gender &&
+        v.stock > 0
+    );
+
+    if (variant) setSelectedVariantId(variant.id);
+  };
+
+  const handleColorChange = (color: string) => {
+    const variant =
+      product.variants.find(
+        (v) =>
+          v.color === color &&
+          v.size === selectedVariant?.size &&
+          v.gender === selectedVariant?.gender &&
+          v.stock > 0
+      ) || product.variants.find((v) => v.color === color && v.stock > 0);
+
+    if (variant) setSelectedVariantId(variant.id);
+  };
+
+  const handleGenderChange = (gender: string) => {
+    const variant = product.variants.find(
+      (v) =>
+        v.gender === gender &&
+        v.size === selectedVariant?.size &&
+        v.color === selectedVariant?.color &&
+        v.stock > 0
+    );
+
+    if (variant) setSelectedVariantId(variant.id);
+  };
 
   return (
     <div className="container py-8">
       <div className="grid md:grid-cols-2 gap-8">
-        {/* Galería de imágenes */}
         <div className="space-y-4">
-          {/* Imagen principal */}
           <div className="relative aspect-square overflow-hidden rounded-lg border bg-muted">
             <Image
               src={currentImage.url}
@@ -93,7 +137,6 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
               priority
             />
 
-            {/* Navegación de imágenes */}
             {images.length > 1 && (
               <>
                 <Button
@@ -124,7 +167,6 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
             )}
           </div>
 
-          {/* Miniaturas */}
           {images.length > 1 && (
             <div className="grid grid-cols-4 gap-2">
               {images.map((image, index) => (
@@ -149,9 +191,7 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
           )}
         </div>
 
-        {/* Información del producto */}
         <div className="space-y-6">
-          {/* Título y categoría */}
           <div>
             <p className="text-sm text-muted-foreground mb-2">
               {product.category?.name}
@@ -159,15 +199,11 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
             <h1 className="text-3xl font-bold">{product.name}</h1>
           </div>
 
-          {/* Precio */}
           <PriceDisplay priceEUR={price} className="text-3xl font-bold" />
 
-          {/* Descripción */}
           <p className="text-muted-foreground">{product.description}</p>
 
-          {/* Selector de variantes */}
           <div className="space-y-4">
-            {/* Tallas */}
             {availableSizes.length > 0 && (
               <div>
                 <label className="text-sm font-semibold mb-2 block">
@@ -175,22 +211,21 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {availableSizes.map((size) => {
-                    const variant = product.variants.find(
+                    const hasVariantWithSize = product.variants.some(
                       (v) =>
                         v.size === size &&
-                        (!selectedVariant ||
-                          (v.color === selectedVariant.color &&
-                            v.gender === selectedVariant.gender))
+                        v.color === selectedVariant?.color &&
+                        v.gender === selectedVariant?.gender &&
+                        v.stock > 0
                     );
                     const isSelected = selectedVariant?.size === size;
-                    const isAvailable = variant && variant.stock > 0;
 
                     return (
                       <Button
                         key={size}
                         variant={isSelected ? "default" : "outline"}
-                        disabled={!isAvailable}
-                        onClick={() => variant && setSelectedVariant(variant)}
+                        disabled={!hasVariantWithSize}
+                        onClick={() => handleSizeChange(size)}
                       >
                         {size}
                       </Button>
@@ -200,7 +235,6 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
               </div>
             )}
 
-            {/* Colores */}
             {availableColors.length > 1 && (
               <div>
                 <label className="text-sm font-semibold mb-2 block">
@@ -208,22 +242,17 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {availableColors.map((color) => {
-                    const variant = product.variants.find(
-                      (v) =>
-                        v.color === color &&
-                        (!selectedVariant ||
-                          (v.size === selectedVariant.size &&
-                            v.gender === selectedVariant.gender))
+                    const hasVariantWithColor = product.variants.some(
+                      (v) => v.color === color && v.stock > 0
                     );
                     const isSelected = selectedVariant?.color === color;
-                    const isAvailable = variant && variant.stock > 0;
 
                     return (
                       <Button
                         key={color}
                         variant={isSelected ? "default" : "outline"}
-                        disabled={!isAvailable}
-                        onClick={() => variant && setSelectedVariant(variant)}
+                        disabled={!hasVariantWithColor}
+                        onClick={() => handleColorChange(color)}
                       >
                         {color}
                       </Button>
@@ -233,7 +262,6 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
               </div>
             )}
 
-            {/* Género */}
             {availableGenders.length > 1 && (
               <div>
                 <label className="text-sm font-semibold mb-2 block">
@@ -241,22 +269,21 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {availableGenders.map((gender) => {
-                    const variant = product.variants.find(
+                    const hasVariantWithGender = product.variants.some(
                       (v) =>
                         v.gender === gender &&
-                        (!selectedVariant ||
-                          (v.size === selectedVariant.size &&
-                            v.color === selectedVariant.color))
+                        v.size === selectedVariant?.size &&
+                        v.color === selectedVariant?.color &&
+                        v.stock > 0
                     );
                     const isSelected = selectedVariant?.gender === gender;
-                    const isAvailable = variant && variant.stock > 0;
 
                     return (
                       <Button
                         key={gender}
                         variant={isSelected ? "default" : "outline"}
-                        disabled={!isAvailable}
-                        onClick={() => variant && setSelectedVariant(variant)}
+                        disabled={!hasVariantWithGender}
+                        onClick={() => handleGenderChange(gender)}
                       >
                         {gender}
                       </Button>
@@ -267,7 +294,6 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
             )}
           </div>
 
-          {/* Stock */}
           {selectedVariant && (
             <div className="text-sm">
               {hasStock ? (
@@ -280,7 +306,6 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
             </div>
           )}
 
-          {/* Botones de acción */}
           <div className="flex gap-4">
             <Button
               size="lg"

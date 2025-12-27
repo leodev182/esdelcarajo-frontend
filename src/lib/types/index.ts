@@ -98,6 +98,7 @@ export interface Tag {
 export interface ProductImage {
   id: string;
   productId: string;
+  variantId?: string | null;
   url: string;
   publicId: string;
   altText?: string;
@@ -119,6 +120,7 @@ export interface ProductVariant {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+  images?: ProductImage[];
 }
 
 export interface Product {

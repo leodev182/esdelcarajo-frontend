@@ -41,11 +41,11 @@ export interface UpdateVariantPayload {
 
 export interface CreateProductImagePayload {
   productId: string;
+  variantId?: string;
   url: string;
   publicId: string;
   alt: string;
   order: number;
-  variantId?: string;
 }
 
 // ==================== PRODUCTOS ====================
