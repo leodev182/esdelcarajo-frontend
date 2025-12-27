@@ -587,7 +587,7 @@ export default function EditProductPage() {
 
         <div>
           {(isCreatingVariant || editingVariant) && (
-            <div className="bg-white rounded-lg border-2 border-dark p-6 sticky top-8">
+            <div className="bg-white rounded-lg border-2 border-dark p-6 sticky top-8 max-h-[calc(100dvh-4rem)] overflow-y-auto">
               <h2 className="text-xl font-bold mb-4">
                 {editingVariant ? "Editar Variante" : "Nueva Variante"}
               </h2>

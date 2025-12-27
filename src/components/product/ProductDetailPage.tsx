@@ -388,12 +388,14 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
 
       {/* ✅ DESCRIPCIÓN LARGA SEO AL FINAL */}
       {product.longDescription && (
-        <div className="mt-16 border-t pt-8">
-          <h2 className="text-2xl font-bold mb-4">Acerca de este producto</h2>
-          <div className="prose prose-gray max-w-none">
-            <p className="text-muted-foreground whitespace-pre-line">
-              {product.longDescription}
-            </p>
+        <div className="mt-16 border-t">
+          <div className="container pt-8">
+            <h2 className="text-2xl font-bold mb-4">Acerca de este producto</h2>
+            <div className="prose prose-gray max-w-none">
+              <p className="text-muted-foreground whitespace-pre-line">
+                {product.longDescription}
+              </p>
+            </div>
           </div>
         </div>
       )}
