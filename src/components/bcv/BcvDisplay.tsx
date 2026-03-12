@@ -9,7 +9,7 @@ export function BcvDisplay() {
     return (
       <div className="flex gap-4">
         <div className="bg-white text-black font-black px-4 py-2 border-4 border-orange-500">
-          TASA BCV
+          TASA EUR BCV
         </div>
         <div className="bg-white text-black font-black px-4 py-2 border-4 border-orange-500">
           ...
@@ -21,7 +21,7 @@ export function BcvDisplay() {
   return (
     <div className="flex gap-4">
       <div className="bg-white text-black font-black px-4 py-2 border-4 border-orange-500">
-        TASA BCV
+        TASA EUR BCV
       </div>
       <div className="bg-white text-black font-black px-4 py-2 border-4 border-orange-500">
         {rate.toFixed(2)} BS

@@ -114,7 +114,10 @@ export function Footer() {
 
         {/* Bottom */}
         <div className="mt-12 pt-8 border-t text-center text-sm text-muted-foreground">
-          <p>&copy; {currentYear} Del Carajo. Todos los derechos reservados.</p>
+          <p>
+            &copy; 2025 – {currentYear} Del Carajo. Todos los derechos
+            reservados.
+          </p>
         </div>
       </div>
     </footer>
