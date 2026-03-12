@@ -1,37 +1,24 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { getBcvRate } from "../api/bcv.api";
-import { logger } from "../utils/logger";
+
+const BCV_CACHE_TIME = 1000 * 60 * 60; // 1 hora
 
 export function useBcv() {
-  const [rate, setRate] = useState<number | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [lastUpdate, setLastUpdate] = useState<string | null>(null);
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["bcv-rate"],
+    queryFn: getBcvRate,
+    staleTime: BCV_CACHE_TIME,
+    gcTime: BCV_CACHE_TIME * 2,
+    retry: 2,
+    refetchInterval: BCV_CACHE_TIME,
+  });
 
-  useEffect(() => {
-    const fetchRate = async () => {
-      try {
-        setIsLoading(true);
-        const data = await getBcvRate();
-        setRate(data.rate);
-        setLastUpdate(data.lastUpdate);
-        setError(null);
-      } catch (err) {
-        logger.error("Error fetching BCV rate:", err);
-        setError("No se pudo obtener la tasa");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchRate();
-
-    // Actualizar cada hora
-    const interval = setInterval(fetchRate, 1000 * 60 * 60);
-    return () => clearInterval(interval);
-  }, []);
-
-  return { rate, isLoading, error, lastUpdate };
+  return {
+    rate: data?.rate ?? null,
+    lastUpdate: data?.lastUpdate ?? null,
+    isLoading,
+    error: error ? "No se pudo obtener la tasa" : null,
+  };
 }
 
 /**
