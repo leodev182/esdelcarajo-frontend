@@ -1,36 +1,138 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Del Carajo — Frontend
 
-## Getting Started
+Aplicación web de e-commerce para **Del Carajo**, marca de ropa urbana venezolana. Construida con Next.js App Router, ofrece catálogo de productos, carrito, checkout, favoritos y panel de administración.
 
-First, run the development server:
+---
+
+## Stack tecnológico
+
+| Capa | Tecnología |
+|---|---|
+| Framework | Next.js 16 + TypeScript 5 (App Router) |
+| Estilos | Tailwind CSS 4 |
+| Componentes UI | shadcn/ui (Radix UI) |
+| Estado del servidor | TanStack Query v5 |
+| Formularios | React Hook Form + Zod |
+| HTTP Client | Axios |
+| Autenticación | JWT + Google OAuth (via backend) |
+| Monitoreo | Sentry |
+| Notificaciones | Sonner |
+| Iconos | Lucide React |
+
+---
+
+## Requisitos previos
+
+- Node.js >= 20
+- npm >= 10
+- Backend corriendo en `http://localhost:3001` (ver [esdelcarajo-backend](../esdelcarajo-backend/README.md))
+
+---
+
+## Instalación
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# 1. Instalar dependencias
+npm install
+
+# 2. Configurar variables de entorno
+cp .env.example .env.local
+# Editar .env.local con tus valores reales
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Variables de entorno
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Crear un archivo `.env.local` en la raíz:
 
-## Learn More
+```env
+# URL del backend API
+NEXT_PUBLIC_API_URL=http://localhost:3001/api
 
-To learn more about Next.js, take a look at the following resources:
+# URL del frontend (usada en redirecciones OAuth)
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Levantar el proyecto
 
-## Deploy on Vercel
+```bash
+# Desarrollo
+npm run dev
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# Producción
+npm run build
+npm run start
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Aplicación disponible en `http://localhost:3000`
+
+---
+
+## Scripts disponibles
+
+| Script | Descripción |
+|---|---|
+| `npm run dev` | Servidor de desarrollo |
+| `npm run build` | Build de producción |
+| `npm run start` | Servir el build de producción |
+| `npm run lint` | Verificar errores de ESLint |
+
+---
+
+## Estructura del proyecto
+
+```
+app/                        # Rutas Next.js App Router
+├── (root)/page.tsx         # Landing page
+├── catalogo/               # Catálogo de productos
+│   ├── [categoria]/        # Filtrado por categoría
+│   └── [categoria]/[subcategoria]/
+├── product/[slug]/         # Detalle de producto
+├── checkout/               # Flujo de pago
+├── favoritos/              # Lista de favoritos
+├── order/[id]/             # Seguimiento de órdenes
+├── perfil/                 # Perfil, direcciones, historial
+├── auth/callback/          # Callback OAuth
+└── admin/                  # Panel de administración
+
+src/
+├── components/
+│   ├── admin/              # Componentes del panel admin
+│   ├── auth/               # Login, callback OAuth
+│   ├── bcv/                # Visualización tasa BCV
+│   ├── cart/               # Carrito y drawer
+│   ├── catalogo/           # Página de catálogo y filtros
+│   ├── checkout/           # Formulario y flujo de pago
+│   ├── layout/             # Header, Footer, MegaMenu
+│   ├── order/              # Detalle de orden
+│   ├── product/            # Cards, detalle, grid de productos
+│   └── ui/                 # Primitivos shadcn/ui
+├── context/
+│   └── AuthContext.tsx     # Estado global de autenticación
+└── lib/
+    ├── api/                # Clientes API por módulo (axios)
+    ├── hooks/              # Custom hooks (useProducts, useBcv, etc.)
+    ├── types/              # Interfaces TypeScript
+    ├── config/             # Estilos por categoría
+    ├── providers/          # QueryProvider (TanStack Query)
+    ├── utils/              # Logger, constantes, helpers
+    └── fonts/              # Configuración tipografía
+
+public/                     # Assets estáticos (imágenes, logo)
+```
+
+---
+
+## Funcionalidades principales
+
+- **Catálogo** — Filtros por categoría, subcategoría, búsqueda y paginación
+- **Producto** — Galería de imágenes, selección de variantes (talla, color, género), stock en tiempo real
+- **Carrito** — Drawer persistente, expiración automática de items
+- **Checkout** — Formulario de dirección, selección de método de pago, comprobante de transferencia
+- **Favoritos** — Lista de productos guardados por usuario autenticado
+- **Perfil** — Edición de datos, gestión de direcciones, historial de órdenes
+- **Admin** — Gestión de productos, categorías, órdenes, usuarios y secciones del landing
+- **Tasa BCV** — Conversión de precios EUR → Bolívares en tiempo real con caché de 1 hora
