@@ -8,7 +8,7 @@ import { useCart } from "@/src/lib/hooks/useCart";
 import { Button } from "@/components/ui/button";
 import { CartDrawer } from "@/src/components/cart/CartDrawer";
 import { MegaMenu } from "./MegaMenu";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const MAIN_CATEGORIES = [
   { name: "CARAJOS", slug: "carajos" },
@@ -23,6 +23,11 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
   const [activeMegaMenu, setActiveMegaMenu] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const cartItemsCount = cart?.totalItems || 0;
 
@@ -32,7 +37,6 @@ export function Header() {
         <div className="container flex h-auto py-2 items-center justify-around px-10 mx-auto">
           {/* Logo */}
           <Link href="/" className="flex items-center">
-            {/* Mobile Logo */}
             <Image
               src="/Logo.svg"
               alt="Del Carajo"
@@ -40,8 +44,6 @@ export function Header() {
               height={144}
               className="lg:hidden"
             />
-
-            {/* Desktop Logo */}
             <Image
               src="/Logo.svg"
               alt="Del Carajo"
@@ -71,7 +73,6 @@ export function Header() {
                   >
                     {category.name}
                   </Link>
-
                   <MegaMenu
                     categorySlug={category.slug}
                     isOpen={activeMegaMenu === category.slug}
@@ -81,7 +82,7 @@ export function Header() {
             </nav>
 
             <div className="flex items-center space-x-3">
-              {isAuthenticated && (
+              {mounted && isAuthenticated && (
                 <Button variant="ghost" size="icon" asChild>
                   <Link href="/favoritos">
                     <Heart className="h-5 w-5" />
@@ -97,7 +98,7 @@ export function Header() {
                 onClick={() => setCartDrawerOpen(true)}
               >
                 <ShoppingCart className="h-5 w-5" />
-                {cartItemsCount > 0 && (
+                {mounted && cartItemsCount > 0 && (
                   <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-white text-xs flex items-center justify-center font-bold">
                     {cartItemsCount}
                   </span>
@@ -105,29 +106,30 @@ export function Header() {
                 <span className="sr-only">Carrito</span>
               </Button>
 
-              {isAuthenticated ? (
-                <div className="flex items-center space-x-2">
-                  <Button variant="ghost" size="sm" asChild>
-                    <Link href="/perfil">
-                      <User className="h-4 w-4 mr-2" />
-                      {user?.nickname || user?.name}
-                    </Link>
+              {mounted &&
+                (isAuthenticated ? (
+                  <div className="flex items-center space-x-2">
+                    <Button variant="ghost" size="sm" asChild>
+                      <Link href="/perfil">
+                        <User className="h-4 w-4 mr-2" />
+                        {user?.nickname || user?.name}
+                      </Link>
+                    </Button>
+                    <Button variant="ghost" size="sm" onClick={logout}>
+                      Salir
+                    </Button>
+                  </div>
+                ) : (
+                  <Button variant="default" size="sm" asChild>
+                    <Link href="/login">Iniciar Sesión</Link>
                   </Button>
-                  <Button variant="ghost" size="sm" onClick={logout}>
-                    Salir
-                  </Button>
-                </div>
-              ) : (
-                <Button variant="default" size="sm" asChild>
-                  <Link href="/login">Iniciar Sesión</Link>
-                </Button>
-              )}
+                ))}
             </div>
           </div>
 
           {/* Mobile Actions */}
           <div className="flex lg:hidden items-center gap-3">
-            {isAuthenticated && (
+            {mounted && isAuthenticated && (
               <Button variant="ghost" size="icon" asChild>
                 <Link href="/favoritos">
                   <Heart className="h-5 w-5 text-[#FF6501] hover:text-[#FF6501]/80" />
@@ -142,7 +144,7 @@ export function Header() {
               onClick={() => setCartDrawerOpen(true)}
             >
               <ShoppingCart className="h-5 w-5 text-[#FF6501] hover:text-[#FF6501]/80" />
-              {cartItemsCount > 0 && (
+              {mounted && cartItemsCount > 0 && (
                 <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-white text-xs flex items-center justify-center font-bold">
                   {cartItemsCount}
                 </span>
@@ -161,7 +163,7 @@ export function Header() {
         </div>
 
         {/* Mobile Menu */}
-        {mobileMenuOpen && (
+        {mounted && mobileMenuOpen && (
           <div className="lg:hidden bg-white border-t-2 border-dark w-full">
             <nav className="flex flex-col py-4">
               {MAIN_CATEGORIES.map((category) => (
