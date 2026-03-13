@@ -163,7 +163,7 @@ export default function ProfilePage() {
           <div className="bg-white rounded-lg border-2 border-dark p-6">
             <h2 className="text-xl font-bold mb-4">Accesos Rápidos</h2>
             <div className="space-y-2">
-              <Link href="/perfil/orders">
+              <Link href="/perfil/ordenes">
                 <Button variant="outline" className="w-full justify-start">
                   <ShoppingBag className="h-4 w-4 mr-2" />
                   Mis Órdenes
