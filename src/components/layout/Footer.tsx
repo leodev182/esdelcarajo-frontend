@@ -78,7 +78,7 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="/carrito"
+                  href="/checkout"
                   className="hover:text-primary transition-colors"
                 >
                   Carrito
