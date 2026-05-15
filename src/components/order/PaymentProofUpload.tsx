@@ -107,7 +107,7 @@ export function PaymentProofUpload({
       router.push("/");
     } catch (error) {
       toast.error("Error al subir el comprobante");
-      logger.error(error);
+      logger.error("Error al subir el comprobante", error);
     }
   };
 

@@ -83,7 +83,7 @@ export function CheckoutPage() {
       router.push(`/order/${order.id}`);
     } catch (error) {
       toast.error("Error al crear el pedido");
-      logger.error(error);
+      logger.error("Error al crear el pedido", error);
       setIsCreatingOrder(false);
     }
   };

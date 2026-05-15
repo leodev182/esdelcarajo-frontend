@@ -91,7 +91,7 @@ export function AddressForm({
           ? "Error al actualizar dirección"
           : "Error al agregar dirección"
       );
-      logger.error(error);
+      logger.error("Error al guardar dirección", error);
     }
   };
 
