@@ -109,7 +109,8 @@ apiClient.interceptors.response.use(
       } catch (refreshError) {
         logger.error(
           "Error refrescando token, redirigiendo a login",
-          refreshError
+          refreshError,
+          { expected: true }
         );
 
         processQueue(refreshError as AxiosError, null);
@@ -129,13 +130,18 @@ apiClient.interceptors.response.use(
       }
     }
 
-    // Log del error
-    logger.error("API Error:", {
-      message: error.response?.data || error.message,
-      status: error.response?.status,
-      url: error.config?.url,
-      method: error.config?.method,
-    });
+    const status = error.response?.status;
+    const isAuthFlow = status === 401 || status === 403;
+    logger.error(
+      "API Error:",
+      {
+        message: error.response?.data || error.message,
+        status,
+        url: error.config?.url,
+        method: error.config?.method,
+      },
+      { expected: isAuthFlow }
+    );
 
     return Promise.reject(error);
   }
