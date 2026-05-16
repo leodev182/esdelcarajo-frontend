@@ -46,6 +46,3 @@ next-env.d.ts
 # Sentry Config File
 .env.sentry-build-plugin
 
-# Docker (solo para desarrollo local)
-Dockerfile.dev
-.dockerignore

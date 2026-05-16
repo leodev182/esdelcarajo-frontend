@@ -36,7 +36,7 @@ export function AliasModal({ onSuccess }: AliasModalProps) {
       onSuccess();
     } catch (error) {
       toast.error("Error al guardar el alias");
-      logger.error(error);
+      logger.error("Error al guardar el alias", error);
     } finally {
       setIsLoading(false);
     }

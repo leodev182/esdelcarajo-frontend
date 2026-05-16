@@ -60,7 +60,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setShowAliasModal(true);
       }
     } catch (error) {
-      logger.error("Error verificando autenticación:", error);
+      logger.error("Error verificando autenticación:", error, { expected: true });
       localStorage.removeItem(TOKEN_KEY);
     } finally {
       setIsLoading(false);

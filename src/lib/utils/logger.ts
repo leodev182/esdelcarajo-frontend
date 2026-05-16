@@ -1,7 +1,5 @@
 import * as Sentry from "@sentry/nextjs";
 
-type LogLevel = "log" | "info" | "warn" | "error" | "debug";
-
 class Logger {
   private isDevelopment = process.env.NODE_ENV === "development";
 
@@ -19,7 +17,6 @@ class Logger {
     if (this.shouldLog()) {
       console.info("[INFO]", ...args);
     }
-    // En producción, enviar a Sentry como breadcrumb
     Sentry.addBreadcrumb({
       category: "info",
       message: String(args[0]),
@@ -31,20 +28,35 @@ class Logger {
     if (this.shouldLog()) {
       console.warn("[WARN]", ...args);
     }
-    // Enviar warning a Sentry
-    Sentry.captureMessage(String(args[0]), "warning");
+    Sentry.addBreadcrumb({
+      category: "warning",
+      message: String(args[0]),
+      level: "warning",
+    });
   }
 
-  error(...args: unknown[]): void {
+  error(
+    message: string,
+    data?: unknown,
+    options?: { expected?: boolean }
+  ): void {
     if (this.shouldLog()) {
-      console.error("[ERROR]", ...args);
+      console.error("[ERROR]", message, data);
     }
-    // Siempre enviar errores a Sentry
-    const error = args[0];
-    if (error instanceof Error) {
-      Sentry.captureException(error);
+
+    if (options?.expected) {
+      Sentry.addBreadcrumb({
+        category: "error.expected",
+        message,
+        level: "warning",
+      });
+      return;
+    }
+
+    if (data instanceof Error) {
+      Sentry.captureException(data);
     } else {
-      Sentry.captureMessage(String(error), "error");
+      Sentry.captureMessage(message, "error");
     }
   }
 

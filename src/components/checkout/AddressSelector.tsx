@@ -40,7 +40,7 @@ export function AddressSelector({
       }
     } catch (error) {
       toast.error("Error al eliminar dirección");
-      logger.error(error);
+      logger.error("Error al eliminar dirección", error);
     } finally {
       setDeletingId(null);
     }
