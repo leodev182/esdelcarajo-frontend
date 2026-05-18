@@ -1,9 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import Link from "next/link";
 import { useProducts } from "@/src/lib/hooks/useProducts";
 import { useDeleteProduct } from "@/src/lib/hooks/useAdminProducts";
+import { useAuth } from "@/src/lib/hooks/useAuth";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 import {
@@ -20,8 +23,16 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 
 export default function AdminProductsPage() {
+  const { user } = useAuth();
+  const router = useRouter();
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    if (user && user.role !== "SUPER_ADMIN") {
+      router.replace("/admin");
+    }
+  }, [user, router]);
 
   const { data, isLoading, error } = useProducts({
     search: search || undefined,

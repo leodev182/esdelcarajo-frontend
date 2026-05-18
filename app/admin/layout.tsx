@@ -65,14 +65,6 @@ export default function AdminLayout({
           </Link>
 
           <Link
-            href="/admin/products"
-            className="flex items-center gap-3 px-4 py-3 rounded-lg text-[#FF6501] hover:bg-[#FF6501] hover:text-white transition-colors font-bold"
-          >
-            <Package className="h-5 w-5" />
-            <span>Productos</span>
-          </Link>
-
-          <Link
             href="/admin/orders"
             className="flex items-center gap-3 px-4 py-3 rounded-lg text-[#FF6501] hover:bg-[#FF6501] hover:text-white transition-colors font-bold"
           >
@@ -82,6 +74,14 @@ export default function AdminLayout({
 
           {isSuperAdmin && (
             <>
+              <Link
+                href="/admin/products"
+                className="flex items-center gap-3 px-4 py-3 rounded-lg text-[#FF6501] hover:bg-[#FF6501] hover:text-white transition-colors font-bold"
+              >
+                <Package className="h-5 w-5" />
+                <span>Productos</span>
+              </Link>
+
               <Link
                 href="/admin/categories"
                 className="flex items-center gap-3 px-4 py-3 rounded-lg text-[#FF6501] hover:bg-[#FF6501] hover:text-white transition-colors font-bold"

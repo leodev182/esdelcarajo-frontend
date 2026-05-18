@@ -7,6 +7,7 @@ import { Package, ShoppingCart, Users, DollarSign } from "lucide-react";
 export default function AdminDashboard() {
   const { user } = useAuth();
   const { data: stats, isLoading } = useDashboardStats();
+  const isSuperAdmin = user?.role === "SUPER_ADMIN";
 
   if (isLoading) {
     return (
@@ -56,16 +57,18 @@ export default function AdminDashboard() {
           </p>
         </div>
 
-        <div className="bg-white rounded-lg border-2 border-dark p-6">
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="text-sm font-bold text-gray-600">Ventas</h3>
-            <DollarSign className="h-5 w-5 text-primary" />
+        {isSuperAdmin && (
+          <div className="bg-white rounded-lg border-2 border-dark p-6">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-sm font-bold text-gray-600">Ventas</h3>
+              <DollarSign className="h-5 w-5 text-primary" />
+            </div>
+            <p className="text-3xl font-bold">
+              $ {Number(stats?.sales.total || 0).toFixed(2)}
+            </p>
+            <p className="text-xs text-gray-500 mt-1">Total en USD</p>
           </div>
-          <p className="text-3xl font-bold">
-            $ {Number(stats?.sales.total || 0).toFixed(2)}
-          </p>
-          <p className="text-xs text-gray-500 mt-1">Total en EUR</p>
-        </div>
+        )}
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6">
