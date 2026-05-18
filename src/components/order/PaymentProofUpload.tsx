@@ -188,7 +188,7 @@ export function PaymentProofUpload({
           <div className="mt-4 pt-4 border-t-2 border-dark">
             <p className="font-bold text-xl">
               Monto a pagar:{" "}
-              <PriceDisplay priceEUR={total} className="inline" />
+              <PriceDisplay priceUSD={total} className="inline" />
             </p>
           </div>
         </div>

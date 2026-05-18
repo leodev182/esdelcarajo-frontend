@@ -151,7 +151,7 @@ export function CheckoutPage() {
                     </p>
                   </div>
                   <PriceDisplay
-                    priceEUR={Number(item.variant.price) * item.quantity}
+                    priceUSD={Number(item.variant.price) * item.quantity}
                     className="font-bold"
                   />
                 </div>
@@ -161,7 +161,7 @@ export function CheckoutPage() {
             <div className="border-t-2 border-dark pt-4 space-y-2">
               <div className="flex justify-between font-bold text-lg">
                 <span>Subtotal:</span>
-                <PriceDisplay priceEUR={cart.subtotal} />
+                <PriceDisplay priceUSD={cart.subtotal} />
               </div>
               <p className="text-sm text-muted-foreground">
                 El costo de envío se acuerda por WhatsApp

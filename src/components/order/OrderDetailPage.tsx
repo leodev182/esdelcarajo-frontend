@@ -161,7 +161,7 @@ export function OrderDetailPage({ orderId }: OrderDetailPageProps) {
                   </p>
                   <p className="text-sm text-muted-foreground">
                     <PriceDisplay
-                      priceEUR={Number(item.price)}
+                      priceUSD={Number(item.price)}
                       className="inline"
                     />{" "}
                     × {item.quantity}
@@ -169,7 +169,7 @@ export function OrderDetailPage({ orderId }: OrderDetailPageProps) {
                 </div>
                 <div className="text-right">
                   <PriceDisplay
-                    priceEUR={Number(item.subtotal)}
+                    priceUSD={Number(item.subtotal)}
                     className="font-bold"
                   />
                 </div>
@@ -180,7 +180,7 @@ export function OrderDetailPage({ orderId }: OrderDetailPageProps) {
           <div className="border-t-2 border-dark pt-4 mt-4">
             <div className="flex justify-between font-bold text-xl">
               <span>Total:</span>
-              <PriceDisplay priceEUR={Number(order.total)} />
+              <PriceDisplay priceUSD={Number(order.total)} />
             </div>
             <p className="text-sm text-muted-foreground mt-2">
               El costo de envío se acuerda por WhatsApp

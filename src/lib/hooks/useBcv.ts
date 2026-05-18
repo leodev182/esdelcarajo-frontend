@@ -22,15 +22,15 @@ export function useBcv() {
 }
 
 /**
- * Hook para convertir precio EUR a Bs (Bolívares)
+ * Hook para convertir precio USD a Bs (Bolívares)
  * Retorna la tasa y el precio formateado
  */
-export function usePriceConverter(priceEUR: number) {
+export function usePriceConverter(priceUSD: number) {
   const { rate } = useBcv();
 
   if (!rate) return null;
 
-  const priceInBs = priceEUR * rate;
+  const priceInBs = priceUSD * rate;
 
   return {
     priceInBs,

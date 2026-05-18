@@ -131,7 +131,7 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
 
                       <div className="flex items-center justify-between mt-2">
                         <PriceDisplay
-                          priceEUR={Number(item.variant.price) * item.quantity}
+                          priceUSD={Number(item.variant.price) * item.quantity}
                           className="font-bold text-primary"
                         />
 
@@ -190,7 +190,7 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
               <div className="w-full space-y-4">
                 <div className="flex items-center justify-between text-lg font-semibold">
                   <span>Subtotal:</span>
-                  <PriceDisplay priceEUR={subtotal} className="text-primary" />
+                  <PriceDisplay priceUSD={subtotal} className="text-primary" />
                 </div>
 
                 <p className="text-xs text-muted-foreground text-center">
