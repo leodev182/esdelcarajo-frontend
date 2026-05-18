@@ -9,7 +9,7 @@ export function Footer() {
       <div className="container mx-auto px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
-          <div className="space-y-4">
+          <div className="space-y-4 text-center md:text-left">
             <h3 className="text-lg font-bold text-primary">DEL CARAJO</h3>
             <p className="text-sm text-muted-foreground">Devotos del Arte</p>
             <p className="text-sm text-muted-foreground">
@@ -18,7 +18,7 @@ export function Footer() {
           </div>
 
           {/* Shop */}
-          <div className="space-y-4">
+          <div className="space-y-4 text-center md:text-left">
             <h4 className="text-sm font-semibold">Tienda</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
@@ -57,7 +57,7 @@ export function Footer() {
           </div>
 
           {/* Help */}
-          <div className="space-y-4">
+          <div className="space-y-4 text-center md:text-left">
             <h4 className="text-sm font-semibold">Ayuda</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
@@ -88,9 +88,9 @@ export function Footer() {
           </div>
 
           {/* Contact */}
-          <div className="space-y-4">
+          <div className="space-y-4 text-center md:text-left">
             <h4 className="text-sm font-semibold">Contacto</h4>
-            <div className="flex space-x-4">
+            <div className="flex justify-center md:justify-start space-x-4">
               <a
                 href="https://instagram.com/esdelcarajo"
                 target="_blank"
