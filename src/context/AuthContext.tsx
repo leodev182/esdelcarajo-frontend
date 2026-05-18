@@ -2,7 +2,6 @@
 
 import { createContext, useState, useEffect, ReactNode } from "react";
 import { User } from "@/src/lib/types";
-import { apiClient } from "@/src/lib/api/client";
 import { getProfile } from "@/src/lib/api/auth.api";
 import { AliasModal } from "@/src/components/auth/AliasModal";
 import { logger } from "@/src/lib/utils/logger";
@@ -13,7 +12,6 @@ interface AuthContextType {
   isLoading: boolean;
   login: () => void;
   logout: () => void;
-  setToken: (token: string) => void;
   refreshUser: () => Promise<void>;
 }
 
@@ -23,11 +21,8 @@ export const AuthContext = createContext<AuthContextType>({
   isLoading: true,
   login: () => {},
   logout: () => {},
-  setToken: () => {},
   refreshUser: async () => {},
 });
-
-const TOKEN_KEY = "access_token";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -42,14 +37,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const checkAuth = async () => {
     try {
-      const token = localStorage.getItem(TOKEN_KEY);
-
-      if (!token) {
-        logger.info("No hay token, usuario no autenticado");
-        setIsLoading(false);
-        return;
-      }
-
       logger.info("Verificando autenticación...");
       const userData = await getProfile();
       setUser(userData);
@@ -59,9 +46,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         logger.warn("Usuario sin nickname, mostrando modal");
         setShowAliasModal(true);
       }
-    } catch (error) {
-      logger.error("Error verificando autenticación:", error, { expected: true });
-      localStorage.removeItem(TOKEN_KEY);
+    } catch {
+      logger.info("No hay sesión activa");
+      setUser(null);
     } finally {
       setIsLoading(false);
     }
@@ -84,22 +71,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setShowAliasModal(false);
   };
 
-  const setToken = (token: string) => {
-    logger.info("Token guardado, verificando autenticación");
-    localStorage.setItem(TOKEN_KEY, token);
-    checkAuth();
-  };
-
   const login = () => {
     logger.info("Iniciando login con Google");
     window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
   };
 
-  const logout = () => {
+  const logout = async () => {
     logger.info("Usuario cerrando sesión");
-    localStorage.removeItem(TOKEN_KEY);
-    setUser(null);
-    window.location.href = "/";
+    try {
+      const { apiClient } = await import("@/src/lib/api/client");
+      await apiClient.post("/auth/logout");
+    } catch (error) {
+      logger.error("Error en logout del backend:", error);
+    } finally {
+      setUser(null);
+      window.location.href = "/";
+    }
   };
 
   return (
@@ -110,7 +97,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isLoading,
         login,
         logout,
-        setToken,
         refreshUser,
       }}
     >

@@ -12,36 +12,24 @@ export const apiClient = axios.create({
 
 let isRefreshing = false;
 let failedQueue: Array<{
-  resolve: (token: string) => void;
+  resolve: () => void;
   reject: (error: AxiosError) => void;
 }> = [];
 
-const processQueue = (
-  error: AxiosError | null,
-  token: string | null = null
-) => {
+const processQueue = (error: AxiosError | null) => {
   failedQueue.forEach((prom) => {
     if (error) {
       prom.reject(error);
-    } else if (token) {
-      prom.resolve(token);
+    } else {
+      prom.resolve();
     }
   });
-
   failedQueue = [];
 };
 
-// Interceptor para agregar el token JWT
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const token = localStorage.getItem("access_token");
-
-    if (token && config.headers) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-
     logger.info(`API Request: ${config.method?.toUpperCase()} ${config.url}`);
-
     return config;
   },
   (error: AxiosError) => {
@@ -50,13 +38,10 @@ apiClient.interceptors.request.use(
   }
 );
 
-// Interceptor para manejar errores y refresh automático
 apiClient.interceptors.response.use(
   (response) => {
     logger.info(
-      `API Response: ${response.config.method?.toUpperCase()} ${
-        response.config.url
-      } - ${response.status}`
+      `API Response: ${response.config.method?.toUpperCase()} ${response.config.url} - ${response.status}`
     );
     return response;
   },
@@ -65,7 +50,6 @@ apiClient.interceptors.response.use(
       _retry?: boolean;
     };
 
-    // Si es 401 y no es el endpoint de refresh
     if (
       error.response?.status === 401 &&
       originalRequest &&
@@ -75,36 +59,20 @@ apiClient.interceptors.response.use(
       logger.warn("Token expirado, intentando refresh...");
 
       if (isRefreshing) {
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         })
-          .then((token) => {
-            if (originalRequest.headers) {
-              originalRequest.headers.Authorization = `Bearer ${token}`;
-            }
-            return apiClient(originalRequest);
-          })
-          .catch((err) => {
-            return Promise.reject(err);
-          });
+          .then(() => apiClient(originalRequest))
+          .catch((err) => Promise.reject(err));
       }
 
       originalRequest._retry = true;
       isRefreshing = true;
 
       try {
-        const { data } = await apiClient.post("/auth/refresh");
-        const newToken = data.access_token;
-
-        localStorage.setItem("access_token", newToken);
+        await apiClient.post("/auth/refresh");
         logger.info("Token refrescado exitosamente");
-
-        processQueue(null, newToken);
-
-        if (originalRequest.headers) {
-          originalRequest.headers.Authorization = `Bearer ${newToken}`;
-        }
-
+        processQueue(null);
         return apiClient(originalRequest);
       } catch (refreshError) {
         logger.error(
@@ -112,10 +80,7 @@ apiClient.interceptors.response.use(
           refreshError,
           { expected: true }
         );
-
-        processQueue(refreshError as AxiosError, null);
-        localStorage.removeItem("access_token");
-        localStorage.removeItem("user");
+        processQueue(refreshError as AxiosError);
 
         if (
           typeof window !== "undefined" &&
