@@ -129,7 +129,7 @@ export default function MyOrdersPage() {
                         {order.items.length} producto(s)
                       </p>
                       <PriceDisplay
-                        priceEUR={Number(order.total)}
+                        priceUSD={Number(order.total)}
                         className="text-xl font-bold"
                       />
                     </div>
