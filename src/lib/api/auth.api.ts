@@ -29,15 +29,10 @@ export function initiateGoogleLogin(): void {
  */
 export async function logout(): Promise<void> {
   try {
-    // Llamar al backend para revocar el refresh token (cookie)
     await apiClient.post("/auth/logout");
   } catch (error) {
-    // Ignorar errores del logout del backend
     logger.error("Error en logout del backend:", error);
   } finally {
-    // Siempre limpiar el cliente
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("user");
     window.location.href = "/";
   }
 }
