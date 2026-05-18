@@ -78,7 +78,7 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
 
   const currentImage = images[selectedImageIndex];
 
-  const sizeOrder = { S: 1, M: 2, L: 3, XL: 4 };
+  const sizeOrder = { S: 1, M: 2, L: 3, XL: 4, XXL: 5, XXXL: 6 };
   const availableSizes = [...new Set(product.variants.map((v) => v.size))].sort(
     (a, b) =>
       sizeOrder[a as keyof typeof sizeOrder] -

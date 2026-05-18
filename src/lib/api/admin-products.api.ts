@@ -25,7 +25,7 @@ export interface UpdateProductPayload {
 export interface CreateVariantPayload {
   productId: string;
   sku: string;
-  size: "S" | "M" | "L" | "XL";
+  size: "S" | "M" | "L" | "XL" | "XXL" | "XXXL";
   color: string;
   gender: "MEN" | "WOMEN" | "KIDS";
   price: number;
@@ -36,7 +36,7 @@ export interface CreateVariantPayload {
 
 export interface UpdateVariantPayload {
   sku?: string;
-  size?: "S" | "M" | "L" | "XL";
+  size?: "S" | "M" | "L" | "XL" | "XXL" | "XXXL";
   color?: string;
   gender?: "MEN" | "WOMEN" | "KIDS";
   price?: number;

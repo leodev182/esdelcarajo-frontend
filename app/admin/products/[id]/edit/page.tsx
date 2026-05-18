@@ -53,7 +53,7 @@ export default function EditProductPage() {
   const [isCreatingVariant, setIsCreatingVariant] = useState(false);
   const [variantForm, setVariantForm] = useState({
     sku: "",
-    size: "M" as "S" | "M" | "L" | "XL",
+    size: "M" as "S" | "M" | "L" | "XL" | "XXL" | "XXXL",
     color: "",
     gender: "MEN" as "MEN" | "WOMEN" | "KIDS",
     price: 0,
@@ -208,7 +208,7 @@ export default function EditProductPage() {
     setEditingVariant(variant);
     setVariantForm({
       sku: variant.sku,
-      size: variant.size as "S" | "M" | "L" | "XL",
+      size: variant.size as "S" | "M" | "L" | "XL" | "XXL" | "XXXL",
       color: variant.color,
       gender: variant.gender as "MEN" | "WOMEN" | "KIDS",
       price: Number(variant.price),
@@ -613,7 +613,7 @@ export default function EditProductPage() {
                     onChange={(e) =>
                       setVariantForm({
                         ...variantForm,
-                        size: e.target.value as "S" | "M" | "L" | "XL",
+                        size: e.target.value as "S" | "M" | "L" | "XL" | "XXL" | "XXXL",
                       })
                     }
                     className="w-full px-3 py-2 border-2 border-dark rounded-lg"
@@ -622,6 +622,8 @@ export default function EditProductPage() {
                     <option value="M">M</option>
                     <option value="L">L</option>
                     <option value="XL">XL</option>
+                    <option value="XXL">2XL</option>
+                    <option value="XXXL">3XL</option>
                   </select>
                 </div>
 
