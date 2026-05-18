@@ -3,12 +3,12 @@
 import { usePriceConverter } from "@/src/lib/hooks/useBcv";
 
 interface PriceDisplayProps {
-  priceEUR: number;
+  priceUSD: number;
   className?: string;
 }
 
-export function PriceDisplay({ priceEUR, className = "" }: PriceDisplayProps) {
-  const priceData = usePriceConverter(priceEUR);
+export function PriceDisplay({ priceUSD, className = "" }: PriceDisplayProps) {
+  const priceData = usePriceConverter(priceUSD);
 
   // Mientras carga la tasa
   if (!priceData) {

@@ -97,7 +97,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
         <div className="flex items-center justify-between">
           <PriceDisplay
-            priceEUR={minPrice}
+            priceUSD={minPrice}
             className="text-lg text-[#FF6501] font-bold"
           />
           {hasStock && (

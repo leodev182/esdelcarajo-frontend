@@ -225,7 +225,7 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
             <h1 className="text-3xl font-bold">{product.name}</h1>
           </div>
 
-          <PriceDisplay priceEUR={price} className="text-3xl font-bold" />
+          <PriceDisplay priceUSD={price} className="text-3xl font-bold" />
 
           {/* ✅ DESCRIPCIÓN CORTA DE VARIANTE O DESCRIPCIÓN GENERAL */}
           <div className="text-muted-foreground">
