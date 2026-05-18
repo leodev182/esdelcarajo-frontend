@@ -139,7 +139,7 @@ export default function AdminOrderDetailPage() {
                     </p>
                   </div>
                   <PriceDisplay
-                    priceEUR={Number(item.subtotal)}
+                    priceUSD={Number(item.subtotal)}
                     className="font-bold"
                   />
                 </div>
@@ -148,7 +148,7 @@ export default function AdminOrderDetailPage() {
             <div className="border-t-2 border-dark mt-4 pt-4">
               <div className="flex justify-between text-xl font-bold">
                 <span>Total:</span>
-                <PriceDisplay priceEUR={Number(order.total)} />
+                <PriceDisplay priceUSD={Number(order.total)} />
               </div>
             </div>
           </div>
