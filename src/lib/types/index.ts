@@ -9,7 +9,8 @@ export type OrderStatus =
   | "PAGO_CONFIRMADO"
   | "EN_CAMINO"
   | "ENTREGADO"
-  | "CANCELADO";
+  | "CANCELADO"
+  | "ANULADA";
 
 export type PaymentMethod =
   | "TRANSFERENCIA"

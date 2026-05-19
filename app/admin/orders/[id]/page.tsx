@@ -21,6 +21,7 @@ const STATUS_COLORS: Record<OrderStatus, string> = {
   EN_CAMINO: "bg-purple-100 text-purple-800",
   ENTREGADO: "bg-green-100 text-green-800",
   CANCELADO: "bg-red-100 text-red-800",
+  ANULADA: "bg-gray-200 text-gray-600 line-through",
 };
 
 const STATUS_LABELS: Record<OrderStatus, string> = {
@@ -29,6 +30,7 @@ const STATUS_LABELS: Record<OrderStatus, string> = {
   EN_CAMINO: "En Camino",
   ENTREGADO: "Entregado",
   CANCELADO: "Cancelado",
+  ANULADA: "Anulada",
 };
 
 const STATUS_FLOW: OrderStatus[] = [
@@ -52,6 +54,13 @@ const CANCEL_WARNINGS: Partial<Record<OrderStatus, string>> = {
   ENTREGADO: "El pedido ya fue entregado. Cancelar no revertirá la entrega.",
 };
 
+const VOID_WARNINGS: Partial<Record<OrderStatus, string>> = {
+  PENDING_PAYMENT: "Se anulará la orden y se restaurará el stock.",
+  PAGO_CONFIRMADO: "El pago ya fue confirmado. Al anular, el stock se restaura y el monto se excluye de las ganancias.",
+  EN_CAMINO: "El pedido ya está en camino. Al anular, el stock se restaura y el monto se excluye de las ganancias. Coordina con el cliente.",
+  ENTREGADO: "El pedido ya fue entregado. Al anular, el monto se excluye de las ganancias pero el stock NO se restaura.",
+};
+
 export default function AdminOrderDetailPage() {
   const params = useParams();
   const router = useRouter();
@@ -65,6 +74,7 @@ export default function AdminOrderDetailPage() {
   const [selectedStatus, setSelectedStatus] = useState<OrderStatus | null>(null);
   const [editingItem, setEditingItem] = useState<(OrderItem & { variant?: ProductVariant & { productId: string } }) | null>(null);
   const [confirmingCancel, setConfirmingCancel] = useState(false);
+  const [confirmingVoid, setConfirmingVoid] = useState(false);
 
   const isSuperAdmin = user?.role === "SUPER_ADMIN";
 
@@ -105,10 +115,18 @@ export default function AdminOrderDetailPage() {
   const handleCancelClick = () => {
     setSelectedStatus("CANCELADO");
     setConfirmingCancel(true);
+    setConfirmingVoid(false);
+  };
+
+  const handleVoidClick = () => {
+    setConfirmingVoid(true);
+    setConfirmingCancel(false);
+    setSelectedStatus(null);
   };
 
   const currentStatusIndex = STATUS_FLOW.indexOf(order.status);
   const cancelWarning = CANCEL_WARNINGS[order.status];
+  const voidWarning = VOID_WARNINGS[order.status];
 
   return (
     <div>
@@ -242,7 +260,8 @@ export default function AdminOrderDetailPage() {
           </div>
 
           {order.status !== ("ENTREGADO" as OrderStatus) &&
-            order.status !== ("CANCELADO" as OrderStatus) && (
+            order.status !== ("CANCELADO" as OrderStatus) &&
+            order.status !== ("ANULADA" as OrderStatus) && (
               <div className="bg-white rounded-lg border-2 border-dark p-6">
                 <h2 className="text-xl font-bold mb-4">Cambiar Estado</h2>
 
@@ -329,6 +348,54 @@ export default function AdminOrderDetailPage() {
                 )}
               </div>
             )}
+
+          {isSuperAdmin && order.status !== ("ANULADA" as OrderStatus) && (
+            <div className="bg-white rounded-lg border-2 border-dark p-6">
+              <h2 className="text-xl font-bold mb-2 text-gray-700">Anular Orden</h2>
+              <p className="text-xs text-gray-500 mb-3">Solo SUPER_ADMIN. La orden queda visible como anulada.</p>
+
+              {!confirmingVoid ? (
+                <Button
+                  variant="outline"
+                  className="w-full text-gray-600 border-gray-400 hover:border-gray-600"
+                  onClick={handleVoidClick}
+                >
+                  Anular Orden
+                </Button>
+              ) : (
+                <div className="space-y-3">
+                  {voidWarning && (
+                    <div className="flex gap-2 p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                      <AlertTriangle className="h-4 w-4 text-orange-600 shrink-0 mt-0.5" />
+                      <p className="text-sm text-orange-800">{voidWarning}</p>
+                    </div>
+                  )}
+                  <Textarea
+                    placeholder="Motivo de anulación (opcional)"
+                    value={adminNotes}
+                    onChange={(e) => setAdminNotes(e.target.value)}
+                    rows={3}
+                  />
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      className="flex-1"
+                      onClick={() => setConfirmingVoid(false)}
+                    >
+                      Atrás
+                    </Button>
+                    <Button
+                      className="flex-1 bg-gray-700 hover:bg-gray-800 text-white"
+                      onClick={() => handleUpdateStatus("ANULADA")}
+                      disabled={updateStatus.isPending}
+                    >
+                      {updateStatus.isPending ? "Anulando..." : "Confirmar Anulación"}
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
 
           <div className="bg-white rounded-lg border-2 border-dark p-6">
             <h2 className="text-xl font-bold mb-4">Historial</h2>
