@@ -80,6 +80,15 @@ export async function deleteProduct(productId: string): Promise<void> {
 
 // ==================== VARIANTES ====================
 
+export async function getProductVariants(
+  productId: string
+): Promise<ProductVariant[]> {
+  const { data } = await apiClient.get<ProductVariant[]>(
+    `/products/${productId}/variants`
+  );
+  return data;
+}
+
 export async function createVariant(
   payload: CreateVariantPayload
 ): Promise<ProductVariant> {

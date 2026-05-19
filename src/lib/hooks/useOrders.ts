@@ -5,6 +5,7 @@ import {
   getOrderById,
   getAllOrders,
   updateOrderStatus,
+  updateOrderItem,
   CreateOrderPayload,
   OrderFilters,
   UpdateOrderStatusPayload,
@@ -94,6 +95,30 @@ export function useUpdateOrderStatus() {
     },
     onError: (error) => {
       logger.error("Error actualizando estado de orden:", error);
+    },
+  });
+}
+
+export function useUpdateOrderItem() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      orderId,
+      itemId,
+      variantId,
+    }: {
+      orderId: string;
+      itemId: string;
+      variantId: string;
+    }) => updateOrderItem(orderId, itemId, variantId),
+    onSuccess: (_, variables) => {
+      logger.info(`Item de orden actualizado - Orden: ${variables.orderId}`);
+      queryClient.invalidateQueries({ queryKey: ["order", variables.orderId] });
+      queryClient.invalidateQueries({ queryKey: ["admin", "orders"] });
+    },
+    onError: (error) => {
+      logger.error("Error actualizando item de orden:", error);
     },
   });
 }
