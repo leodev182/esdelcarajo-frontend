@@ -25,6 +25,7 @@ const STATUS_COLORS: Record<OrderStatus, string> = {
   EN_CAMINO: "bg-purple-100 text-purple-800",
   ENTREGADO: "bg-green-100 text-green-800",
   CANCELADO: "bg-red-100 text-red-800",
+  ANULADA: "bg-gray-200 text-gray-600",
 };
 
 const STATUS_LABELS: Record<OrderStatus, string> = {
@@ -33,6 +34,7 @@ const STATUS_LABELS: Record<OrderStatus, string> = {
   EN_CAMINO: "En Camino",
   ENTREGADO: "Entregado",
   CANCELADO: "Cancelado",
+  ANULADA: "Anulada",
 };
 
 export default function MyOrdersPage() {
