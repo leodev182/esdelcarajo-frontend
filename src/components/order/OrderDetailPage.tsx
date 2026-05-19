@@ -6,12 +6,13 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Package, MapPin, CreditCard, FileText } from "lucide-react";
 import { PaymentProofUpload } from "./PaymentProofUpload";
 import { PriceDisplay } from "../product/PriceDisplay";
+import type { OrderStatus } from "@/src/lib/types";
 
 interface OrderDetailPageProps {
   orderId: string;
 }
 
-const ORDER_STATUS_LABELS = {
+const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
   PENDING_PAYMENT: "Pendiente de Pago",
   PAGO_CONFIRMADO: "Pago Confirmado",
   EN_CAMINO: "En Camino",
