@@ -912,6 +912,7 @@ export default function EditProductPage() {
                         sku: "",
                         size: "M",
                         color: "",
+                        shirtColor: "",
                         gender: "MEN",
                         price: 0,
                         stock: 0,
