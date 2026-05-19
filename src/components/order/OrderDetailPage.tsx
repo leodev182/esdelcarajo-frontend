@@ -17,6 +17,7 @@ const ORDER_STATUS_LABELS = {
   EN_CAMINO: "En Camino",
   ENTREGADO: "Entregado",
   CANCELADO: "Cancelado",
+  ANULADA: "Anulada",
 };
 
 const PAYMENT_METHOD_LABELS = {
