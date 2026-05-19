@@ -79,3 +79,15 @@ export async function updateOrderStatus(
   );
   return data;
 }
+
+export async function updateOrderItem(
+  orderId: string,
+  itemId: string,
+  variantId: string
+): Promise<Order> {
+  const { data } = await apiClient.patch<Order>(
+    `/orders/${orderId}/items/${itemId}`,
+    { variantId }
+  );
+  return data;
+}
