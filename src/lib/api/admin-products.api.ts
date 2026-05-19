@@ -27,6 +27,8 @@ export interface CreateVariantPayload {
   sku: string;
   size: "S" | "M" | "L" | "XL" | "XXL" | "XXXL";
   color: string;
+  colorHex?: string;
+  shirtColor?: string;
   gender: "MEN" | "WOMEN" | "KIDS";
   price: number;
   stock: number;
@@ -38,6 +40,8 @@ export interface UpdateVariantPayload {
   sku?: string;
   size?: "S" | "M" | "L" | "XL" | "XXL" | "XXXL";
   color?: string;
+  colorHex?: string;
+  shirtColor?: string;
   gender?: "MEN" | "WOMEN" | "KIDS";
   price?: number;
   stock?: number;

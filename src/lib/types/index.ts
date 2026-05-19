@@ -128,6 +128,8 @@ export interface ProductVariant {
   sku: string;
   size: string;
   color: string;
+  colorHex?: string;
+  shirtColor?: string;
   gender: Gender;
   price: number;
   stock: number;
