@@ -8,6 +8,7 @@ import {
   deleteVariant,
   addProductImage,
   deleteProductImage,
+  updateImageVariants,
   CreateProductPayload,
   UpdateProductPayload,
   CreateVariantPayload,
@@ -135,5 +136,22 @@ export function useDeleteProductImage() {
 export function useUploadProductImage() {
   return useMutation({
     mutationFn: (file: File) => uploadProductImage(file),
+  });
+}
+
+export function useUpdateImageVariants(productId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      imageId,
+      variantIds,
+    }: {
+      imageId: string;
+      variantIds: string[];
+    }) => updateImageVariants(imageId, variantIds),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["product", productId] });
+    },
   });
 }

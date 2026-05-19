@@ -13,6 +13,7 @@ import {
   useDeleteVariant,
   useAddProductImage,
   useDeleteProductImage,
+  useUpdateImageVariants,
 } from "@/src/lib/hooks/useAdminProducts";
 import { ArrowLeft, Plus, Edit, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -37,6 +38,11 @@ export default function EditProductPage() {
   const deleteVariant = useDeleteVariant();
   const addImage = useAddProductImage();
   const deleteImage = useDeleteProductImage();
+  const updateVariants = useUpdateImageVariants(productId);
+
+  const [selectedVariantIds, setSelectedVariantIds] = useState<string[]>([]);
+  const [editingImageId, setEditingImageId] = useState<string | null>(null);
+  const [editingVariantIds, setEditingVariantIds] = useState<string[]>([]);
 
   const [productForm, setProductForm] = useState({
     name: "",
@@ -452,35 +458,43 @@ export default function EditProductPage() {
               <div className="mb-6 space-y-4">
                 <div>
                   <label className="block text-sm font-bold mb-2 pb-2 border-b">
-                    Asociar imagen a variantes:
+                    1. Elige las variantes para esta imagen
                   </label>
-                  <p className="text-xs text-gray-500 mb-3">
-                    Selecciona todas las variantes que compartan esta imagen
-                    (ej: todas las tallas del mismo color)
-                  </p>
-
-                  <div className="space-y-2 max-h-60 overflow-y-auto border rounded-lg p-3">
-                    {product.variants.map((v) => (
-                      <label
-                        key={v.id}
-                        className="flex items-center gap-2 p-2 hover:bg-gray-50 rounded cursor-pointer"
-                      >
-                        <input
-                          type="checkbox"
-                          value={v.id}
-                          className="variant-checkbox w-4 h-4"
-                        />
-                        <span className="text-sm">
-                          {v.sku} ({v.size} - {v.color} - {v.gender})
-                        </span>
-                      </label>
-                    ))}
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {product.variants.map((v) => {
+                      const selected = selectedVariantIds.includes(v.id);
+                      return (
+                        <button
+                          key={v.id}
+                          type="button"
+                          onClick={() =>
+                            setSelectedVariantIds((prev) =>
+                              selected
+                                ? prev.filter((id) => id !== v.id)
+                                : [...prev, v.id]
+                            )
+                          }
+                          className={`px-3 py-1.5 rounded-full text-xs font-medium border-2 transition-colors ${
+                            selected
+                              ? "border-primary bg-primary text-white"
+                              : "border-gray-300 text-gray-600 hover:border-primary"
+                          }`}
+                        >
+                          {v.size} · {v.color}
+                        </button>
+                      );
+                    })}
                   </div>
+                  {selectedVariantIds.length > 0 && (
+                    <p className="text-xs text-primary mt-2 font-medium">
+                      {selectedVariantIds.length} variante(s) seleccionada(s)
+                    </p>
+                  )}
                 </div>
 
                 <div>
                   <label className="block text-sm font-bold mb-2">
-                    Subir nueva imagen
+                    2. Sube la imagen
                   </label>
                   <Input
                     type="file"
@@ -489,21 +503,14 @@ export default function EditProductPage() {
                       const file = e.target.files?.[0];
                       if (!file) return;
 
-                      const checkboxes = document.querySelectorAll(
-                        ".variant-checkbox:checked"
-                      ) as NodeListOf<HTMLInputElement>;
-                      const selectedVariantIds = Array.from(checkboxes).map(
-                        (cb) => cb.value
-                      );
-
                       if (selectedVariantIds.length === 0) {
-                        toast.error("Selecciona al menos una variante");
+                        toast.error("Selecciona al menos una variante primero");
+                        e.target.value = "";
                         return;
                       }
 
                       try {
                         const uploadResponse = await uploadProductImage(file);
-
                         await addImage.mutateAsync({
                           productId,
                           variantIds: selectedVariantIds,
@@ -512,20 +519,18 @@ export default function EditProductPage() {
                           alt: product.name,
                           order: product.images.length + 1,
                         });
-
                         toast.success(
                           `Imagen asociada a ${selectedVariantIds.length} variante(s)`
                         );
                         e.target.value = "";
-
-                        checkboxes.forEach((cb) => (cb.checked = false));
+                        setSelectedVariantIds([]);
                       } catch {
                         toast.error("Error al subir imagen");
                       }
                     }}
                   />
                   <p className="text-xs text-gray-500 mt-1">
-                    Formatos: JPG, PNG, WEBP · Máximo 5MB
+                    JPG, PNG, WEBP · Máximo 5MB
                   </p>
                 </div>
               </div>
@@ -541,38 +546,126 @@ export default function EditProductPage() {
                       )
                       .filter(Boolean) || [];
 
+                  const isEditing = editingImageId === image.id;
+
                   return (
-                    <div key={image.id} className="relative group">
-                      <img
-                        src={image.url}
-                        alt={product.name}
-                        className="w-full h-32 object-cover rounded border"
-                      />
-                      {associatedVariants.length > 0 && (
-                        <div className="absolute bottom-0 left-0 right-0 bg-black/80 text-white text-xs p-1">
-                          <p className="font-bold text-center">
-                            {associatedVariants.length} variante(s)
-                          </p>
-                          <p className="text-center truncate">
-                            {associatedVariants.map((v) => v?.sku).join(", ")}
-                          </p>
+                    <div key={image.id}>
+                      <div className="relative group">
+                        <img
+                          src={image.url}
+                          alt={product.name}
+                          className="w-full h-32 object-cover rounded border"
+                        />
+                        <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button
+                            onClick={() => {
+                              if (isEditing) {
+                                setEditingImageId(null);
+                              } else {
+                                setEditingImageId(image.id);
+                                setEditingVariantIds(
+                                  associatedVariants.map((v) => v!.id)
+                                );
+                              }
+                            }}
+                            className="p-1 bg-white rounded border hover:bg-gray-50"
+                            title="Editar variantes"
+                          >
+                            <Edit className="h-3 w-3 text-gray-600" />
+                          </button>
+                          <button
+                            onClick={async () => {
+                              try {
+                                await deleteImage.mutateAsync(image.id);
+                                toast.success("Imagen eliminada");
+                              } catch {
+                                toast.error("Error al eliminar imagen");
+                              }
+                            }}
+                            className="p-1 bg-white rounded border hover:bg-gray-50"
+                            title="Eliminar imagen"
+                          >
+                            <Trash2 className="h-3 w-3 text-red-600" />
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="mt-2 flex flex-wrap gap-1">
+                        {associatedVariants.length > 0 ? (
+                          associatedVariants.map((v) => (
+                            <span
+                              key={v!.id}
+                              className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full text-xs"
+                            >
+                              {v!.size} · {v!.color}
+                            </span>
+                          ))
+                        ) : (
+                          <span className="text-xs text-gray-400">
+                            Sin variantes
+                          </span>
+                        )}
+                      </div>
+
+                      {isEditing && (
+                        <div className="mt-2 p-3 border-2 border-primary rounded-lg space-y-2">
+                          <p className="text-xs font-bold">Editar variantes:</p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {product.variants.map((v) => {
+                              const sel = editingVariantIds.includes(v.id);
+                              return (
+                                <button
+                                  key={v.id}
+                                  type="button"
+                                  onClick={() =>
+                                    setEditingVariantIds((prev) =>
+                                      sel
+                                        ? prev.filter((id) => id !== v.id)
+                                        : [...prev, v.id]
+                                    )
+                                  }
+                                  className={`px-2 py-1 rounded-full text-xs border-2 transition-colors ${
+                                    sel
+                                      ? "border-primary bg-primary text-white"
+                                      : "border-gray-300 text-gray-600 hover:border-primary"
+                                  }`}
+                                >
+                                  {v.size} · {v.color}
+                                </button>
+                              );
+                            })}
+                          </div>
+                          <div className="flex gap-2 pt-1">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="flex-1 text-xs h-7"
+                              onClick={() => setEditingImageId(null)}
+                            >
+                              Cancelar
+                            </Button>
+                            <Button
+                              size="sm"
+                              className="flex-1 text-xs h-7"
+                              disabled={updateVariants.isPending}
+                              onClick={async () => {
+                                try {
+                                  await updateVariants.mutateAsync({
+                                    imageId: image.id,
+                                    variantIds: editingVariantIds,
+                                  });
+                                  toast.success("Variantes actualizadas");
+                                  setEditingImageId(null);
+                                } catch {
+                                  toast.error("Error al actualizar variantes");
+                                }
+                              }}
+                            >
+                              Guardar
+                            </Button>
+                          </div>
                         </div>
                       )}
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={async () => {
-                          try {
-                            await deleteImage.mutateAsync(image.id);
-                            toast.success("Imagen eliminada");
-                          } catch {
-                            toast.error("Error al eliminar imagen");
-                          }
-                        }}
-                        className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-white"
-                      >
-                        <Trash2 className="h-3 w-3 text-red-600" />
-                      </Button>
                     </div>
                   );
                 })}
