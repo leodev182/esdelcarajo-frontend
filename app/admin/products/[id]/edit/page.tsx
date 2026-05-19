@@ -61,12 +61,15 @@ export default function EditProductPage() {
     sku: "",
     size: "M" as "S" | "M" | "L" | "XL" | "XXL" | "XXXL",
     color: "",
+    shirtColor: "",
     gender: "MEN" as "MEN" | "WOMEN" | "KIDS",
     price: 0,
     stock: 0,
     shortDescription: "",
     features: "",
   });
+
+  const [assigningImageToVariant, setAssigningImageToVariant] = useState<string | null>(null);
 
   useEffect(() => {
     if (product) {
@@ -142,6 +145,7 @@ export default function EditProductPage() {
         sku: variantForm.sku,
         size: variantForm.size,
         color: variantForm.color,
+        shirtColor: variantForm.shirtColor || undefined,
         gender: variantForm.gender,
         price: variantForm.price,
         stock: variantForm.stock,
@@ -154,6 +158,7 @@ export default function EditProductPage() {
         sku: "",
         size: "M",
         color: "",
+        shirtColor: "",
         gender: "MEN",
         price: 0,
         stock: 0,
@@ -175,6 +180,7 @@ export default function EditProductPage() {
           sku: variantForm.sku,
           size: variantForm.size,
           color: variantForm.color,
+          shirtColor: variantForm.shirtColor || undefined,
           gender: variantForm.gender,
           price: variantForm.price,
           stock: variantForm.stock,
@@ -188,6 +194,7 @@ export default function EditProductPage() {
         sku: "",
         size: "M",
         color: "",
+        shirtColor: "",
         gender: "MEN",
         price: 0,
         stock: 0,
@@ -216,6 +223,7 @@ export default function EditProductPage() {
       sku: variant.sku,
       size: variant.size as "S" | "M" | "L" | "XL" | "XXL" | "XXXL",
       color: variant.color,
+      shirtColor: variant.shirtColor || "",
       gender: variant.gender as "MEN" | "WOMEN" | "KIDS",
       price: Number(variant.price),
       stock: variant.stock,
@@ -406,45 +414,135 @@ export default function EditProductPage() {
               </p>
             ) : (
               <div className="space-y-2">
-                {product.variants.map((variant) => (
-                  <div
-                    key={variant.id}
-                    className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50"
-                  >
-                    <div>
-                      <p className="font-bold">{variant.sku}</p>
-                      <p className="text-sm text-gray-600">
-                        {variant.size} · {variant.color} · {variant.gender}
-                      </p>
-                      <p className="text-sm">
-                        <span className="font-bold">Precio:</span> ${" "}
-                        {Number(variant.price).toFixed(2)} ·{" "}
-                        <span className="font-bold">Stock:</span>{" "}
-                        {variant.stock}
-                      </p>
+                {product.variants.map((variant) => {
+                  const variantImages = product.images.filter((img) =>
+                    img.variants?.some((iv) => iv.variantId === variant.id)
+                  );
+                  const isAssigning = assigningImageToVariant === variant.id;
+
+                  return (
+                  <div key={variant.id} className="border rounded-lg hover:bg-gray-50">
+                    <div className="flex items-center justify-between p-4">
+                      <div className="flex items-center gap-3">
+                        {variantImages[0] ? (
+                          <img
+                            src={variantImages[0].url}
+                            alt={variant.sku}
+                            className="w-12 h-12 object-cover rounded border shrink-0"
+                          />
+                        ) : (
+                          <div
+                            className="w-12 h-12 rounded border border-dashed border-gray-300 flex items-center justify-center shrink-0 cursor-pointer hover:border-primary"
+                            onClick={() => setAssigningImageToVariant(isAssigning ? null : variant.id)}
+                            title="Asignar imagen"
+                          >
+                            <Plus className="h-4 w-4 text-gray-400" />
+                          </div>
+                        )}
+                        <div>
+                          <p className="font-bold">{variant.sku}</p>
+                          <p className="text-sm text-gray-600">
+                            {variant.size} · {variant.color} · {variant.gender}
+                          </p>
+                          <p className="text-sm">
+                            <span className="font-bold">Precio:</span> ${" "}
+                            {Number(variant.price).toFixed(2)} ·{" "}
+                            <span className="font-bold">Stock:</span>{" "}
+                            {variant.stock}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setAssigningImageToVariant(isAssigning ? null : variant.id)}
+                          title="Asignar imagen"
+                        >
+                          <Edit className="h-3 w-3 mr-1" />
+                          <span className="text-xs">Imagen</span>
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => startEditVariant(variant)}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleDeleteVariant(variant.id, variant.sku)}
+                          disabled={deleteVariant.isPending}
+                          className="text-red-600 hover:text-red-700"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => startEditVariant(variant)}
-                      >
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() =>
-                          handleDeleteVariant(variant.id, variant.sku)
-                        }
-                        disabled={deleteVariant.isPending}
-                        className="text-red-600 hover:text-red-700"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
+
+                    {isAssigning && product.images.length > 0 && (
+                      <div className="px-4 pb-4">
+                        <p className="text-xs font-bold mb-2 text-gray-600">
+                          Elige una imagen para esta variante:
+                        </p>
+                        <div className="flex gap-2 flex-wrap">
+                          {product.images.map((img) => {
+                            const linked = img.variants?.some(
+                              (iv) => iv.variantId === variant.id
+                            );
+                            return (
+                              <button
+                                key={img.id}
+                                type="button"
+                                onClick={async () => {
+                                  const currentIds =
+                                    img.variants?.map((iv) => iv.variantId) ?? [];
+                                  const newIds = linked
+                                    ? currentIds.filter((id) => id !== variant.id)
+                                    : [...currentIds, variant.id];
+                                  try {
+                                    await updateVariants.mutateAsync({
+                                      imageId: img.id,
+                                      variantIds: newIds,
+                                    });
+                                    toast.success(
+                                      linked ? "Imagen desvinculada" : "Imagen asignada"
+                                    );
+                                  } catch {
+                                    toast.error("Error al actualizar imagen");
+                                  }
+                                }}
+                                className={`relative rounded border-2 overflow-hidden transition-all ${
+                                  linked
+                                    ? "border-primary"
+                                    : "border-gray-200 hover:border-primary/50"
+                                }`}
+                              >
+                                <img
+                                  src={img.url}
+                                  alt=""
+                                  className="w-16 h-16 object-cover"
+                                />
+                                {linked && (
+                                  <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
+                                    <div className="w-4 h-4 rounded-full bg-primary" />
+                                  </div>
+                                )}
+                              </button>
+                            );
+                          })}
+                        </div>
+                        {product.images.length === 0 && (
+                          <p className="text-xs text-gray-400">
+                            Sube imágenes primero
+                          </p>
+                        )}
+                      </div>
+                    )}
                   </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
@@ -455,84 +553,35 @@ export default function EditProductPage() {
             </h2>
 
             {product.images.length < 5 && (
-              <div className="mb-6 space-y-4">
-                <div>
-                  <label className="block text-sm font-bold mb-2 pb-2 border-b">
-                    1. Elige las variantes para esta imagen
-                  </label>
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {product.variants.map((v) => {
-                      const selected = selectedVariantIds.includes(v.id);
-                      return (
-                        <button
-                          key={v.id}
-                          type="button"
-                          onClick={() =>
-                            setSelectedVariantIds((prev) =>
-                              selected
-                                ? prev.filter((id) => id !== v.id)
-                                : [...prev, v.id]
-                            )
-                          }
-                          className={`px-3 py-1.5 rounded-full text-xs font-medium border-2 transition-colors ${
-                            selected
-                              ? "border-primary bg-primary text-white"
-                              : "border-gray-300 text-gray-600 hover:border-primary"
-                          }`}
-                        >
-                          {v.size} · {v.color}
-                        </button>
-                      );
-                    })}
-                  </div>
-                  {selectedVariantIds.length > 0 && (
-                    <p className="text-xs text-primary mt-2 font-medium">
-                      {selectedVariantIds.length} variante(s) seleccionada(s)
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-bold mb-2">
-                    2. Sube la imagen
-                  </label>
-                  <Input
-                    type="file"
-                    accept="image/*"
-                    onChange={async (e) => {
-                      const file = e.target.files?.[0];
-                      if (!file) return;
-
-                      if (selectedVariantIds.length === 0) {
-                        toast.error("Selecciona al menos una variante primero");
-                        e.target.value = "";
-                        return;
-                      }
-
-                      try {
-                        const uploadResponse = await uploadProductImage(file);
-                        await addImage.mutateAsync({
-                          productId,
-                          variantIds: selectedVariantIds,
-                          url: uploadResponse.url,
-                          publicId: uploadResponse.publicId,
-                          alt: product.name,
-                          order: product.images.length + 1,
-                        });
-                        toast.success(
-                          `Imagen asociada a ${selectedVariantIds.length} variante(s)`
-                        );
-                        e.target.value = "";
-                        setSelectedVariantIds([]);
-                      } catch {
-                        toast.error("Error al subir imagen");
-                      }
-                    }}
-                  />
-                  <p className="text-xs text-gray-500 mt-1">
-                    JPG, PNG, WEBP · Máximo 5MB
-                  </p>
-                </div>
+              <div className="mb-6">
+                <label className="block text-sm font-bold mb-2">
+                  Subir imagen a la galería
+                </label>
+                <Input
+                  type="file"
+                  accept="image/*"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    try {
+                      const uploadResponse = await uploadProductImage(file);
+                      await addImage.mutateAsync({
+                        productId,
+                        url: uploadResponse.url,
+                        publicId: uploadResponse.publicId,
+                        alt: product.name,
+                        order: product.images.length + 1,
+                      });
+                      toast.success("Imagen subida. Asígnala a las variantes desde la lista.");
+                      e.target.value = "";
+                    } catch {
+                      toast.error("Error al subir imagen");
+                    }
+                  }}
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  JPG, PNG, WEBP · Máximo 5MB · Asigna la imagen a las variantes desde la lista de arriba
+                </p>
               </div>
             )}
 
@@ -722,17 +771,28 @@ export default function EditProductPage() {
 
                 <div>
                   <label className="block text-sm font-bold mb-2">
-                    Color *
+                    Color de Estampado *
                   </label>
                   <Input
                     value={variantForm.color}
                     onChange={(e) =>
-                      setVariantForm({
-                        ...variantForm,
-                        color: e.target.value,
-                      })
+                      setVariantForm({ ...variantForm, color: e.target.value })
                     }
-                    placeholder="Ej: Negro"
+                    placeholder="Ej: Rojo"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-bold mb-2">
+                    Color de Franela
+                    <span className="text-xs font-normal text-gray-500 ml-1">(opcional)</span>
+                  </label>
+                  <Input
+                    value={variantForm.shirtColor}
+                    onChange={(e) =>
+                      setVariantForm({ ...variantForm, shirtColor: e.target.value })
+                    }
+                    placeholder="Ej: Negra"
                   />
                 </div>
 
