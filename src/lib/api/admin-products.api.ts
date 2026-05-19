@@ -130,6 +130,17 @@ export async function deleteProductImage(imageId: string): Promise<void> {
   await apiClient.delete(`/products/images/${imageId}`);
 }
 
+export async function updateImageVariants(
+  imageId: string,
+  variantIds: string[]
+): Promise<ProductImage> {
+  const { data } = await apiClient.patch<ProductImage>(
+    `/products/images/${imageId}/variants`,
+    { variantIds }
+  );
+  return data;
+}
+
 export async function uploadProductImage(file: File): Promise<{
   url: string;
   publicId: string;
