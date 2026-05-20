@@ -25,9 +25,27 @@ export interface DashboardStats {
   };
 }
 
+export interface SellerStat {
+  admin: {
+    id: string;
+    name: string | null;
+    email: string;
+    role: string;
+  } | null;
+  totalOrders: number;
+  revenue: number;
+}
+
 export async function getDashboardStats(): Promise<DashboardStats> {
   const { data } = await apiClient.get<DashboardStats>(
     "/admin/dashboard/stats"
+  );
+  return data;
+}
+
+export async function getSellerStats(): Promise<SellerStat[]> {
+  const { data } = await apiClient.get<SellerStat[]>(
+    "/admin/dashboard/seller-stats"
   );
   return data;
 }
