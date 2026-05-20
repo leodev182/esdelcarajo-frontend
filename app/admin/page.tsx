@@ -1,6 +1,6 @@
 "use client";
 
-import { useDashboardStats } from "@/src/lib/hooks/useAdminDashboard";
+import { useDashboardStats, useSellerStats } from "@/src/lib/hooks/useAdminDashboard";
 import { useAuth } from "@/src/lib/hooks/useAuth";
 import { Package, ShoppingCart, Users, DollarSign } from "lucide-react";
 
@@ -8,6 +8,7 @@ export default function AdminDashboard() {
   const { user } = useAuth();
   const { data: stats, isLoading } = useDashboardStats();
   const isSuperAdmin = user?.role === "SUPER_ADMIN";
+  const { data: sellerStats } = useSellerStats();
 
   if (isLoading) {
     return (
@@ -130,6 +131,45 @@ export default function AdminDashboard() {
           </div>
         </div>
       </div>
+
+      {isSuperAdmin && sellerStats && sellerStats.length > 0 && (
+        <div className="mt-6 bg-white rounded-lg border-2 border-dark p-6">
+          <h2 className="text-2xl font-bold mb-4">Rendimiento por Vendedor</h2>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b-2 border-dark">
+                  <th className="text-left py-2 font-bold">Vendedor</th>
+                  <th className="text-left py-2 font-bold">Rol</th>
+                  <th className="text-right py-2 font-bold">Órdenes gestionadas</th>
+                  <th className="text-right py-2 font-bold">Ganancias</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sellerStats
+                  .sort((a, b) => b.revenue - a.revenue)
+                  .map((s, i) => (
+                    <tr key={i} className="border-b last:border-0">
+                      <td className="py-3">
+                        <p className="font-medium">{s.admin?.name || "—"}</p>
+                        <p className="text-xs text-gray-500">{s.admin?.email}</p>
+                      </td>
+                      <td className="py-3">
+                        <span className="px-2 py-0.5 bg-gray-100 rounded text-xs font-medium">
+                          {s.admin?.role === "SUPER_ADMIN" ? "Super Admin" : "Admin"}
+                        </span>
+                      </td>
+                      <td className="py-3 text-right font-bold">{s.totalOrders}</td>
+                      <td className="py-3 text-right font-bold text-primary">
+                        $ {s.revenue.toFixed(2)}
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
