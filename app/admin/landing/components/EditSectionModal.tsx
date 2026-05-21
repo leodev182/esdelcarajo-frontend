@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { ConfirmModal, useConfirm } from "@/src/components/ui/ConfirmModal";
 import {
   Select,
   SelectContent,
@@ -46,6 +47,7 @@ export function EditSectionModal({
   const updateSection = useUpdateSection();
   const addImage = useAddSectionImage();
   const deleteImage = useDeleteSectionImage();
+  const { confirm, confirmProps } = useConfirm();
 
   const [formData, setFormData] = useState<UpdateSectionPayload>({
     type: section.type,
@@ -122,7 +124,7 @@ export function EditSectionModal({
   };
 
   const handleDeleteImage = async (imageId: string) => {
-    if (!confirm("¿Estás seguro de eliminar esta imagen?")) return;
+    if (!(await confirm("¿Estás seguro de eliminar esta imagen?"))) return;
 
     try {
       await deleteImage.mutateAsync({
@@ -136,6 +138,8 @@ export function EditSectionModal({
   };
 
   return (
+    <>
+    <ConfirmModal {...confirmProps} />
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
@@ -339,5 +343,6 @@ export function EditSectionModal({
         </form>
       </DialogContent>
     </Dialog>
+    </>
   );
 }

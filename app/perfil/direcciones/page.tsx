@@ -5,14 +5,16 @@ import Link from "next/link";
 import { useAddresses, useDeleteAddress } from "@/src/lib/hooks/useAddresses";
 import { ArrowLeft, Plus, Trash2, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ConfirmModal, useConfirm } from "@/src/components/ui/ConfirmModal";
 import { toast } from "sonner";
 
 export default function DireccionesPage() {
   const { data: addresses, isLoading } = useAddresses();
   const deleteAddress = useDeleteAddress();
+  const { confirm, confirmProps } = useConfirm();
 
   const handleDelete = async (addressId: string, alias: string) => {
-    if (!confirm(`¿Eliminar la dirección "${alias}"?`)) return;
+    if (!(await confirm(`¿Eliminar la dirección "${alias}"?`))) return;
 
     try {
       await deleteAddress.mutateAsync(addressId);
@@ -32,6 +34,7 @@ export default function DireccionesPage() {
 
   return (
     <div className="container mx-auto px-4 py-12">
+      <ConfirmModal {...confirmProps} />
       <Link
         href="/perfil"
         className="inline-flex items-center gap-2 text-gray-600 hover:text-dark mb-6"

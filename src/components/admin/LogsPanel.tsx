@@ -15,6 +15,7 @@ import {
   SlidersHorizontal,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ConfirmModal, useConfirm } from "@/src/components/ui/ConfirmModal";
 import {
   Dialog,
   DialogContent,
@@ -184,6 +185,7 @@ export function LogsPanel() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const { confirm, confirmProps } = useConfirm();
 
   // Debounce del search
   const debouncedSearch = useDebounce(searchInput, 300);
@@ -277,7 +279,7 @@ export function LogsPanel() {
   // Delete individual
   const handleDeleteOne = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!confirm("¿Eliminar este log?")) return;
+    if (!(await confirm("¿Eliminar este log?"))) return;
     await deleteLogMutation.mutateAsync(id);
     if (expandedId === id) setExpandedId(null);
     selectedIds.delete(id);
@@ -303,6 +305,7 @@ export function LogsPanel() {
 
   return (
     <div className="space-y-4">
+      <ConfirmModal {...confirmProps} />
       {/* ─── FILTROS ─── */}
       <div className="bg-white rounded-lg border-2 border-dark p-4">
         <div className="flex items-center gap-2 mb-3">
