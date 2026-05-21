@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useAddresses, useDeleteAddress } from "@/src/lib/hooks/useAddresses";
 import { Button } from "@/components/ui/button";
+import { ConfirmModal, useConfirm } from "@/src/components/ui/ConfirmModal";
 import { Plus, MapPin, Check, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import type { Address } from "@/src/lib/types";
@@ -24,11 +25,12 @@ export function AddressSelector({
   const { data: addresses, isLoading } = useAddresses();
   const deleteAddress = useDeleteAddress();
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const { confirm, confirmProps } = useConfirm();
 
   const handleDelete = async (addressId: string, e: React.MouseEvent) => {
     e.stopPropagation();
 
-    if (!confirm("¿Estás seguro de eliminar esta dirección?")) return;
+    if (!(await confirm("¿Estás seguro de eliminar esta dirección?"))) return;
 
     try {
       setDeletingId(addressId);
@@ -79,6 +81,7 @@ export function AddressSelector({
 
   return (
     <div className="space-y-4">
+      <ConfirmModal {...confirmProps} />
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-xl font-bold">Selecciona una dirección</h3>
         <Button variant="outline" onClick={onAddNew}>

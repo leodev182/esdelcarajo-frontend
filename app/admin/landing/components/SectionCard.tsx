@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { LandingSection } from "@/src/lib/api/landing.api";
 import { Button } from "@/components/ui/button";
+import { ConfirmModal, useConfirm } from "@/src/components/ui/ConfirmModal";
 import { Edit, Trash2, Image as ImageIcon, Eye, EyeOff } from "lucide-react";
 import { useDeleteSection, useUpdateSection } from "@/src/lib/hooks/useLanding";
 import { toast } from "sonner";
@@ -17,9 +18,10 @@ export function SectionCard({ section }: SectionCardProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const deleteSection = useDeleteSection();
   const updateSection = useUpdateSection();
+  const { confirm, confirmProps } = useConfirm();
 
   const handleDelete = async () => {
-    if (!confirm("¿Estás seguro de eliminar esta sección?")) return;
+    if (!(await confirm("¿Estás seguro de eliminar esta sección?"))) return;
 
     try {
       await deleteSection.mutateAsync(section.id);
@@ -168,6 +170,7 @@ export function SectionCard({ section }: SectionCardProps) {
         open={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
       />
+      <ConfirmModal {...confirmProps} />
     </>
   );
 }

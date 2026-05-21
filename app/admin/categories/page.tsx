@@ -14,6 +14,7 @@ import { Plus, Edit, Trash2, ChevronDown, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { ConfirmModal, useConfirm } from "@/src/components/ui/ConfirmModal";
 import { toast } from "sonner";
 import type { Category, Subcategory } from "@/src/lib/types";
 
@@ -53,6 +54,7 @@ export default function AdminCategoriesPage() {
   const createSubcategory = useCreateSubcategory();
   const updateSubcategory = useUpdateSubcategory();
   const deleteSubcategory = useDeleteSubcategory();
+  const { confirm, confirmProps } = useConfirm();
 
   const toggleCategory = (categoryId: string) => {
     const newExpanded = new Set(expandedCategories);
@@ -110,7 +112,7 @@ export default function AdminCategoriesPage() {
     categoryId: string,
     categoryName: string
   ) => {
-    if (!confirm(`¿Eliminar la categoría "${categoryName}"?`)) return;
+    if (!(await confirm(`¿Eliminar la categoría "${categoryName}"?`))) return;
 
     try {
       await deleteCategory.mutateAsync(categoryId);
@@ -168,7 +170,7 @@ export default function AdminCategoriesPage() {
     subcategoryId: string,
     subcategoryName: string
   ) => {
-    if (!confirm(`¿Eliminar la subcategoría "${subcategoryName}"?`)) return;
+    if (!(await confirm(`¿Eliminar la subcategoría "${subcategoryName}"?`))) return;
 
     try {
       await deleteSubcategory.mutateAsync(subcategoryId);
@@ -222,6 +224,7 @@ export default function AdminCategoriesPage() {
 
   return (
     <div>
+      <ConfirmModal {...confirmProps} />
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-4xl font-bold">Categorías</h1>
         <Button onClick={() => setIsCreatingCategory(true)}>

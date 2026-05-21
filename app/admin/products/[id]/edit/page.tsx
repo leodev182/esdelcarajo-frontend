@@ -19,6 +19,7 @@ import { ArrowLeft, Plus, Edit, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { ConfirmModal, useConfirm } from "@/src/components/ui/ConfirmModal";
 import { toast } from "sonner";
 import type { ProductVariant } from "@/src/lib/types";
 import { uploadProductImage } from "@/src/lib/api/admin-products.api";
@@ -70,6 +71,7 @@ export default function EditProductPage() {
   });
 
   const [assigningImageToVariant, setAssigningImageToVariant] = useState<string | null>(null);
+  const { confirm, confirmProps } = useConfirm();
 
   useEffect(() => {
     if (product) {
@@ -122,7 +124,7 @@ export default function EditProductPage() {
   };
 
   const handleDeleteProduct = async () => {
-    if (!confirm(`¿Eliminar el producto "${product.name}"?`)) return;
+    if (!(await confirm(`¿Eliminar el producto "${product.name}"?`))) return;
 
     try {
       await deleteProduct.mutateAsync(productId);
@@ -207,7 +209,7 @@ export default function EditProductPage() {
   };
 
   const handleDeleteVariant = async (variantId: string, variantSku: string) => {
-    if (!confirm(`¿Eliminar la variante "${variantSku}"?`)) return;
+    if (!(await confirm(`¿Eliminar la variante "${variantSku}"?`))) return;
 
     try {
       await deleteVariant.mutateAsync(variantId);
@@ -235,6 +237,7 @@ export default function EditProductPage() {
 
   return (
     <div>
+      <ConfirmModal {...confirmProps} />
       <Link
         href="/admin/products"
         className="inline-flex items-center gap-2 text-gray-600 hover:text-dark mb-6"

@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ConfirmModal, useConfirm } from "@/src/components/ui/ConfirmModal";
 import { toast } from "sonner";
 
 export default function AdminProductsPage() {
@@ -27,6 +28,7 @@ export default function AdminProductsPage() {
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const { confirm, confirmProps } = useConfirm();
 
   useEffect(() => {
     if (user && user.role !== "SUPER_ADMIN") {
@@ -43,7 +45,7 @@ export default function AdminProductsPage() {
   const deleteProduct = useDeleteProduct();
 
   const handleDelete = async (productId: string, productName: string) => {
-    if (!confirm(`¿Eliminar el producto "${productName}"?`)) return;
+    if (!(await confirm(`¿Eliminar el producto "${productName}"?`))) return;
 
     try {
       await deleteProduct.mutateAsync(productId);
@@ -63,6 +65,7 @@ export default function AdminProductsPage() {
 
   return (
     <div>
+      <ConfirmModal {...confirmProps} />
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-4xl font-bold">Productos</h1>
         <Link href="/admin/products/new">
