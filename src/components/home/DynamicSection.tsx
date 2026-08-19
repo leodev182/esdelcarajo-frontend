@@ -54,9 +54,9 @@ export function DynamicSection({ section }: DynamicSectionProps) {
 
           {section.images.length > 0 && (
             <div
-              className={`grid gap-4 ${
+              className={`grid gap-4 w-full ${
                 section.images.length === 1
-                  ? "grid-cols-1"
+                  ? "grid-cols-1 max-w-lg mx-auto"
                   : section.images.length === 2
                   ? "grid-cols-2"
                   : section.images.length === 3
