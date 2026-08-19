@@ -18,9 +18,16 @@ export function ProductGrid({
     );
   }
 
+  const sorted = [...products].sort((a, b) => {
+    const aHasStock = a.variants.some((v) => v.stock > 0);
+    const bHasStock = b.variants.some((v) => v.stock > 0);
+    if (aHasStock === bHasStock) return 0;
+    return aHasStock ? -1 : 1;
+  });
+
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      {products.map((product) => (
+      {sorted.map((product) => (
         <ProductCard key={product.id} product={product} />
       ))}
     </div>

@@ -59,7 +59,7 @@ export function ProductCard({ product }: ProductCardProps) {
           {!hasStock && (
             <div className="absolute inset-0 bg-background/80 flex items-center justify-center">
               <span className="text-lg font-bold">
-                DE VUELTA <br /> PRÓXIMAMENTE
+                RELÁJATE Y PÉINATE, <br /> PRONTO LA SACAMOS.
               </span>
             </div>
           )}
