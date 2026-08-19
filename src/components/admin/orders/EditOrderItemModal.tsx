@@ -11,6 +11,8 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import { getErrorMessage } from "@/src/lib/api/client";
+import { logger } from "@/src/lib/utils/logger";
 import { getProductVariants } from "@/src/lib/api/admin-products.api";
 import { getProducts } from "@/src/lib/api/products.api";
 import { useUpdateOrderItem } from "@/src/lib/hooks/useOrders";
@@ -88,8 +90,9 @@ export function EditOrderItemModal({
       await updateItem.mutateAsync({ orderId, itemId: item.id, variantId: selectedVariantId });
       toast.success("Item actualizado exitosamente");
       onClose();
-    } catch {
-      toast.error("Error al actualizar el item");
+    } catch (error) {
+      logger.error("Error al actualizar item de orden", error);
+      toast.error(getErrorMessage(error));
     }
   };
 

@@ -24,6 +24,7 @@ import { toast } from "sonner";
 import type { ProductVariant } from "@/src/lib/types";
 import { uploadProductImage } from "@/src/lib/api/admin-products.api";
 import { getErrorMessage } from "@/src/lib/api/client";
+import { logger } from "@/src/lib/utils/logger";
 
 export default function EditProductPage() {
   const params = useParams();
@@ -119,8 +120,9 @@ export default function EditProductPage() {
         payload: productForm,
       });
       toast.success("Producto actualizado");
-    } catch {
-      toast.error("Error al actualizar producto");
+    } catch (error) {
+      logger.error("Error al actualizar producto", error);
+      toast.error(getErrorMessage(error));
     }
   };
 
@@ -131,8 +133,9 @@ export default function EditProductPage() {
       await deleteProduct.mutateAsync(productId);
       toast.success("Producto eliminado");
       router.push("/admin/products");
-    } catch {
-      toast.error("Error al eliminar producto");
+    } catch (error) {
+      logger.error("Error al eliminar producto", error);
+      toast.error(getErrorMessage(error));
     }
   };
 
@@ -168,8 +171,9 @@ export default function EditProductPage() {
         shortDescription: "",
         features: "",
       });
-    } catch {
-      toast.error("Error al crear variante");
+    } catch (error) {
+      logger.error("Error al crear variante", error);
+      toast.error(getErrorMessage(error));
     }
   };
 
@@ -204,8 +208,9 @@ export default function EditProductPage() {
         shortDescription: "",
         features: "",
       });
-    } catch {
-      toast.error("Error al actualizar variante");
+    } catch (error) {
+      logger.error("Error al actualizar variante", error);
+      toast.error(getErrorMessage(error));
     }
   };
 
@@ -215,8 +220,9 @@ export default function EditProductPage() {
     try {
       await deleteVariant.mutateAsync(variantId);
       toast.success("Variante eliminada");
-    } catch {
-      toast.error("Error al eliminar variante");
+    } catch (error) {
+      logger.error("Error al eliminar variante", error);
+      toast.error(getErrorMessage(error));
     }
   };
 
@@ -513,8 +519,9 @@ export default function EditProductPage() {
                                     toast.success(
                                       linked ? "Imagen desvinculada" : "Imagen asignada"
                                     );
-                                  } catch {
-                                    toast.error("Error al actualizar imagen");
+                                  } catch (error) {
+                                    logger.error("Error al actualizar imagen", error);
+                                    toast.error(getErrorMessage(error));
                                   }
                                 }}
                                 className={`relative rounded border-2 overflow-hidden transition-all ${
@@ -631,8 +638,9 @@ export default function EditProductPage() {
                               try {
                                 await deleteImage.mutateAsync(image.id);
                                 toast.success("Imagen eliminada");
-                              } catch {
-                                toast.error("Error al eliminar imagen");
+                              } catch (error) {
+                                logger.error("Error al eliminar imagen", error);
+                                toast.error(getErrorMessage(error));
                               }
                             }}
                             className="p-1 bg-white rounded border hover:bg-gray-50"
@@ -709,8 +717,9 @@ export default function EditProductPage() {
                                   });
                                   toast.success("Variantes actualizadas");
                                   setEditingImageId(null);
-                                } catch {
-                                  toast.error("Error al actualizar variantes");
+                                } catch (error) {
+                                  logger.error("Error al actualizar variantes", error);
+                                  toast.error(getErrorMessage(error));
                                 }
                               }}
                             >

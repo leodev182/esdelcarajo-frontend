@@ -7,6 +7,8 @@ import {
   useToggleUserBan,
 } from "@/src/lib/hooks/useUsers";
 import { useAuth } from "@/src/lib/hooks/useAuth";
+import { getErrorMessage } from "@/src/lib/api/client";
+import { logger } from "@/src/lib/utils/logger";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 import { Shield, ShieldOff, UserCog } from "lucide-react";
@@ -53,8 +55,9 @@ export default function AdminUsersPage() {
       await updateRole.mutateAsync({ userId, role: newRole });
       toast.success(`Rol actualizado a ${ROLE_LABELS[newRole]}`);
       setEditingUserId(null);
-    } catch {
-      toast.error("Error al actualizar el rol");
+    } catch (error) {
+      logger.error("Error al actualizar rol de usuario", error);
+      toast.error(getErrorMessage(error));
     }
   };
 
@@ -67,8 +70,9 @@ export default function AdminUsersPage() {
       toast.success(
         isCurrentlyActive ? "Usuario baneado" : "Usuario desbaneado"
       );
-    } catch {
-      toast.error("Error al cambiar estado del usuario");
+    } catch (error) {
+      logger.error("Error al cambiar estado de usuario", error);
+      toast.error(getErrorMessage(error));
     }
   };
 

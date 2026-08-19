@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useAddresses, useDeleteAddress } from "@/src/lib/hooks/useAddresses";
+import { getErrorMessage } from "@/src/lib/api/client";
+import { logger } from "@/src/lib/utils/logger";
 import { ArrowLeft, Plus, Trash2, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ConfirmModal, useConfirm } from "@/src/components/ui/ConfirmModal";
@@ -19,8 +21,9 @@ export default function DireccionesPage() {
     try {
       await deleteAddress.mutateAsync(addressId);
       toast.success("Dirección eliminada");
-    } catch {
-      toast.error("Error al eliminar dirección");
+    } catch (error) {
+      logger.error("Error al eliminar dirección", error);
+      toast.error(getErrorMessage(error));
     }
   };
 

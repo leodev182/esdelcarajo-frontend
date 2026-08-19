@@ -7,6 +7,8 @@ import Link from "next/link";
 import { useProducts } from "@/src/lib/hooks/useProducts";
 import { useDeleteProduct } from "@/src/lib/hooks/useAdminProducts";
 import { useAuth } from "@/src/lib/hooks/useAuth";
+import { getErrorMessage } from "@/src/lib/api/client";
+import { logger } from "@/src/lib/utils/logger";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 import {
@@ -50,8 +52,9 @@ export default function AdminProductsPage() {
     try {
       await deleteProduct.mutateAsync(productId);
       toast.success("Producto eliminado");
-    } catch {
-      toast.error("Error al eliminar producto");
+    } catch (error) {
+      logger.error("Error al eliminar producto", error);
+      toast.error(getErrorMessage(error));
     }
   };
 

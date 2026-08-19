@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useAuth } from "@/src/lib/hooks/useAuth";
 import { useUpdateUser } from "@/src/lib/hooks/useUsers";
+import { getErrorMessage } from "@/src/lib/api/client";
+import { logger } from "@/src/lib/utils/logger";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
@@ -38,8 +40,9 @@ export default function ProfilePage() {
       await updateUser.mutateAsync(form);
       toast.success("Perfil actualizado");
       setIsEditing(false);
-    } catch {
-      toast.error("Error al actualizar perfil");
+    } catch (error) {
+      logger.error("Error al actualizar perfil", error);
+      toast.error(getErrorMessage(error));
     }
   };
 

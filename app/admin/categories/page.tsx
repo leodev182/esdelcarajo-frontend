@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { getErrorMessage } from "@/src/lib/api/client";
+import { logger } from "@/src/lib/utils/logger";
 import { useCategories } from "@/src/lib/hooks/useCategories";
 import {
   useCreateCategory,
@@ -82,8 +84,9 @@ export default function AdminCategoriesPage() {
         order: 0,
       });
       setIsCreatingCategory(false);
-    } catch {
-      toast.error("Error al crear categoría");
+    } catch (error) {
+      logger.error("Error al crear categoría", error);
+      toast.error(getErrorMessage(error));
     }
   };
 
@@ -103,8 +106,9 @@ export default function AdminCategoriesPage() {
         color: "#FF6501",
         order: 0,
       });
-    } catch {
-      toast.error("Error al actualizar categoría");
+    } catch (error) {
+      logger.error("Error al actualizar categoría", error);
+      toast.error(getErrorMessage(error));
     }
   };
 
@@ -117,10 +121,9 @@ export default function AdminCategoriesPage() {
     try {
       await deleteCategory.mutateAsync(categoryId);
       toast.success("Categoría eliminada");
-    } catch (error: unknown) {
-      const message =
-        (error as any).response?.data?.message || "Error al eliminar categoría";
-      toast.error(message);
+    } catch (error) {
+      logger.error("Error al eliminar categoría", error);
+      toast.error(getErrorMessage(error));
     }
   };
 
@@ -140,8 +143,9 @@ export default function AdminCategoriesPage() {
         order: 0,
       });
       setIsCreatingSubcategory(null);
-    } catch {
-      toast.error("Error al crear subcategoría");
+    } catch (error) {
+      logger.error("Error al crear subcategoría", error);
+      toast.error(getErrorMessage(error));
     }
   };
 
@@ -161,8 +165,9 @@ export default function AdminCategoriesPage() {
         description: "",
         order: 0,
       });
-    } catch {
-      toast.error("Error al actualizar subcategoría");
+    } catch (error) {
+      logger.error("Error al actualizar subcategoría", error);
+      toast.error(getErrorMessage(error));
     }
   };
 

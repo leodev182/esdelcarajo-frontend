@@ -2,6 +2,8 @@
 
 import { useFavorites } from "@/src/lib/hooks/useFavorites";
 import { useCart } from "@/src/lib/hooks/useCart";
+import { getErrorMessage } from "@/src/lib/api/client";
+import { logger } from "@/src/lib/utils/logger";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Trash2, ShoppingCart } from "lucide-react";
@@ -15,8 +17,9 @@ export default function FavoritosPage() {
     try {
       removeFavorite(favoriteId);
       toast.success(`${productName} eliminado de favoritos`);
-    } catch {
-      toast.error("Error al eliminar de favoritos");
+    } catch (error) {
+      logger.error("Error al eliminar favorito", error);
+      toast.error(getErrorMessage(error));
     }
   };
 
@@ -29,8 +32,9 @@ export default function FavoritosPage() {
       addToCart({ variantId, quantity: 1 });
       removeFavorite(favoriteId);
       toast.success(`${productName} agregado al carrito`);
-    } catch {
-      toast.error("Error al agregar al carrito");
+    } catch (error) {
+      logger.error("Error al agregar al carrito", error);
+      toast.error(getErrorMessage(error));
     }
   };
 

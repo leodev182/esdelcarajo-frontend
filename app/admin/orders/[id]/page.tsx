@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { getErrorMessage } from "@/src/lib/api/client";
+import { logger } from "@/src/lib/utils/logger";
 import Link from "next/link";
 import { useOrderById, useUpdateOrderStatus } from "@/src/lib/hooks/useOrders";
 import { format } from "date-fns";
@@ -107,8 +109,9 @@ export default function AdminOrderDetailPage() {
       setSelectedStatus(null);
       setAdminNotes("");
       setConfirmingCancel(false);
-    } catch {
-      toast.error("Error al actualizar el estado");
+    } catch (error) {
+      logger.error("Error al actualizar estado de orden", error);
+      toast.error(getErrorMessage(error));
     }
   };
 

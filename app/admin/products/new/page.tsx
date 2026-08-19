@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { getErrorMessage } from "@/src/lib/api/client";
+import { logger } from "@/src/lib/utils/logger";
 import { useCategories } from "@/src/lib/hooks/useCategories";
 import { useCreateProduct } from "@/src/lib/hooks/useAdminProducts";
 import { ArrowLeft } from "lucide-react";
@@ -47,8 +49,9 @@ export default function NewProductPage() {
 
       toast.success("Producto creado");
       router.push(`/admin/products/${product.id}/edit`);
-    } catch {
-      toast.error("Error al crear producto");
+    } catch (error) {
+      logger.error("Error al crear producto", error);
+      toast.error(getErrorMessage(error));
     }
   };
 
