@@ -23,6 +23,7 @@ import { ConfirmModal, useConfirm } from "@/src/components/ui/ConfirmModal";
 import { toast } from "sonner";
 import type { ProductVariant } from "@/src/lib/types";
 import { uploadProductImage } from "@/src/lib/api/admin-products.api";
+import { getErrorMessage } from "@/src/lib/api/client";
 
 export default function EditProductPage() {
   const params = useParams();
@@ -577,8 +578,8 @@ export default function EditProductPage() {
                       });
                       toast.success("Imagen subida. Asígnala a las variantes desde la lista.");
                       e.target.value = "";
-                    } catch {
-                      toast.error("Error al subir imagen");
+                    } catch (error) {
+                      toast.error(getErrorMessage(error));
                     }
                   }}
                 />
