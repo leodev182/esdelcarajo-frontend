@@ -84,7 +84,9 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
       sizeOrder[a as keyof typeof sizeOrder] -
       sizeOrder[b as keyof typeof sizeOrder]
   );
-  const availableColors = [...new Set(product.variants.map((v) => v.color))];
+  const getDisplayColor = (v: { shirtColor?: string | null; color: string }) =>
+    v.shirtColor || v.color;
+  const availableColors = [...new Set(product.variants.map(getDisplayColor))];
   const availableGenders = [...new Set(product.variants.map((v) => v.gender))];
 
   const price = selectedVariant ? Number(selectedVariant.price) : 0;
@@ -106,7 +108,7 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
     const variant = product.variants.find(
       (v) =>
         v.size === size &&
-        v.color === selectedVariant?.color &&
+        getDisplayColor(v) === getDisplayColor(selectedVariant!) &&
         v.gender === selectedVariant?.gender &&
         v.stock > 0
     );
@@ -121,11 +123,11 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
     const variant =
       product.variants.find(
         (v) =>
-          v.color === color &&
+          getDisplayColor(v) === color &&
           v.size === selectedVariant?.size &&
           v.gender === selectedVariant?.gender &&
           v.stock > 0
-      ) || product.variants.find((v) => v.color === color && v.stock > 0);
+      ) || product.variants.find((v) => getDisplayColor(v) === color && v.stock > 0);
 
     if (variant) {
       setSelectedVariantId(variant.id);
@@ -290,9 +292,9 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
                 <div className="flex flex-wrap gap-2">
                   {availableColors.map((color) => {
                     const hasVariantWithColor = product.variants.some(
-                      (v) => v.color === color && v.stock > 0
+                      (v) => getDisplayColor(v) === color && v.stock > 0
                     );
-                    const isSelected = selectedVariant?.color === color;
+                    const isSelected = getDisplayColor(selectedVariant!) === color;
 
                     return (
                       <Button
@@ -320,7 +322,7 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
                       (v) =>
                         v.gender === gender &&
                         v.size === selectedVariant?.size &&
-                        v.color === selectedVariant?.color &&
+                        getDisplayColor(v) === getDisplayColor(selectedVariant!) &&
                         v.stock > 0
                     );
                     const isSelected = selectedVariant?.gender === gender;

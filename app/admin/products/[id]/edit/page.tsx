@@ -140,8 +140,8 @@ export default function EditProductPage() {
   };
 
   const handleCreateVariant = async () => {
-    if (!variantForm.sku || !variantForm.size || (!variantForm.color && !variantForm.shirtColor)) {
-      toast.error("Completa SKU, talla y al menos un color (franela o estampado)");
+    if (!variantForm.sku || !variantForm.size || !variantForm.shirtColor) {
+      toast.error("Completa SKU, talla y color de franela");
       return;
     }
 
@@ -784,7 +784,9 @@ export default function EditProductPage() {
 
                 <div>
                   <label className="block text-sm font-bold mb-2">
-                    Color de Estampado *
+                    Color de Estampado
+                    <span className="text-xs font-normal text-gray-500 ml-1">(opcional)</span>
+
                   </label>
                   <Input
                     value={variantForm.color}
@@ -797,8 +799,7 @@ export default function EditProductPage() {
 
                 <div>
                   <label className="block text-sm font-bold mb-2">
-                    Color de Franela
-                    <span className="text-xs font-normal text-gray-500 ml-1">(opcional)</span>
+                    Color de Franela *
                   </label>
                   <Input
                     value={variantForm.shirtColor}
