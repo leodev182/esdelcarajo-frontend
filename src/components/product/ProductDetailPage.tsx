@@ -285,7 +285,7 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
             {availableColors.length > 1 && (
               <div>
                 <label className="text-sm font-semibold mb-2 block">
-                  Color: {selectedVariant?.color}
+                  Color: {selectedVariant?.shirtColor || selectedVariant?.color}
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {availableColors.map((color) => {
@@ -301,7 +301,7 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
                         disabled={!hasVariantWithColor}
                         onClick={() => handleColorChange(color)}
                       >
-                        {color}
+                        {product.variants.find((v) => v.color === color)?.shirtColor || color}
                       </Button>
                     );
                   })}

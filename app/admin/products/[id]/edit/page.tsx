@@ -140,8 +140,8 @@ export default function EditProductPage() {
   };
 
   const handleCreateVariant = async () => {
-    if (!variantForm.sku || !variantForm.size || !variantForm.color) {
-      toast.error("Completa todos los campos de la variante");
+    if (!variantForm.sku || !variantForm.size || (!variantForm.color && !variantForm.shirtColor)) {
+      toast.error("Completa SKU, talla y al menos un color (franela o estampado)");
       return;
     }
 
