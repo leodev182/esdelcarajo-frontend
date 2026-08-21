@@ -452,7 +452,7 @@ export default function EditProductPage() {
                         <div>
                           <p className="font-bold">{variant.sku}</p>
                           <p className="text-sm text-gray-600">
-                            {variant.size} · {variant.color} · {variant.gender}
+                            {variant.size} · {variant.shirtColor || variant.color} · {variant.gender}
                           </p>
                           <p className="text-sm">
                             <span className="font-bold">Precio:</span> ${" "}
@@ -691,7 +691,7 @@ export default function EditProductPage() {
                                       : "border-gray-300 text-gray-600 hover:border-primary"
                                   }`}
                                 >
-                                  {v.size} · {v.color}
+                                  {v.size} · {v.shirtColor || v.color}
                                 </button>
                               );
                             })}
