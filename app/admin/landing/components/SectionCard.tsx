@@ -45,7 +45,12 @@ export function SectionCard({ section }: SectionCardProps) {
     }
   };
 
-  const typeLabel = section.type === "CAROUSEL" ? "Carrusel" : "Personalizada";
+  const typeLabel =
+    section.type === "CAROUSEL"
+      ? "Carrusel"
+      : section.type === "VIDEO"
+      ? "Video"
+      : "Banner";
   const positionLabel = {
     LEFT: "Izquierda",
     CENTER: "Centro",
@@ -134,33 +139,53 @@ export function SectionCard({ section }: SectionCardProps) {
         </div>
 
         <div className="mt-4">
-          <div className="flex items-center gap-2 mb-3">
-            <ImageIcon className="h-4 w-4 text-gray-600" />
-            <span className="text-sm font-bold text-gray-600">
-              Imágenes ({section.images.length}/5)
-            </span>
-          </div>
-
-          {section.images.length > 0 ? (
-            <div className="grid grid-cols-5 gap-3">
-              {section.images.map((image) => (
-                <div
-                  key={image.id}
-                  className="relative aspect-square rounded-lg overflow-hidden border-2 border-gray-200"
+          {section.type === "VIDEO" ? (
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-bold text-gray-600">URL:</span>
+              {section.videoUrl ? (
+                <a
+                  href={section.videoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-blue-600 hover:underline truncate max-w-md"
                 >
-                  <Image
-                    src={image.url}
-                    alt={image.alt}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              ))}
+                  {section.videoUrl}
+                </a>
+              ) : (
+                <span className="text-sm text-gray-400 italic">Sin URL configurada</span>
+              )}
             </div>
           ) : (
-            <p className="text-sm text-gray-400 italic">
-              No hay imágenes agregadas
-            </p>
+            <>
+              <div className="flex items-center gap-2 mb-3">
+                <ImageIcon className="h-4 w-4 text-gray-600" />
+                <span className="text-sm font-bold text-gray-600">
+                  Imágenes ({section.images.length}/5)
+                </span>
+              </div>
+
+              {section.images.length > 0 ? (
+                <div className="grid grid-cols-5 gap-3">
+                  {section.images.map((image) => (
+                    <div
+                      key={image.id}
+                      className="relative aspect-square rounded-lg overflow-hidden border-2 border-gray-200"
+                    >
+                      <Image
+                        src={image.url}
+                        alt={image.alt}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-gray-400 italic">
+                  No hay imágenes agregadas
+                </p>
+              )}
+            </>
           )}
         </div>
       </div>

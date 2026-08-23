@@ -8,33 +8,39 @@ export interface SectionImage {
   order: number;
 }
 
+export type SectionType = "CAROUSEL" | "CUSTOM" | "VIDEO";
+export type TextPosition = "LEFT" | "CENTER" | "RIGHT" | "TOP" | "BOTTOM";
+
 export interface LandingSection {
   id: string;
-  type: "CAROUSEL" | "CUSTOM";
+  type: SectionType;
   title: string;
   description?: string;
-  textPosition: "LEFT" | "CENTER" | "RIGHT" | "TOP" | "BOTTOM";
+  textPosition: TextPosition;
   bgColor: string;
+  videoUrl?: string;
   order: number;
   isActive: boolean;
   images: SectionImage[];
 }
 
 export interface CreateSectionPayload {
-  type: "CAROUSEL" | "CUSTOM";
+  type: SectionType;
   title: string;
   description?: string;
-  textPosition: "LEFT" | "CENTER" | "RIGHT" | "TOP" | "BOTTOM";
+  textPosition: TextPosition;
   bgColor: string;
+  videoUrl?: string;
   order: number;
 }
 
 export interface UpdateSectionPayload {
-  type?: "CAROUSEL" | "CUSTOM";
+  type?: SectionType;
   title?: string;
   description?: string;
-  textPosition?: "LEFT" | "CENTER" | "RIGHT" | "TOP" | "BOTTOM";
+  textPosition?: TextPosition;
   bgColor?: string;
+  videoUrl?: string;
   order?: number;
   isActive?: boolean;
 }

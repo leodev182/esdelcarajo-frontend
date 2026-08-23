@@ -8,6 +8,7 @@ import { usePublicLandingSections } from "@/src/lib/hooks/useLanding";
 import { HeroClient } from "@/src/components/home/HeroClient";
 import { DynamicCarousel } from "@/src/components/home/DynamicCarousel";
 import { DynamicSection } from "@/src/components/home/DynamicSection";
+import { DynamicVideo } from "@/src/components/home/DynamicVideo";
 
 export function HomePage() {
   const { data: products, isLoading: loadingProducts } = useFeaturedProducts(8);
@@ -43,6 +44,8 @@ export function HomePage() {
           <div key={section.id} className={index > 0 ? "mt-20" : ""}>
             {section.type === "CAROUSEL" ? (
               <DynamicCarousel section={section} />
+            ) : section.type === "VIDEO" ? (
+              <DynamicVideo section={section} />
             ) : (
               <DynamicSection section={section} />
             )}

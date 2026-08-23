@@ -9,6 +9,7 @@ import {
 import {
   LandingSection,
   UpdateSectionPayload,
+  SectionType,
 } from "@/src/lib/api/landing.api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -55,6 +56,7 @@ export function EditSectionModal({
     description: section.description,
     textPosition: section.textPosition,
     bgColor: section.bgColor,
+    videoUrl: section.videoUrl,
     order: section.order,
   });
 
@@ -68,6 +70,7 @@ export function EditSectionModal({
         description: section.description,
         textPosition: section.textPosition,
         bgColor: section.bgColor,
+        videoUrl: section.videoUrl,
         order: section.order,
       });
     }
@@ -149,7 +152,7 @@ export function EditSectionModal({
               <Label htmlFor="type">Tipo de Sección</Label>
               <Select
                 value={formData.type}
-                onValueChange={(value: "CAROUSEL" | "CUSTOM") =>
+                onValueChange={(value: SectionType) =>
                   setFormData({ ...formData, type: value })
                 }
               >
@@ -159,6 +162,7 @@ export function EditSectionModal({
                 <SelectContent>
                   <SelectItem value="CAROUSEL">Carrusel</SelectItem>
                   <SelectItem value="CUSTOM">Banner</SelectItem>
+                  <SelectItem value="VIDEO">Video</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -201,6 +205,24 @@ export function EditSectionModal({
               rows={3}
             />
           </div>
+
+          {formData.type === "VIDEO" && (
+            <div className="space-y-2">
+              <Label htmlFor="videoUrl">URL del Video *</Label>
+              <Input
+                id="videoUrl"
+                type="url"
+                value={formData.videoUrl || ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, videoUrl: e.target.value })
+                }
+                placeholder="https://www.youtube.com/watch?v=..."
+              />
+              <p className="text-xs text-gray-500">
+                Compatible con YouTube y Vimeo. Formato recomendado: 16:9 (1920×1080px).
+              </p>
+            </div>
+          )}
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -249,7 +271,7 @@ export function EditSectionModal({
             </div>
           </div>
 
-          <div className="space-y-3 pt-4 border-t">
+          {formData.type !== "VIDEO" && <div className="space-y-3 pt-4 border-t">
             <div className="flex items-center justify-between">
               <div>
                 <Label>Imágenes ({section.images.length}/5)</Label>
@@ -318,7 +340,7 @@ export function EditSectionModal({
                 No hay imágenes agregadas
               </p>
             )}
-          </div>
+          </div>}
 
           <div className="flex justify-end gap-3 pt-4 border-t">
             <Button type="button" variant="outline" onClick={onClose}>
