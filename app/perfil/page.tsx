@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/src/lib/hooks/useAuth";
 import { useUpdateUser } from "@/src/lib/hooks/useUsers";
 import { getErrorMessage } from "@/src/lib/api/client";
@@ -22,6 +22,16 @@ export default function ProfilePage() {
     phone: user?.phone || "",
   });
 
+  useEffect(() => {
+    if (user) {
+      setForm({
+        name: user.name || "",
+        nickname: user.nickname || "",
+        phone: user.phone || "",
+      });
+    }
+  }, [user]);
+
   if (!user) {
     return (
       <div className="container mx-auto px-4 py-12 text-center">
@@ -36,8 +46,13 @@ export default function ProfilePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    const payload: { name?: string; nickname?: string; phone?: string } = {};
+    if (form.name.trim()) payload.name = form.name.trim();
+    if (form.nickname.trim()) payload.nickname = form.nickname.trim();
+    if (form.phone.trim()) payload.phone = form.phone.trim();
+
     try {
-      await updateUser.mutateAsync(form);
+      await updateUser.mutateAsync(payload);
       await refreshUser();
       toast.success("Perfil actualizado");
       setIsEditing(false);
