@@ -16,48 +16,55 @@ export function PageLoader() {
       }}
     >
       <style>{`
-        @keyframes scanLine {
-          from { top: 0px; }
-          to   { top: 100vh; }
+        @keyframes lightningFall {
+          0%   { top: -25vh; opacity: 1; }
+          88%  { opacity: 1; }
+          100% { top: 115vh;  opacity: 0; }
         }
 
         @keyframes boltReveal {
           0%   { clip-path: inset(0 0 100% 0); opacity: 1; }
           30%  { clip-path: inset(0 0 100% 0); opacity: 1; }
-          70%  { clip-path: inset(0 0 0%   0); opacity: 1; }
+          68%  { clip-path: inset(0 0 0%   0); opacity: 1; }
+          78%  { clip-path: inset(0 0 0%   0); opacity: 1; }
           100% { clip-path: inset(0 0 0%   0); opacity: 0; }
         }
 
-        .pg-scan {
+        .pg-lightning {
           position: absolute;
-          left: 0;
-          right: 0;
-          height: 2px;
+          left: 50%;
+          top: -25vh;
+          width: 3px;
+          height: 200px;
+          transform: translateX(-50%) rotate(-10deg);
+          border-radius: 0 0 3px 3px;
           background: linear-gradient(
-            to right,
-            transparent 0%,
-            rgba(255, 212, 42, 0.3) 15%,
-            rgba(255, 255, 255, 0.95) 50%,
-            rgba(255, 212, 42, 0.3) 85%,
-            transparent 100%
+            to bottom,
+            transparent       0%,
+            rgba(255,212,42,0.10) 20%,
+            rgba(255,212,42,0.45) 55%,
+            rgba(255,255,255,0.92) 82%,
+            rgba(255,255,255,1)   100%
           );
           box-shadow:
-            0 0 6px 3px rgba(255, 212, 42, 0.55),
-            0 0 22px 8px rgba(255, 212, 42, 0.25),
-            0 0 50px 18px rgba(255, 200, 0, 0.10);
-          animation: scanLine 1.4s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+            0 0  6px  3px rgba(255, 212, 42, 0.65),
+            0 0 18px  7px rgba(255, 212, 42, 0.30),
+            0 0 40px 16px rgba(255, 200,  0, 0.12);
+          animation: lightningFall 1.3s cubic-bezier(0.3, 0, 0.65, 1) forwards;
         }
 
         .pg-bolt {
           height: 40vh;
           display: flex;
           align-items: center;
-          animation: boltReveal 1.4s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+          animation: boltReveal 1.3s cubic-bezier(0.3, 0, 0.65, 1) forwards;
         }
       `}</style>
 
-      <div className="pg-scan" />
+      {/* Rayo que cae */}
+      <div className="pg-lightning" />
 
+      {/* Logo bolt dibujado por el rayo al pasar */}
       <div className="pg-bolt">
         <svg
           viewBox="0 0 64.334862 142.83391"
