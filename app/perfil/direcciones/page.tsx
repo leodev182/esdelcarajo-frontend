@@ -5,15 +5,20 @@ import Link from "next/link";
 import { useAddresses, useDeleteAddress } from "@/src/lib/hooks/useAddresses";
 import { getErrorMessage } from "@/src/lib/api/client";
 import { logger } from "@/src/lib/utils/logger";
-import { ArrowLeft, Plus, Trash2, MapPin } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, MapPin, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ConfirmModal, useConfirm } from "@/src/components/ui/ConfirmModal";
+import { AddressForm } from "@/src/components/forms/AddressForm";
 import { toast } from "sonner";
+import type { Address } from "@/src/lib/types";
 
 export default function DireccionesPage() {
   const { data: addresses, isLoading } = useAddresses();
   const deleteAddress = useDeleteAddress();
   const { confirm, confirmProps } = useConfirm();
+
+  const [showForm, setShowForm] = useState(false);
+  const [editingAddress, setEditingAddress] = useState<Address | null>(null);
 
   const handleDelete = async (addressId: string, alias: string) => {
     if (!(await confirm(`¿Eliminar la dirección "${alias}"?`))) return;
@@ -25,6 +30,26 @@ export default function DireccionesPage() {
       logger.error("Error al eliminar dirección", error);
       toast.error(getErrorMessage(error));
     }
+  };
+
+  const handleAddNew = () => {
+    setEditingAddress(null);
+    setShowForm(true);
+  };
+
+  const handleEdit = (address: Address) => {
+    setEditingAddress(address);
+    setShowForm(true);
+  };
+
+  const handleFormSuccess = () => {
+    setShowForm(false);
+    setEditingAddress(null);
+  };
+
+  const handleFormCancel = () => {
+    setShowForm(false);
+    setEditingAddress(null);
   };
 
   if (isLoading) {
@@ -48,13 +73,26 @@ export default function DireccionesPage() {
 
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-4xl font-bold">Mis Direcciones</h1>
-        <Link href="/checkout">
-          <Button>
+        {!showForm && (
+          <Button onClick={handleAddNew}>
             <Plus className="h-4 w-4 mr-2" />
             Agregar Dirección
           </Button>
-        </Link>
+        )}
       </div>
+
+      {showForm && (
+        <div className="bg-white rounded-lg border-2 border-dark p-6 mb-8">
+          <h2 className="text-2xl font-bold mb-6">
+            {editingAddress ? "Editar Dirección" : "Nueva Dirección"}
+          </h2>
+          <AddressForm
+            address={editingAddress}
+            onSuccess={handleFormSuccess}
+            onCancel={handleFormCancel}
+          />
+        </div>
+      )}
 
       {!addresses || addresses.length === 0 ? (
         <div className="text-center py-12 bg-white rounded-lg border-2 border-dark">
@@ -62,9 +100,9 @@ export default function DireccionesPage() {
           <p className="text-xl text-gray-600 mb-4">
             No tienes direcciones guardadas
           </p>
-          <Link href="/checkout">
-            <Button>Agregar Primera Dirección</Button>
-          </Link>
+          {!showForm && (
+            <Button onClick={handleAddNew}>Agregar Primera Dirección</Button>
+          )}
         </div>
       ) : (
         <div className="grid md:grid-cols-2 gap-6">
@@ -82,15 +120,24 @@ export default function DireccionesPage() {
                     </span>
                   )}
                 </div>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => handleDelete(address.id, address.alias)}
-                  disabled={deleteAddress.isPending}
-                  className="text-red-600 hover:text-red-700"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => handleEdit(address)}
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => handleDelete(address.id, address.alias)}
+                    disabled={deleteAddress.isPending}
+                    className="text-red-600 hover:text-red-700"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
 
               <div className="space-y-2 text-sm">
@@ -116,13 +163,6 @@ export default function DireccionesPage() {
           ))}
         </div>
       )}
-
-      <div className="mt-8 p-4 bg-blue-50 border-2 border-blue-200 rounded-lg">
-        <p className="text-sm text-blue-800">
-          💡 <strong>Tip:</strong> Puedes agregar nuevas direcciones durante el
-          proceso de checkout.
-        </p>
-      </div>
     </div>
   );
 }

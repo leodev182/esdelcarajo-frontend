@@ -12,7 +12,7 @@ import { MapPin, ShoppingBag, Heart, LogOut } from "lucide-react";
 import Link from "next/link";
 
 export default function ProfilePage() {
-  const { user, logout } = useAuth();
+  const { user, logout, refreshUser } = useAuth();
   const updateUser = useUpdateUser();
 
   const [isEditing, setIsEditing] = useState(false);
@@ -38,6 +38,7 @@ export default function ProfilePage() {
 
     try {
       await updateUser.mutateAsync(form);
+      await refreshUser();
       toast.success("Perfil actualizado");
       setIsEditing(false);
     } catch (error) {
