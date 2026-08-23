@@ -3,6 +3,7 @@ import "./globals.css";
 import { QueryProvider } from "@/src/lib/providers/QueryProvider";
 import { AuthProvider } from "@/src/context/AuthContext";
 import { ConditionalLayout } from "@/src/components/layout/ConditionalLayout";
+import { GlobalBackground } from "@/src/components/layout/GlobalBackground";
 import { zuumeRough } from "@/src/lib/fonts/fonts";
 import { Toaster } from "sonner";
 
@@ -19,6 +20,7 @@ export default function RootLayout({
   return (
     <html lang="es" className={zuumeRough.variable}>
       <body className="antialiased">
+        <GlobalBackground />
         <AuthProvider>
           <QueryProvider>
             <ConditionalLayout>{children}</ConditionalLayout>
