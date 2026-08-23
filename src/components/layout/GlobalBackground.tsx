@@ -29,11 +29,11 @@ export function GlobalBackground() {
           --dur: 22s;
         }
 
-        /* Azul oscuro — abajo derecha */
+        /* Beige cálido — abajo derecha */
         .scene__blob--2 {
           width: 600px;
           height: 600px;
-          background: radial-gradient(circle, #1a2744, #0d1a38);
+          background: radial-gradient(circle, #C9BEA5, #b8ad94);
           bottom: -200px;
           right: -100px;
           --dur: 18s;
