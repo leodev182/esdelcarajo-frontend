@@ -6,13 +6,14 @@ import { useUpdateUser } from "@/src/lib/hooks/useUsers";
 import { getErrorMessage } from "@/src/lib/api/client";
 import { logger } from "@/src/lib/utils/logger";
 import { Button } from "@/components/ui/button";
+import { PageLoader } from "@/src/components/ui/PageLoader";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { MapPin, ShoppingBag, Heart, LogOut } from "lucide-react";
 import Link from "next/link";
 
 export default function ProfilePage() {
-  const { user, logout, refreshUser } = useAuth();
+  const { user, logout, refreshUser, isLoading } = useAuth();
   const updateUser = useUpdateUser();
 
   const [isEditing, setIsEditing] = useState(false);
@@ -31,6 +32,8 @@ export default function ProfilePage() {
       });
     }
   }, [user]);
+
+  if (isLoading) return <PageLoader />;
 
   if (!user) {
     return (
