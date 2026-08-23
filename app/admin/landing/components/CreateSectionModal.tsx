@@ -45,7 +45,9 @@ export function CreateSectionModal({ open, onClose }: CreateSectionModalProps) {
     e.preventDefault();
 
     try {
-      await createSection.mutateAsync(formData);
+      const payload = { ...formData };
+      if (!payload.videoUrl) delete payload.videoUrl;
+      await createSection.mutateAsync(payload);
       toast.success("Sección creada exitosamente");
       onClose();
       setFormData({

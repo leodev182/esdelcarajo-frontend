@@ -80,9 +80,11 @@ export function EditSectionModal({
     e.preventDefault();
 
     try {
+      const payload = { ...formData };
+      if (!payload.videoUrl) delete payload.videoUrl;
       await updateSection.mutateAsync({
         id: section.id,
-        payload: formData,
+        payload,
       });
       toast.success("Sección actualizada exitosamente");
       onClose();
