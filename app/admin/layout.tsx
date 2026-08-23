@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/src/lib/hooks/useAuth";
+import { PageLoader } from "@/src/components/ui/PageLoader";
 import Link from "next/link";
 import {
   LayoutDashboard,
@@ -34,11 +35,7 @@ export default function AdminLayout({
   }, [isAuthenticated, isLoading, user, router]);
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-xl">Cargando...</p>
-      </div>
-    );
+    return <PageLoader />;
   }
 
   if (!user || (user.role !== "ADMIN" && user.role !== "SUPER_ADMIN")) {

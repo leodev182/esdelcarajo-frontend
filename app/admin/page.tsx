@@ -1,6 +1,7 @@
 "use client";
 
 import { useDashboardStats, useSellerStats } from "@/src/lib/hooks/useAdminDashboard";
+import { ContentLoader } from "@/src/components/ui/ContentLoader";
 import { useAuth } from "@/src/lib/hooks/useAuth";
 import { Package, ShoppingCart, Users, DollarSign } from "lucide-react";
 
@@ -10,13 +11,7 @@ export default function AdminDashboard() {
   const isSuperAdmin = user?.role === "SUPER_ADMIN";
   const { data: sellerStats } = useSellerStats();
 
-  if (isLoading) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-xl">Cargando estadísticas...</p>
-      </div>
-    );
-  }
+  if (isLoading) return <ContentLoader />;
 
   return (
     <div>

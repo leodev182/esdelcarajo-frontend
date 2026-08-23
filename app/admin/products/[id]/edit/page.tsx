@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useProductById } from "@/src/lib/hooks/useProducts";
+import { ContentLoader } from "@/src/components/ui/ContentLoader";
 import { useCategories } from "@/src/lib/hooks/useCategories";
 import {
   useUpdateProduct,
@@ -88,13 +89,7 @@ export default function EditProductPage() {
     }
   }, [product]);
 
-  if (isLoading) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-xl">Cargando producto...</p>
-      </div>
-    );
-  }
+  if (isLoading) return <ContentLoader />;
 
   if (!product) {
     return (

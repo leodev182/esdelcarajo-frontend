@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useAddresses, useDeleteAddress } from "@/src/lib/hooks/useAddresses";
+import { ContentLoader } from "@/src/components/ui/ContentLoader";
 import { getErrorMessage } from "@/src/lib/api/client";
 import { logger } from "@/src/lib/utils/logger";
 import { ArrowLeft, Plus, Trash2, MapPin, Pencil } from "lucide-react";
@@ -52,13 +53,7 @@ export default function DireccionesPage() {
     setEditingAddress(null);
   };
 
-  if (isLoading) {
-    return (
-      <div className="container mx-auto px-4 py-12 text-center">
-        <p className="text-xl">Cargando direcciones...</p>
-      </div>
-    );
-  }
+  if (isLoading) return <ContentLoader />;
 
   return (
     <div className="container mx-auto px-4 py-12">

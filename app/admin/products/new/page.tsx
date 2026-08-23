@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { getErrorMessage } from "@/src/lib/api/client";
 import { logger } from "@/src/lib/utils/logger";
 import { useCategories } from "@/src/lib/hooks/useCategories";
+import { ContentLoader } from "@/src/components/ui/ContentLoader";
 import { useCreateProduct } from "@/src/lib/hooks/useAdminProducts";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -55,13 +56,7 @@ export default function NewProductPage() {
     }
   };
 
-  if (loadingCategories) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-xl">Cargando...</p>
-      </div>
-    );
-  }
+  if (loadingCategories) return <ContentLoader />;
 
   return (
     <div>

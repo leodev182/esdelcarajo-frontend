@@ -4,6 +4,7 @@ import { useState } from "react";
 import { getErrorMessage } from "@/src/lib/api/client";
 import { logger } from "@/src/lib/utils/logger";
 import { useCategories } from "@/src/lib/hooks/useCategories";
+import { ContentLoader } from "@/src/components/ui/ContentLoader";
 import {
   useCreateCategory,
   useUpdateCategory,
@@ -219,13 +220,7 @@ export default function AdminCategoriesPage() {
     setSubcategoryForm({ categoryId: "", name: "", description: "", order: 0 });
   };
 
-  if (isLoading) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-xl">Cargando categorías...</p>
-      </div>
-    );
-  }
+  if (isLoading) return <ContentLoader />;
 
   return (
     <div>

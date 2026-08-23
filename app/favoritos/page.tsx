@@ -1,6 +1,7 @@
 "use client";
 
 import { useFavorites } from "@/src/lib/hooks/useFavorites";
+import { ContentLoader } from "@/src/components/ui/ContentLoader";
 import { useCart } from "@/src/lib/hooks/useCart";
 import { getErrorMessage } from "@/src/lib/api/client";
 import { logger } from "@/src/lib/utils/logger";
@@ -38,13 +39,7 @@ export default function FavoritosPage() {
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="container mx-auto px-4 py-12 text-center">
-        <p className="text-xl">Cargando favoritos...</p>
-      </div>
-    );
-  }
+  if (isLoading) return <ContentLoader />;
 
   return (
     <div className="container mx-auto px-4 py-12">

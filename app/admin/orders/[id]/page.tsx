@@ -6,6 +6,7 @@ import { getErrorMessage } from "@/src/lib/api/client";
 import { logger } from "@/src/lib/utils/logger";
 import Link from "next/link";
 import { useOrderById, useUpdateOrderStatus } from "@/src/lib/hooks/useOrders";
+import { ContentLoader } from "@/src/components/ui/ContentLoader";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { ArrowLeft, ExternalLink, Check, Pencil, AlertTriangle } from "lucide-react";
@@ -80,13 +81,7 @@ export default function AdminOrderDetailPage() {
 
   const isSuperAdmin = user?.role === "SUPER_ADMIN";
 
-  if (isLoading) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-xl">Cargando orden...</p>
-      </div>
-    );
-  }
+  if (isLoading) return <ContentLoader />;
 
   if (error || !order) {
     return (
