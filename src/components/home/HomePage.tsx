@@ -9,6 +9,7 @@ import { HeroClient } from "@/src/components/home/HeroClient";
 import { DynamicCarousel } from "@/src/components/home/DynamicCarousel";
 import { DynamicSection } from "@/src/components/home/DynamicSection";
 import { DynamicVideo } from "@/src/components/home/DynamicVideo";
+import { DynamicGallery } from "@/src/components/home/DynamicGallery";
 
 export function HomePage() {
   const { data: products, isLoading: loadingProducts } = useFeaturedProducts(8);
@@ -46,6 +47,8 @@ export function HomePage() {
               <DynamicCarousel section={section} />
             ) : section.type === "VIDEO" ? (
               <DynamicVideo section={section} />
+            ) : section.type === "GALLERY" ? (
+              <DynamicGallery section={section} />
             ) : (
               <DynamicSection section={section} />
             )}

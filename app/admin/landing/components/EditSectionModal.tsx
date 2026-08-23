@@ -163,6 +163,7 @@ export function EditSectionModal({
                   <SelectItem value="CAROUSEL">Carrusel</SelectItem>
                   <SelectItem value="CUSTOM">Banner</SelectItem>
                   <SelectItem value="VIDEO">Video</SelectItem>
+                  <SelectItem value="GALLERY">Galería</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -274,7 +275,9 @@ export function EditSectionModal({
           {formData.type !== "VIDEO" && <div className="space-y-3 pt-4 border-t">
             <div className="flex items-center justify-between">
               <div>
-                <Label>Imágenes ({section.images.length}/5)</Label>
+                <Label>
+                  Imágenes ({section.images.length}/{formData.type === "GALLERY" ? 20 : 5})
+                </Label>
                 {formData.type === "CAROUSEL" && (
                   <p className="text-xs text-gray-600 mt-1">
                     <strong>Dimensiones recomendadas:</strong>
@@ -282,12 +285,21 @@ export function EditSectionModal({
                     Panorámico: 1920x800px · Standard: 1920x1080px
                   </p>
                 )}
+                {formData.type === "GALLERY" && (
+                  <p className="text-xs text-gray-600 mt-1">
+                    <strong>Dimensiones recomendadas (máx. 20 fotos):</strong>
+                    <br />
+                    Retrato: 800×1200px · Cuadrado: 800×800px · Paisaje: 1200×800px
+                    <br />
+                    Mínimo 800px de ancho. Mezclar orientaciones da mejor efecto visual.
+                  </p>
+                )}
               </div>
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
-                disabled={section.images.length >= 5 || isUploadingImage}
+                disabled={section.images.length >= (formData.type === "GALLERY" ? 20 : 5) || isUploadingImage}
                 onClick={() => document.getElementById("image-upload")?.click()}
                 className="gap-2"
               >

@@ -50,6 +50,8 @@ export function SectionCard({ section }: SectionCardProps) {
       ? "Carrusel"
       : section.type === "VIDEO"
       ? "Video"
+      : section.type === "GALLERY"
+      ? "Galería"
       : "Banner";
   const positionLabel = {
     LEFT: "Izquierda",
@@ -160,7 +162,7 @@ export function SectionCard({ section }: SectionCardProps) {
               <div className="flex items-center gap-2 mb-3">
                 <ImageIcon className="h-4 w-4 text-gray-600" />
                 <span className="text-sm font-bold text-gray-600">
-                  Imágenes ({section.images.length}/5)
+                  Imágenes ({section.images.length}/{section.type === "GALLERY" ? 20 : 5})
                 </span>
               </div>
 

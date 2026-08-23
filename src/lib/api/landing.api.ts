@@ -8,7 +8,7 @@ export interface SectionImage {
   order: number;
 }
 
-export type SectionType = "CAROUSEL" | "CUSTOM" | "VIDEO";
+export type SectionType = "CAROUSEL" | "CUSTOM" | "VIDEO" | "GALLERY";
 export type TextPosition = "LEFT" | "CENTER" | "RIGHT" | "TOP" | "BOTTOM";
 
 export interface LandingSection {

@@ -88,6 +88,7 @@ export function CreateSectionModal({ open, onClose }: CreateSectionModalProps) {
                   <SelectItem value="CAROUSEL">Carrusel</SelectItem>
                   <SelectItem value="CUSTOM">Banner</SelectItem>
                   <SelectItem value="VIDEO">Video</SelectItem>
+                  <SelectItem value="GALLERY">Galería</SelectItem>
                 </SelectContent>
               </Select>
             </div>
