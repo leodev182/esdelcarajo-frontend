@@ -43,11 +43,6 @@ export function CreateSectionModal({ open, onClose }: CreateSectionModalProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.title.trim()) {
-      toast.error("El título es obligatorio");
-      return;
-    }
-
     try {
       await createSection.mutateAsync(formData);
       toast.success("Sección creada exitosamente");
@@ -89,7 +84,7 @@ export function CreateSectionModal({ open, onClose }: CreateSectionModalProps) {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="CAROUSEL">Carrusel</SelectItem>
-                  <SelectItem value="CUSTOM">Personalizada</SelectItem>
+                  <SelectItem value="CUSTOM">Banner</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -109,7 +104,7 @@ export function CreateSectionModal({ open, onClose }: CreateSectionModalProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="title">Título *</Label>
+            <Label htmlFor="title">Título (opcional)</Label>
             <Input
               id="title"
               value={formData.title}

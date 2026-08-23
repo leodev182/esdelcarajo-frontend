@@ -76,11 +76,6 @@ export function EditSectionModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.title?.trim()) {
-      toast.error("El título es obligatorio");
-      return;
-    }
-
     try {
       await updateSection.mutateAsync({
         id: section.id,
@@ -163,7 +158,7 @@ export function EditSectionModal({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="CAROUSEL">Carrusel</SelectItem>
-                  <SelectItem value="CUSTOM">Personalizada</SelectItem>
+                  <SelectItem value="CUSTOM">Banner</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -183,7 +178,7 @@ export function EditSectionModal({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="title">Título *</Label>
+            <Label htmlFor="title">Título (opcional)</Label>
             <Input
               id="title"
               value={formData.title}
