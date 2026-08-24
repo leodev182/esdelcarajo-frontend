@@ -26,6 +26,7 @@ import type { ProductVariant } from "@/src/lib/types";
 import { uploadProductImage } from "@/src/lib/api/admin-products.api";
 import { getErrorMessage } from "@/src/lib/api/client";
 import { logger } from "@/src/lib/utils/logger";
+import * as Sentry from "@sentry/nextjs";
 
 export default function EditProductPage() {
   const params = useParams();
@@ -581,7 +582,13 @@ export default function EditProductPage() {
                       toast.success("Imagen subida. Asígnala a las variantes desde la lista.");
                       e.target.value = "";
                     } catch (error) {
-                      toast.error(getErrorMessage(error));
+                      const err = error instanceof Error ? error : new Error(String(error));
+                      logger.error("Error al subir imagen de producto", err);
+                      Sentry.captureException(err, {
+                        tags: { action: "upload_product_image" },
+                        extra: { productId, fileName: file.name, fileSize: file.size },
+                      });
+                      toast.error(getErrorMessage(error) || "Error al subir la imagen. Verifica el archivo e intenta nuevamente.");
                     }
                   }}
                 />

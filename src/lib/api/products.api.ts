@@ -10,6 +10,8 @@ export interface ProductFilters {
   size?: string;
   isFeatured?: boolean;
   inStock?: boolean;
+  isActive?: boolean;
+  includeAll?: boolean;
   page?: number;
   limit?: number;
   sortBy?: "createdAt" | "price" | "name";

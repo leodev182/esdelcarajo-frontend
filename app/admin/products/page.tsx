@@ -5,10 +5,11 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Link from "next/link";
 import { useProducts } from "@/src/lib/hooks/useProducts";
-import { useDeleteProduct } from "@/src/lib/hooks/useAdminProducts";
+import { useDeleteProduct, useUpdateProduct } from "@/src/lib/hooks/useAdminProducts";
 import { useAuth } from "@/src/lib/hooks/useAuth";
 import { getErrorMessage } from "@/src/lib/api/client";
 import { logger } from "@/src/lib/utils/logger";
+import { ContentLoader } from "@/src/components/ui/ContentLoader";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 import {
@@ -19,6 +20,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Search,
+  RotateCcw,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -42,13 +44,14 @@ export default function AdminProductsPage() {
     search: search || undefined,
     page,
     limit: 10,
+    includeAll: true,
   });
 
   const deleteProduct = useDeleteProduct();
+  const updateProduct = useUpdateProduct();
 
   const handleDelete = async (productId: string, productName: string) => {
     if (!(await confirm(`¿Eliminar el producto "${productName}"?`))) return;
-
     try {
       await deleteProduct.mutateAsync(productId);
       toast.success("Producto eliminado");
@@ -57,6 +60,21 @@ export default function AdminProductsPage() {
       toast.error(getErrorMessage(error));
     }
   };
+
+  const handleReactivate = async (productId: string, productName: string) => {
+    try {
+      await updateProduct.mutateAsync({
+        productId,
+        payload: { isActive: true },
+      });
+      toast.success(`"${productName}" reactivado`);
+    } catch (error) {
+      logger.error("Error al reactivar producto", error);
+      toast.error(getErrorMessage(error));
+    }
+  };
+
+  if (isLoading) return <ContentLoader />;
 
   if (error) {
     return (
@@ -96,9 +114,7 @@ export default function AdminProductsPage() {
           </div>
         </div>
 
-        {isLoading ? (
-          <p className="text-center py-8 text-gray-600">Cargando...</p>
-        ) : !data || data.data.length === 0 ? (
+        {!data || data.data.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-gray-600 mb-4">No hay productos</p>
             <Link href="/admin/products/new">
@@ -123,89 +139,107 @@ export default function AdminProductsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {data.data.map((product) => (
-                    <tr
-                      key={product.id}
-                      className="border-b border-gray-200 hover:bg-gray-50"
-                    >
-                      <td className="py-3 px-4">
-                        <div className="flex items-center gap-3">
-                          {product.images[0] ? (
-                            <img
-                              src={product.images[0].url}
-                              alt={product.name}
-                              className="w-12 h-12 object-cover rounded border"
-                            />
+                  {data.data.map((product) => {
+                    const inactive = !product.isActive;
+                    return (
+                      <tr
+                        key={product.id}
+                        className={`border-b border-gray-200 transition-all ${
+                          inactive
+                            ? "bg-gray-50"
+                            : "hover:bg-gray-50"
+                        }`}
+                      >
+                        <td className="py-3 px-4">
+                          <div
+                            className={`flex items-center gap-3 transition-all ${
+                              inactive ? "blur-[1px] opacity-40" : ""
+                            }`}
+                          >
+                            {product.images[0] ? (
+                              <img
+                                src={product.images[0].url}
+                                alt={product.name}
+                                className="w-12 h-12 object-cover rounded border"
+                              />
+                            ) : (
+                              <div className="w-12 h-12 bg-gray-200 rounded border flex items-center justify-center text-gray-400 text-xs">
+                                Sin img
+                              </div>
+                            )}
+                            <div>
+                              <p className={`font-bold ${inactive ? "line-through decoration-gray-400" : ""}`}>
+                                {product.name}
+                              </p>
+                              <p className="text-xs text-gray-500">{product.slug}</p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className={`py-3 px-4 ${inactive ? "blur-[1px] opacity-40" : ""}`}>
+                          <p className="text-sm">{product.category?.name}</p>
+                          {product.subcategory && (
+                            <p className="text-xs text-gray-500">{product.subcategory.name}</p>
+                          )}
+                        </td>
+                        <td className={`py-3 px-4 ${inactive ? "blur-[1px] opacity-40" : ""}`}>
+                          <span className="text-sm font-bold">{product.variants.length}</span>
+                        </td>
+                        <td className="py-3 px-4">
+                          <span
+                            className={`px-3 py-1 rounded-full text-xs font-bold ${
+                              inactive
+                                ? "bg-red-100 text-red-600"
+                                : "bg-green-100 text-green-800"
+                            }`}
+                          >
+                            {inactive ? "Eliminado" : "Activo"}
+                          </span>
+                        </td>
+                        <td className={`py-3 px-4 text-sm text-gray-600 ${inactive ? "opacity-40" : ""}`}>
+                          {formatDistanceToNow(new Date(product.createdAt), {
+                            addSuffix: true,
+                            locale: es,
+                          })}
+                        </td>
+                        <td className="py-3 px-4">
+                          {inactive ? (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleReactivate(product.id, product.name)}
+                              disabled={updateProduct.isPending}
+                              className="gap-1 text-green-700 border-green-300 hover:bg-green-50"
+                            >
+                              <RotateCcw className="h-3 w-3" />
+                              Reactivar
+                            </Button>
                           ) : (
-                            <div className="w-12 h-12 bg-gray-200 rounded border flex items-center justify-center text-gray-400 text-xs">
-                              Sin img
+                            <div className="flex items-center gap-2">
+                              <Link href={`/product/${product.slug}`}>
+                                <Button size="sm" variant="outline">
+                                  <Eye className="h-4 w-4" />
+                                </Button>
+                              </Link>
+                              <Link href={`/admin/products/${product.id}/edit`}>
+                                <Button size="sm" variant="outline">
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                              </Link>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleDelete(product.id, product.name)}
+                                disabled={deleteProduct.isPending}
+                                className="text-red-600 hover:text-red-700"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
                             </div>
                           )}
-                          <div>
-                            <p className="font-bold">{product.name}</p>
-                            <p className="text-xs text-gray-500">
-                              {product.slug}
-                            </p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="py-3 px-4">
-                        <p className="text-sm">{product.category?.name}</p>
-                        {product.subcategory && (
-                          <p className="text-xs text-gray-500">
-                            {product.subcategory.name}
-                          </p>
-                        )}
-                      </td>
-                      <td className="py-3 px-4">
-                        <span className="text-sm font-bold">
-                          {product.variants.length}
-                        </span>
-                      </td>
-                      <td className="py-3 px-4">
-                        <span
-                          className={`px-3 py-1 rounded-full text-xs font-bold ${
-                            product.isActive
-                              ? "bg-green-100 text-green-800"
-                              : "bg-gray-100 text-gray-800"
-                          }`}
-                        >
-                          {product.isActive ? "Activo" : "Inactivo"}
-                        </span>
-                      </td>
-                      <td className="py-3 px-4 text-sm text-gray-600">
-                        {formatDistanceToNow(new Date(product.createdAt), {
-                          addSuffix: true,
-                          locale: es,
-                        })}
-                      </td>
-                      <td className="py-3 px-4">
-                        <div className="flex items-center gap-2">
-                          <Link href={`/product/${product.slug}`}>
-                            <Button size="sm" variant="outline">
-                              <Eye className="h-4 w-4" />
-                            </Button>
-                          </Link>
-                          <Link href={`/admin/products/${product.id}/edit`}>
-                            <Button size="sm" variant="outline">
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                          </Link>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() =>
-                              handleDelete(product.id, product.name)
-                            }
-                            disabled={deleteProduct.isPending}
-                            className="text-red-600 hover:text-red-700"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -213,8 +247,7 @@ export default function AdminProductsPage() {
             {data.meta.totalPages > 1 && (
               <div className="flex items-center justify-between mt-6 pt-4 border-t">
                 <p className="text-sm text-gray-600">
-                  Página {data.meta.page} de {data.meta.totalPages} (
-                  {data.meta.total} productos)
+                  Página {data.meta.page} de {data.meta.totalPages} ({data.meta.total} productos)
                 </p>
                 <div className="flex gap-2">
                   <Button
