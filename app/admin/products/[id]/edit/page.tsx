@@ -16,7 +16,7 @@ import {
   useDeleteProductImage,
   useUpdateImageVariants,
 } from "@/src/lib/hooks/useAdminProducts";
-import { ArrowLeft, Plus, Edit, Trash2 } from "lucide-react";
+import { ArrowLeft, Plus, Edit, Trash2, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -635,6 +635,41 @@ export default function EditProductPage() {
                           >
                             <Edit className="h-3 w-3 text-gray-600" />
                           </button>
+                          <label
+                            className="p-1 bg-white rounded border hover:bg-gray-50 cursor-pointer"
+                            title="Cambiar imagen"
+                          >
+                            <Camera className="h-3 w-3 text-blue-600" />
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={async (e) => {
+                                const file = e.target.files?.[0];
+                                if (!file) return;
+                                try {
+                                  const currentVariantIds = associatedVariants.map((v) => v!.id);
+                                  const uploadResponse = await uploadProductImage(file);
+                                  await deleteImage.mutateAsync(image.id);
+                                  await addImage.mutateAsync({
+                                    productId,
+                                    url: uploadResponse.url,
+                                    publicId: uploadResponse.publicId,
+                                    alt: product.name,
+                                    order: product.images.length,
+                                    variantIds: currentVariantIds,
+                                  });
+                                  toast.success("Imagen reemplazada");
+                                  e.target.value = "";
+                                } catch (error) {
+                                  const err = error instanceof Error ? error : new Error(String(error));
+                                  logger.error("Error al reemplazar imagen", err);
+                                  Sentry.captureException(err, { tags: { action: "replace_product_image" }, extra: { imageId: image.id, productId } });
+                                  toast.error(getErrorMessage(error) || "Error al reemplazar la imagen");
+                                }
+                              }}
+                            />
+                          </label>
                           <button
                             onClick={async () => {
                               try {

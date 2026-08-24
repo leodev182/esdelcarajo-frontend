@@ -65,7 +65,8 @@ export default function AdminProductsPage() {
     try {
       await updateProduct.mutateAsync({
         productId,
-        payload: { isActive: true },
+        // Enviamos name para que el service regenere el slug limpio
+        payload: { isActive: true, name: productName },
       });
       toast.success(`"${productName}" reactivado`);
     } catch (error) {
