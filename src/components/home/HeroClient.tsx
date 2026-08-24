@@ -22,7 +22,7 @@ export function HeroClient() {
           {/* TASA BCV */}
           <BcvDisplay />
 
-          {/* VISIÓN - Más delgado y alargado */}
+          {/* VISIÓN */}
           <div className="bg-[#C9BEA5] text-black p-6 py-12 border-4 border-black shadow-xl relative max-w-sm">
             <div className="absolute -bottom-3 -right-3 w-full h-full border-4 border-[#FF6501] pointer-events-none"></div>
             <h2 className="text-3xl font-black mb-4 uppercase">Visión</h2>
@@ -52,7 +52,7 @@ export function HeroClient() {
           </div>
         </div>
 
-        {/* DERECHA - Modelo posicionada en la zona amarilla */}
+        {/* DERECHA - Modelo */}
         <div className="hidden md:block absolute right-12 bottom-0 h-[90vh] w-[500px]">
           <Image
             src="/images/modelo1.png"
