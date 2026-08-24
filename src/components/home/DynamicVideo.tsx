@@ -36,7 +36,7 @@ export function DynamicVideo({ section }: DynamicVideoProps) {
 
   return (
     <section className="py-20" style={{ backgroundColor: section.bgColor }}>
-      <div className="container px-6 md:px-8">
+      <div className="w-full max-w-5xl mx-auto px-4 md:px-8">
         {(section.title || section.description) && (
           <div className="text-center mb-10">
             {section.title && (
@@ -53,8 +53,7 @@ export function DynamicVideo({ section }: DynamicVideoProps) {
         )}
 
         {embedUrl ? (
-          <div className="relative w-full max-w-5xl mx-auto rounded-xl overflow-hidden shadow-2xl border-4 border-dark"
-               style={{ paddingBottom: "56.25%" }}>
+          <div className="relative w-full aspect-video rounded-xl overflow-hidden shadow-2xl">
             <iframe
               src={embedUrl}
               title={section.title || "Video"}
@@ -64,7 +63,7 @@ export function DynamicVideo({ section }: DynamicVideoProps) {
             />
           </div>
         ) : (
-          <div className="flex items-center justify-center w-full max-w-5xl mx-auto aspect-video rounded-xl border-4 border-dashed border-gray-300 bg-gray-50">
+          <div className="flex items-center justify-center w-full aspect-video rounded-xl border-4 border-dashed border-gray-300 bg-gray-50">
             <p className="text-gray-400 text-sm">URL de video no válida</p>
           </div>
         )}
