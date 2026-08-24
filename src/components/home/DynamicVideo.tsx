@@ -31,11 +31,20 @@ function getEmbedUrl(url: string): string | null {
   }
 }
 
+const glassStyle: React.CSSProperties = {
+  backdropFilter: "blur(20px) saturate(160%)",
+  WebkitBackdropFilter: "blur(20px) saturate(160%)",
+  backgroundColor: "rgba(194, 184, 184, 0.12)",
+  borderTop: "1px solid rgba(255,255,255,0.18)",
+  borderBottom: "1px solid rgba(255,255,255,0.18)",
+};
+
 export function DynamicVideo({ section }: DynamicVideoProps) {
   const embedUrl = section.videoUrl ? getEmbedUrl(section.videoUrl) : null;
+  const isGlass = section.bgColor === "glass";
 
   return (
-    <section className="py-20" style={{ backgroundColor: section.bgColor }}>
+    <section className="py-20" style={isGlass ? glassStyle : { backgroundColor: section.bgColor }}>
       <div className="w-full max-w-5xl mx-auto px-4 md:px-8">
         {(section.title || section.description) && (
           <div className="text-center mb-10">

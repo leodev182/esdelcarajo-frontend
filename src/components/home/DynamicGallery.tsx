@@ -9,8 +9,17 @@ interface DynamicGalleryProps {
   section: LandingSection;
 }
 
+const glassStyle: React.CSSProperties = {
+  backdropFilter: "blur(20px) saturate(160%)",
+  WebkitBackdropFilter: "blur(20px) saturate(160%)",
+  backgroundColor: "rgba(194, 184, 184, 0.12)",
+  borderTop: "1px solid rgba(255,255,255,0.18)",
+  borderBottom: "1px solid rgba(255,255,255,0.18)",
+};
+
 export function DynamicGallery({ section }: DynamicGalleryProps) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const isGlass = section.bgColor === "glass";
   const images = section.images;
 
   const closeLightbox = useCallback(() => setLightboxIndex(null), []);
@@ -35,7 +44,7 @@ export function DynamicGallery({ section }: DynamicGalleryProps) {
   }, [lightboxIndex, prev, next, closeLightbox]);
 
   return (
-    <section className="py-20" style={{ backgroundColor: section.bgColor }}>
+    <section className="py-20" style={isGlass ? glassStyle : { backgroundColor: section.bgColor }}>
       <style>{`
         .gallery-grid {
           columns: 1;

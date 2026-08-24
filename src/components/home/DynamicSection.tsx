@@ -7,7 +7,16 @@ interface DynamicSectionProps {
   section: LandingSection;
 }
 
+const glassStyle: React.CSSProperties = {
+  backdropFilter: "blur(20px) saturate(160%)",
+  WebkitBackdropFilter: "blur(20px) saturate(160%)",
+  backgroundColor: "rgba(194, 184, 184, 0.12)",
+  borderTop: "1px solid rgba(255,255,255,0.18)",
+  borderBottom: "1px solid rgba(255,255,255,0.18)",
+};
+
 export function DynamicSection({ section }: DynamicSectionProps) {
+  const isGlass = section.bgColor === "glass";
   const getLayoutClass = () => {
     switch (section.textPosition) {
       case "LEFT":
@@ -38,7 +47,7 @@ export function DynamicSection({ section }: DynamicSectionProps) {
   };
 
   return (
-    <section className="py-20" style={{ backgroundColor: section.bgColor }}>
+    <section className="py-20" style={isGlass ? glassStyle : { backgroundColor: section.bgColor }}>
       <div className="container px-6 md:px-8">
         <div className={getLayoutClass()}>
           <div className={getTextAlignClass()}>

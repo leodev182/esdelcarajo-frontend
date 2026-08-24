@@ -262,27 +262,53 @@ export function EditSectionModal({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="bgColor">Color de Fondo</Label>
-              <div className="flex gap-2">
-                <Input
-                  id="bgColor"
-                  type="color"
-                  value={formData.bgColor}
-                  onChange={(e) =>
-                    setFormData({ ...formData, bgColor: e.target.value })
-                  }
-                  className="w-20 h-10 cursor-pointer"
-                />
-                <Input
-                  type="text"
-                  value={formData.bgColor}
-                  onChange={(e) =>
-                    setFormData({ ...formData, bgColor: e.target.value })
-                  }
-                  placeholder="#FFFFFF"
-                  className="flex-1"
-                />
+              <Label>Fondo de Sección</Label>
+              <div className="flex gap-2 mb-2">
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, bgColor: "glass" })}
+                  className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors ${
+                    formData.bgColor === "glass"
+                      ? "bg-blue-100 border-blue-400 text-blue-700"
+                      : "bg-white border-gray-200 text-gray-500"
+                  }`}
+                >
+                  ✨ Efecto Glass
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, bgColor: "#FFFFFF" })}
+                  className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors ${
+                    formData.bgColor !== "glass"
+                      ? "bg-gray-100 border-gray-400 text-gray-700"
+                      : "bg-white border-gray-200 text-gray-500"
+                  }`}
+                >
+                  Color sólido
+                </button>
               </div>
+              {formData.bgColor !== "glass" && (
+                <div className="flex gap-2">
+                  <Input
+                    id="bgColor"
+                    type="color"
+                    value={formData.bgColor}
+                    onChange={(e) =>
+                      setFormData({ ...formData, bgColor: e.target.value })
+                    }
+                    className="w-20 h-10 cursor-pointer"
+                  />
+                  <Input
+                    type="text"
+                    value={formData.bgColor}
+                    onChange={(e) =>
+                      setFormData({ ...formData, bgColor: e.target.value })
+                    }
+                    placeholder="#FFFFFF"
+                    className="flex-1"
+                  />
+                </div>
+              )}
             </div>
           </div>
 

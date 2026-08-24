@@ -9,7 +9,16 @@ interface DynamicCarouselProps {
   section: LandingSection;
 }
 
+const glassStyle: React.CSSProperties = {
+  backdropFilter: "blur(20px) saturate(160%)",
+  WebkitBackdropFilter: "blur(20px) saturate(160%)",
+  backgroundColor: "rgba(194, 184, 184, 0.12)",
+  borderTop: "1px solid rgba(255,255,255,0.18)",
+  borderBottom: "1px solid rgba(255,255,255,0.18)",
+};
+
 export function DynamicCarousel({ section }: DynamicCarouselProps) {
+  const isGlass = section.bgColor === "glass";
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
@@ -52,7 +61,7 @@ export function DynamicCarousel({ section }: DynamicCarouselProps) {
     return (
       <section
         className="min-h-[400px] flex items-center justify-center"
-        style={{ backgroundColor: section.bgColor }}
+        style={isGlass ? glassStyle : { backgroundColor: section.bgColor }}
       >
         <div className="text-center px-6">
           <h2 className="text-4xl md:text-6xl font-bold uppercase mb-4">

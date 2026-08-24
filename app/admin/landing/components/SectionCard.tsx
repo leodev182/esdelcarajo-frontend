@@ -86,15 +86,18 @@ export function SectionCard({ section }: SectionCardProps) {
             <div className="flex items-center gap-4 text-sm text-gray-500">
               <span>Posición: {positionLabel}</span>
               <span>Orden: {section.order}</span>
-              <div
-                className="flex items-center gap-2"
-                style={{ backgroundColor: section.bgColor }}
-              >
-                <span>Color:</span>
-                <div
-                  className="w-6 h-6 rounded border-2 border-gray-300"
-                  style={{ backgroundColor: section.bgColor }}
-                />
+              <div className="flex items-center gap-2">
+                <span>Fondo:</span>
+                {section.bgColor === "glass" ? (
+                  <span className="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200">
+                    ✨ Glass
+                  </span>
+                ) : (
+                  <div
+                    className="w-6 h-6 rounded border-2 border-gray-300"
+                    style={{ backgroundColor: section.bgColor }}
+                  />
+                )}
               </div>
             </div>
           </div>
