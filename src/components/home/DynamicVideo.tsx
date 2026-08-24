@@ -16,13 +16,13 @@ function getEmbedUrl(url: string): string | null {
         u.searchParams.get("v") ||
         (u.hostname === "youtu.be" ? u.pathname.slice(1) : null) ||
         (u.pathname.startsWith("/shorts/") ? u.pathname.split("/")[2] : null);
-      if (id) return `https://www.youtube.com/embed/${id}?rel=0&modestbranding=1`;
+      if (id) return `https://www.youtube.com/embed/${id}?rel=0&modestbranding=1&autoplay=1&mute=1&loop=1&playlist=${id}`;
     }
 
     // Vimeo: vimeo.com/ID
     if (u.hostname.includes("vimeo.com")) {
       const id = u.pathname.split("/").filter(Boolean)[0];
-      if (id) return `https://player.vimeo.com/video/${id}`;
+      if (id) return `https://player.vimeo.com/video/${id}?autoplay=1&muted=1&loop=1`;
     }
 
     return null;
@@ -66,7 +66,7 @@ export function DynamicVideo({ section }: DynamicVideoProps) {
             <iframe
               src={embedUrl}
               title={section.title || "Video"}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
               className="absolute inset-0 w-full h-full"
             />

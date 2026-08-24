@@ -10,6 +10,9 @@ import { Toaster } from "sonner";
 export const metadata: Metadata = {
   title: "Del Carajo - Devotos del Arte",
   description: "Ropa urbana venezolana con actitud",
+  verification: {
+    google: "google98cf2832a423adf1",
+  },
 };
 
 export default function RootLayout({
