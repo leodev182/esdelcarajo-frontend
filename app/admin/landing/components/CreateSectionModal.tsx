@@ -3,6 +3,9 @@
 import { useState } from "react";
 import { useCreateSection } from "@/src/lib/hooks/useLanding";
 import { CreateSectionPayload, SectionType } from "@/src/lib/api/landing.api";
+import { getErrorMessage } from "@/src/lib/api/client";
+import { logger } from "@/src/lib/utils/logger";
+import * as Sentry from "@sentry/nextjs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -60,7 +63,10 @@ export function CreateSectionModal({ open, onClose }: CreateSectionModalProps) {
         order: 0,
       });
     } catch (error) {
-      toast.error("Error al crear la sección");
+      const err = error instanceof Error ? error : new Error(String(error));
+      logger.error("Error al crear sección de landing", err);
+      Sentry.captureException(err, { tags: { action: "create_landing_section" }, extra: { type: formData.type } });
+      toast.error(getErrorMessage(error) || "Error al crear la sección");
     }
   };
 

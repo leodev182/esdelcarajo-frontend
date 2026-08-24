@@ -33,6 +33,9 @@ import { toast } from "sonner";
 import { Loader2, Upload, X } from "lucide-react";
 import { uploadProductImage } from "@/src/lib/api/admin-products.api";
 import Image from "next/image";
+import { getErrorMessage } from "@/src/lib/api/client";
+import { logger } from "@/src/lib/utils/logger";
+import * as Sentry from "@sentry/nextjs";
 
 interface EditSectionModalProps {
   section: LandingSection;
@@ -89,7 +92,10 @@ export function EditSectionModal({
       toast.success("Sección actualizada exitosamente");
       onClose();
     } catch (error) {
-      toast.error("Error al actualizar la sección");
+      const err = error instanceof Error ? error : new Error(String(error));
+      logger.error("Error al actualizar sección de landing", err);
+      Sentry.captureException(err, { tags: { action: "update_landing_section" }, extra: { sectionId: section.id } });
+      toast.error(getErrorMessage(error) || "Error al actualizar la sección");
     }
   };
 
@@ -117,7 +123,10 @@ export function EditSectionModal({
       toast.success("Imagen agregada exitosamente");
       e.target.value = "";
     } catch (error) {
-      toast.error("Error al subir la imagen");
+      const err = error instanceof Error ? error : new Error(String(error));
+      logger.error("Error al subir imagen en sección de landing", err);
+      Sentry.captureException(err, { tags: { action: "upload_landing_section_image" }, extra: { sectionId: section.id } });
+      toast.error(getErrorMessage(error) || "Error al subir la imagen");
     } finally {
       setIsUploadingImage(false);
     }
@@ -133,7 +142,10 @@ export function EditSectionModal({
       });
       toast.success("Imagen eliminada exitosamente");
     } catch (error) {
-      toast.error("Error al eliminar la imagen");
+      const err = error instanceof Error ? error : new Error(String(error));
+      logger.error("Error al eliminar imagen de sección de landing", err);
+      Sentry.captureException(err, { tags: { action: "delete_landing_section_image" }, extra: { imageId, sectionId: section.id } });
+      toast.error(getErrorMessage(error) || "Error al eliminar la imagen");
     }
   };
 
