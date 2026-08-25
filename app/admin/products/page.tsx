@@ -54,6 +54,10 @@ export default function AdminProductsPage() {
       : { isActive: true }),
   });
 
+  const displayedProducts = tab === "deleted"
+    ? (data?.data ?? []).filter((p) => !p.isActive)
+    : (data?.data ?? []);
+
   const deleteProduct = useDeleteProduct();
   const updateProduct = useUpdateProduct();
 
@@ -148,7 +152,7 @@ export default function AdminProductsPage() {
           </div>
         </div>
 
-        {!data || data.data.length === 0 ? (
+        {!data || displayedProducts.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-gray-600 mb-4">
               {tab === "deleted" ? "No hay productos eliminados" : "No hay productos"}
@@ -176,7 +180,7 @@ export default function AdminProductsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {data.data.map((product) => (
+                  {displayedProducts.map((product) => (
                     <tr
                       key={product.id}
                       className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
