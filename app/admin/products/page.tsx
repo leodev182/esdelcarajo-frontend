@@ -21,15 +21,20 @@ import {
   ChevronRight,
   Search,
   RotateCcw,
+  PackageCheck,
+  PackageX,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ConfirmModal, useConfirm } from "@/src/components/ui/ConfirmModal";
 import { toast } from "sonner";
 
+type Tab = "active" | "deleted";
+
 export default function AdminProductsPage() {
   const { user } = useAuth();
   const router = useRouter();
+  const [tab, setTab] = useState<Tab>("active");
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const { confirm, confirmProps } = useConfirm();
@@ -44,7 +49,9 @@ export default function AdminProductsPage() {
     search: search || undefined,
     page,
     limit: 10,
-    includeAll: true,
+    ...(tab === "deleted"
+      ? { includeAll: true, isActive: false }
+      : { isActive: true }),
   });
 
   const deleteProduct = useDeleteProduct();
@@ -98,6 +105,32 @@ export default function AdminProductsPage() {
         </Link>
       </div>
 
+      {/* Tabs */}
+      <div className="flex gap-2 mb-4">
+        <button
+          onClick={() => { setTab("active"); setPage(1); setSearch(""); }}
+          className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold border-2 transition-colors ${
+            tab === "active"
+              ? "bg-dark text-white border-dark"
+              : "bg-white text-dark border-dark hover:bg-gray-50"
+          }`}
+        >
+          <PackageCheck className="h-4 w-4" />
+          Activos
+        </button>
+        <button
+          onClick={() => { setTab("deleted"); setPage(1); setSearch(""); }}
+          className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold border-2 transition-colors ${
+            tab === "deleted"
+              ? "bg-red-600 text-white border-red-600"
+              : "bg-white text-red-600 border-red-300 hover:bg-red-50"
+          }`}
+        >
+          <PackageX className="h-4 w-4" />
+          Eliminados
+        </button>
+      </div>
+
       <div className="bg-white rounded-lg border-2 border-dark p-6">
         <div className="mb-6">
           <div className="relative">
@@ -117,13 +150,17 @@ export default function AdminProductsPage() {
 
         {!data || data.data.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-gray-600 mb-4">No hay productos</p>
-            <Link href="/admin/products/new">
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
-                Crear Primer Producto
-              </Button>
-            </Link>
+            <p className="text-gray-600 mb-4">
+              {tab === "deleted" ? "No hay productos eliminados" : "No hay productos"}
+            </p>
+            {tab === "active" && (
+              <Link href="/admin/products/new">
+                <Button>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Crear Primer Producto
+                </Button>
+              </Link>
+            )}
           </div>
         ) : (
           <>
@@ -134,113 +171,88 @@ export default function AdminProductsPage() {
                     <th className="text-left py-3 px-4">Producto</th>
                     <th className="text-left py-3 px-4">Categoría</th>
                     <th className="text-left py-3 px-4">Variantes</th>
-                    <th className="text-left py-3 px-4">Estado</th>
                     <th className="text-left py-3 px-4">Creado</th>
                     <th className="text-left py-3 px-4">Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {data.data.map((product) => {
-                    const inactive = !product.isActive;
-                    return (
-                      <tr
-                        key={product.id}
-                        className={`border-b border-gray-200 transition-all ${
-                          inactive
-                            ? "bg-gray-50"
-                            : "hover:bg-gray-50"
-                        }`}
-                      >
-                        <td className="py-3 px-4">
-                          <div
-                            className={`flex items-center gap-3 transition-all ${
-                              inactive ? "blur-[1px] opacity-40" : ""
-                            }`}
-                          >
-                            {product.images[0] ? (
-                              <img
-                                src={product.images[0].url}
-                                alt={product.name}
-                                className="w-12 h-12 object-cover rounded border"
-                              />
-                            ) : (
-                              <div className="w-12 h-12 bg-gray-200 rounded border flex items-center justify-center text-gray-400 text-xs">
-                                Sin img
-                              </div>
-                            )}
-                            <div>
-                              <p className={`font-bold ${inactive ? "line-through decoration-gray-400" : ""}`}>
-                                {product.name}
-                              </p>
-                              <p className="text-xs text-gray-500">{product.slug}</p>
+                  {data.data.map((product) => (
+                    <tr
+                      key={product.id}
+                      className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
+                    >
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-3">
+                          {product.images[0] ? (
+                            <img
+                              src={product.images[0].url}
+                              alt={product.name}
+                              className="w-12 h-12 object-cover rounded border"
+                            />
+                          ) : (
+                            <div className="w-12 h-12 bg-gray-200 rounded border flex items-center justify-center text-gray-400 text-xs">
+                              Sin img
                             </div>
-                          </div>
-                        </td>
-                        <td className={`py-3 px-4 ${inactive ? "blur-[1px] opacity-40" : ""}`}>
-                          <p className="text-sm">{product.category?.name}</p>
-                          {product.subcategory && (
-                            <p className="text-xs text-gray-500">{product.subcategory.name}</p>
                           )}
-                        </td>
-                        <td className={`py-3 px-4 ${inactive ? "blur-[1px] opacity-40" : ""}`}>
-                          <span className="text-sm font-bold">{product.variants.length}</span>
-                        </td>
-                        <td className="py-3 px-4">
-                          <span
-                            className={`px-3 py-1 rounded-full text-xs font-bold ${
-                              inactive
-                                ? "bg-red-100 text-red-600"
-                                : "bg-green-100 text-green-800"
-                            }`}
+                          <div>
+                            <p className="font-bold">{product.name}</p>
+                            <p className="text-xs text-gray-500">{product.slug}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="py-3 px-4">
+                        <p className="text-sm">{product.category?.name}</p>
+                        {product.subcategory && (
+                          <p className="text-xs text-gray-500">{product.subcategory.name}</p>
+                        )}
+                      </td>
+                      <td className="py-3 px-4">
+                        <span className="text-sm font-bold">{product.variants.length}</span>
+                      </td>
+                      <td className="py-3 px-4 text-sm text-gray-600">
+                        {formatDistanceToNow(new Date(product.createdAt), {
+                          addSuffix: true,
+                          locale: es,
+                        })}
+                      </td>
+                      <td className="py-3 px-4">
+                        {tab === "deleted" ? (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleReactivate(product.id, product.name)}
+                            disabled={updateProduct.isPending}
+                            className="gap-1 text-green-700 border-green-300 hover:bg-green-50"
                           >
-                            {inactive ? "Eliminado" : "Activo"}
-                          </span>
-                        </td>
-                        <td className={`py-3 px-4 text-sm text-gray-600 ${inactive ? "opacity-40" : ""}`}>
-                          {formatDistanceToNow(new Date(product.createdAt), {
-                            addSuffix: true,
-                            locale: es,
-                          })}
-                        </td>
-                        <td className="py-3 px-4">
-                          {inactive ? (
+                            <RotateCcw className="h-3 w-3" />
+                            Reactivar
+                          </Button>
+                        ) : (
+                          <div className="flex items-center gap-2">
+                            <Link href={`/product/${product.slug}`}>
+                              <Button size="sm" variant="outline">
+                                <Eye className="h-4 w-4" />
+                              </Button>
+                            </Link>
+                            <Link href={`/admin/products/${product.id}/edit`}>
+                              <Button size="sm" variant="outline">
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                            </Link>
                             <Button
                               size="sm"
                               variant="outline"
-                              onClick={() => handleReactivate(product.id, product.name)}
-                              disabled={updateProduct.isPending}
-                              className="gap-1 text-green-700 border-green-300 hover:bg-green-50"
+                              onClick={() => handleDelete(product.id, product.name)}
+                              disabled={deleteProduct.isPending}
+                              className="text-red-600 hover:text-red-700"
                             >
-                              <RotateCcw className="h-3 w-3" />
-                              Reactivar
+                              <Trash2 className="h-4 w-4" />
                             </Button>
-                          ) : (
-                            <div className="flex items-center gap-2">
-                              <Link href={`/product/${product.slug}`}>
-                                <Button size="sm" variant="outline">
-                                  <Eye className="h-4 w-4" />
-                                </Button>
-                              </Link>
-                              <Link href={`/admin/products/${product.id}/edit`}>
-                                <Button size="sm" variant="outline">
-                                  <Edit className="h-4 w-4" />
-                                </Button>
-                              </Link>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => handleDelete(product.id, product.name)}
-                                disabled={deleteProduct.isPending}
-                                className="text-red-600 hover:text-red-700"
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  })}
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
