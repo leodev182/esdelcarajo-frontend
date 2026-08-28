@@ -9,7 +9,9 @@ export default function AuthCallbackPage() {
 
   useEffect(() => {
     logger.info("Callback de autenticación recibido, redirigiendo...");
-    router.push("/");
+    const callbackUrl = sessionStorage.getItem("auth_callback_url");
+    sessionStorage.removeItem("auth_callback_url");
+    router.push(callbackUrl || "/");
   }, [router]);
 
   return (

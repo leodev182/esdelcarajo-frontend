@@ -3,9 +3,16 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Chrome } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 
 export default function LoginPage() {
+  const searchParams = useSearchParams();
+
   const handleGoogleLogin = () => {
+    const callbackUrl = searchParams.get("callbackUrl");
+    if (callbackUrl) {
+      sessionStorage.setItem("auth_callback_url", callbackUrl);
+    }
     window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
   };
 

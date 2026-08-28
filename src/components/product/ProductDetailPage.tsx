@@ -9,6 +9,7 @@ import { useAuth } from "@/src/lib/hooks/useAuth";
 import { useCart } from "@/src/lib/hooks/useCart";
 import { PriceDisplay } from "./PriceDisplay";
 import Link from "next/link";
+import { useRouter, usePathname } from "next/navigation";
 
 interface ProductDetailPageProps {
   slug: string;
@@ -18,6 +19,8 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
   const { data: product, isLoading, error } = useProductBySlug(slug);
   const { isAuthenticated } = useAuth();
   const { addToCart, isAddingToCart } = useCart();
+  const router = useRouter();
+  const pathname = usePathname();
 
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(
@@ -30,8 +33,11 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
     null;
 
   const handleAddToCart = () => {
+    if (!isAuthenticated) {
+      router.push(`/login?callbackUrl=${encodeURIComponent(pathname)}`);
+      return;
+    }
     if (!selectedVariant) return;
-
     addToCart({
       variantId: selectedVariant.id,
       quantity: 1,
@@ -361,16 +367,15 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
             <Button
               size="lg"
               className="flex-1"
-              disabled={
-                !hasStock ||
-                !selectedVariant ||
-                isAddingToCart ||
-                !isAuthenticated
-              }
+              disabled={isAuthenticated && (!hasStock || !selectedVariant || isAddingToCart)}
               onClick={handleAddToCart}
             >
               <ShoppingCart className="mr-2 h-5 w-5" />
-              {isAddingToCart ? "Agregando..." : "Agregar al Carrito"}
+              {!isAuthenticated
+                ? "Inicia sesión para comprar"
+                : isAddingToCart
+                ? "Agregando..."
+                : "Agregar al Carrito"}
             </Button>
 
             {isAuthenticated && (
@@ -379,12 +384,6 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
               </Button>
             )}
           </div>
-
-          {!isAuthenticated && (
-            <p className="text-sm text-muted-foreground">
-              Inicia sesión para agregar productos al carrito
-            </p>
-          )}
         </div>
       </div>
 
