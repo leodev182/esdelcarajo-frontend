@@ -7,6 +7,7 @@ import { ConfirmModal, useConfirm } from "@/src/components/ui/ConfirmModal";
 import { Plus, MapPin, Check, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import type { Address } from "@/src/lib/types";
+import { getErrorMessage } from "@/src/lib/api/client";
 import { logger } from "@/src/lib/utils/logger";
 
 interface AddressSelectorProps {
