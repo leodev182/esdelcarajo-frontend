@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import type { Address } from "@/src/lib/types";
+import { getErrorMessage } from "@/src/lib/api/client";
 import { logger } from "@/src/lib/utils/logger";
 import { PriceDisplay } from "../product/PriceDisplay";
 
@@ -82,7 +83,7 @@ export function CheckoutPage() {
       toast.success("Pedido creado exitosamente");
       router.push(`/order/${order.id}`);
     } catch (error) {
-      toast.error("Error al crear el pedido");
+      toast.error(getErrorMessage(error) || "Error al crear el pedido");
       logger.error("Error al crear el pedido", error);
       setIsCreatingOrder(false);
     }

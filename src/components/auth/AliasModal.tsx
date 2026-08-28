@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { apiClient } from "@/src/lib/api/client";
+import { apiClient, getErrorMessage } from "@/src/lib/api/client";
 import { toast } from "sonner";
 import { logger } from "@/src/lib/utils/logger";
 
@@ -35,7 +35,7 @@ export function AliasModal({ onSuccess }: AliasModalProps) {
       toast.success(`¡Bienvenido a Del Carajo, ${nickname.trim()}!`);
       onSuccess();
     } catch (error) {
-      toast.error("Error al guardar el alias");
+      toast.error(getErrorMessage(error) || "Error al guardar el alias");
       logger.error("Error al guardar el alias", error);
     } finally {
       setIsLoading(false);

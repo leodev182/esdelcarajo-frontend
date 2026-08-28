@@ -54,7 +54,7 @@ export function EditOrderItemModal({
     setLoadingVariants(true);
     getProductVariants(productId)
       .then(setVariants)
-      .catch(() => toast.error("No se pudieron cargar las variantes"))
+      .catch((error) => toast.error(getErrorMessage(error) || "No se pudieron cargar las variantes"))
       .finally(() => setLoadingVariants(false));
   };
 

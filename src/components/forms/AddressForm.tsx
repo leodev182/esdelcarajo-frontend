@@ -12,6 +12,7 @@ import {
 } from "@/src/lib/hooks/useAddresses";
 import { toast } from "sonner";
 import type { Address } from "@/src/lib/types";
+import { getErrorMessage } from "@/src/lib/api/client";
 import { logger } from "@/src/lib/utils/logger";
 
 const addressSchema = z.object({
@@ -87,9 +88,8 @@ export function AddressForm({
       onSuccess();
     } catch (error) {
       toast.error(
-        isEditing
-          ? "Error al actualizar dirección"
-          : "Error al agregar dirección"
+        getErrorMessage(error) ||
+          (isEditing ? "Error al actualizar dirección" : "Error al agregar dirección")
       );
       logger.error("Error al guardar dirección", error);
     }

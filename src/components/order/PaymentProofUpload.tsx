@@ -6,6 +6,7 @@ import { Upload, FileCheck } from "lucide-react";
 import { toast } from "sonner";
 import { useUploadPaymentProof } from "@/src/lib/hooks/useOrders";
 import { useRouter } from "next/navigation";
+import { getErrorMessage } from "@/src/lib/api/client";
 import { logger } from "@/src/lib/utils/logger";
 import { PriceDisplay } from "../product/PriceDisplay";
 
@@ -106,7 +107,7 @@ export function PaymentProofUpload({
       toast.info("Tu pedido será procesado una vez confirmemos el pago");
       router.push("/");
     } catch (error) {
-      toast.error("Error al subir el comprobante");
+      toast.error(getErrorMessage(error) || "Error al subir el comprobante");
       logger.error("Error al subir el comprobante", error);
     }
   };

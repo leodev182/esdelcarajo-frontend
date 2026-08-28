@@ -41,7 +41,7 @@ export function AddressSelector({
         onSelectAddress(""); // ✅ FIX: String vacío en lugar de null
       }
     } catch (error) {
-      toast.error("Error al eliminar dirección");
+      toast.error(getErrorMessage(error) || "Error al eliminar dirección");
       logger.error("Error al eliminar dirección", error);
     } finally {
       setDeletingId(null);

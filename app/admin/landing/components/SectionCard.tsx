@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ConfirmModal, useConfirm } from "@/src/components/ui/ConfirmModal";
 import { Edit, Trash2, Image as ImageIcon, Eye, EyeOff } from "lucide-react";
 import { useDeleteSection, useUpdateSection } from "@/src/lib/hooks/useLanding";
+import { getErrorMessage } from "@/src/lib/api/client";
 import { toast } from "sonner";
 import { EditSectionModal } from "./EditSectionModal";
 import Image from "next/image";
@@ -27,7 +28,7 @@ export function SectionCard({ section }: SectionCardProps) {
       await deleteSection.mutateAsync(section.id);
       toast.success("Sección eliminada exitosamente");
     } catch (error) {
-      toast.error("Error al eliminar la sección");
+      toast.error(getErrorMessage(error) || "Error al eliminar la sección");
     }
   };
 
@@ -41,7 +42,7 @@ export function SectionCard({ section }: SectionCardProps) {
         section.isActive ? "Sección desactivada" : "Sección activada"
       );
     } catch (error) {
-      toast.error("Error al actualizar la sección");
+      toast.error(getErrorMessage(error) || "Error al actualizar la sección");
     }
   };
 
