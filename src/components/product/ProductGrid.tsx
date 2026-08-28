@@ -27,8 +27,14 @@ export function ProductGrid({
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      {sorted.map((product) => (
-        <ProductCard key={product.id} product={product} />
+      {sorted.map((product, index) => (
+        <div
+          key={product.id}
+          className="stagger-card"
+          style={{ animationDelay: `${index * 40}ms` }}
+        >
+          <ProductCard product={product} />
+        </div>
       ))}
     </div>
   );

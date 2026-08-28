@@ -41,12 +41,12 @@ export function ProductCard({ product }: ProductCardProps) {
   return (
     <div className="group relative">
       <Link href={`/product/${product.slug}`}>
-        <div className="relative aspect-square overflow-hidden rounded-lg border bg-muted">
+        <div className="relative aspect-square overflow-hidden rounded-lg border bg-muted img-zoom-trigger">
           <Image
             src={mainImage}
             alt={product.name}
             fill
-            className="object-cover transition-transform group-hover:scale-105"
+            className="object-cover img-zoom"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
 
@@ -83,7 +83,7 @@ export function ProductCard({ product }: ProductCardProps) {
             <Button
               variant="ghost"
               size="icon"
-              className="shrink-0"
+              className="shrink-0 active:scale-90 transition-transform duration-100"
               onClick={handleToggleFavorite}
             >
               <Heart
