@@ -11,7 +11,7 @@ export interface AdminCartItem {
     stock: number;
     price: string;
     product: { id: string; name: string; slug: string };
-    images: { url: string }[];
+    images: { image: { url: string } }[];
   };
 }
 

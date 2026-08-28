@@ -109,10 +109,10 @@ export function UserCartModal({ userId, userName, open, onClose }: UserCartModal
               <div className="divide-y">
                 {items.map((item) => (
                   <div key={item.id} className="py-3 flex items-center gap-4">
-                    {item.variant.images[0] && (
+                    {item.variant.images[0]?.image && (
                       <div className="relative w-16 h-16 flex-shrink-0 rounded overflow-hidden border">
                         <Image
-                          src={item.variant.images[0].url}
+                          src={item.variant.images[0].image.url}
                           alt={item.variant.product.name}
                           fill
                           className="object-cover"
