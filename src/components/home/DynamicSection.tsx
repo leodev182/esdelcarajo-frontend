@@ -85,6 +85,7 @@ export function DynamicSection({ section }: DynamicSectionProps) {
                     src={image.url}
                     alt={image.alt}
                     fill
+                    loading="lazy"
                     className="object-cover img-zoom"
                   />
                 </div>

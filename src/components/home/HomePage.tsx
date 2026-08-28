@@ -31,7 +31,7 @@ export function HomePage() {
 
           {loadingProducts ? (
             <div className="text-center py-12">
-              <p className="text-lg">Cargando productos...</p>
+              <p className="text-lg">Cargando productos…</p>
             </div>
           ) : (
             <ProductGrid products={products || []} />

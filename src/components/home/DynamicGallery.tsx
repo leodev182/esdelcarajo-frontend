@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import { LandingSection } from "@/src/lib/api/landing.api";
 import { getFontStyle } from "@/src/lib/utils/font-family";
@@ -20,6 +20,7 @@ const glassStyle: React.CSSProperties = {
 
 export function DynamicGallery({ section }: DynamicGalleryProps) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const lightboxRef = useRef<HTMLDivElement>(null);
   const isGlass = section.bgColor === "glass";
   const images = section.images;
 
@@ -35,12 +36,26 @@ export function DynamicGallery({ section }: DynamicGalleryProps) {
 
   useEffect(() => {
     if (lightboxIndex === null) return;
+
     const handler = (e: KeyboardEvent) => {
       if (e.key === "ArrowLeft") prev();
       if (e.key === "ArrowRight") next();
       if (e.key === "Escape") closeLightbox();
+      if (e.key === "Tab" && lightboxRef.current) {
+        const focusable = lightboxRef.current.querySelectorAll<HTMLElement>(
+          "button, [href], input, [tabindex]:not([tabindex='-1'])"
+        );
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey ? document.activeElement === first : document.activeElement === last) {
+          e.preventDefault();
+          (e.shiftKey ? last : first)?.focus();
+        }
+      }
     };
+
     window.addEventListener("keydown", handler);
+    lightboxRef.current?.querySelector<HTMLElement>("button")?.focus();
     return () => window.removeEventListener("keydown", handler);
   }, [lightboxIndex, prev, next, closeLightbox]);
 
@@ -248,7 +263,11 @@ export function DynamicGallery({ section }: DynamicGalleryProps) {
       {/* Lightbox */}
       {lightboxIndex !== null && images[lightboxIndex] && (
         <div
+          ref={lightboxRef}
           className="lightbox-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-label={images[lightboxIndex].alt || `Imagen ${lightboxIndex + 1}`}
           onClick={closeLightbox}
         >
           <div
