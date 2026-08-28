@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useState, useEffect, ReactNode } from "react";
+import axios from "axios";
 import { User } from "@/src/lib/types";
 import { getProfile } from "@/src/lib/api/auth.api";
 import { getMyProfile } from "@/src/lib/api/users.api";
@@ -48,8 +49,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         logger.warn("Usuario sin nickname, mostrando modal");
         setShowAliasModal(true);
       }
-    } catch {
-      logger.info("No hay sesión activa");
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
+        logger.info("No hay sesión activa");
+      } else {
+        logger.error("Error inesperado verificando autenticación:", error);
+      }
       setUser(null);
     } finally {
       setIsLoading(false);

@@ -49,4 +49,5 @@ next-env.d.ts
 # Local dev
 .claude/
 plans/
+design-proposals/
 

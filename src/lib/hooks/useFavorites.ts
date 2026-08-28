@@ -6,8 +6,10 @@ import {
   isFavorite,
   type AddFavoritePayload,
 } from "../api/favorites.api";
+import { getErrorMessage } from "../api/client";
 import { useAuth } from "./useAuth";
 import { logger } from "../utils/logger";
+import { toast } from "sonner";
 
 export function useFavorites() {
   const queryClient = useQueryClient();
@@ -27,6 +29,7 @@ export function useFavorites() {
     },
     onError: (error) => {
       logger.error("Error agregando a favoritos:", error);
+      toast.error(getErrorMessage(error) || "No se pudo agregar a favoritos");
     },
   });
 
@@ -38,6 +41,7 @@ export function useFavorites() {
     },
     onError: (error) => {
       logger.error("Error eliminando de favoritos:", error);
+      toast.error(getErrorMessage(error) || "No se pudo quitar de favoritos");
     },
   });
 

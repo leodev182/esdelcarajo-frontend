@@ -9,6 +9,7 @@ import {
   UpdateAddressPayload,
 } from "../api/addresses.api";
 import { CACHE_TIME } from "../utils/constants";
+import { logger } from "../utils/logger";
 
 export function useAddresses() {
   return useQuery({
@@ -25,6 +26,9 @@ export function useCreateAddress() {
     mutationFn: (payload: CreateAddressPayload) => createAddress(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["addresses"] });
+    },
+    onError: (error) => {
+      logger.error("Error creando dirección:", error);
     },
   });
 }
@@ -43,6 +47,9 @@ export function useUpdateAddress() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["addresses"] });
     },
+    onError: (error) => {
+      logger.error("Error actualizando dirección:", error);
+    },
   });
 }
 
@@ -54,6 +61,9 @@ export function useSetDefaultAddress() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["addresses"] });
     },
+    onError: (error) => {
+      logger.error("Error estableciendo dirección predeterminada:", error);
+    },
   });
 }
 
@@ -64,6 +74,9 @@ export function useDeleteAddress() {
     mutationFn: (addressId: string) => deleteAddress(addressId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["addresses"] });
+    },
+    onError: (error) => {
+      logger.error("Error eliminando dirección:", error);
     },
   });
 }
