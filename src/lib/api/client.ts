@@ -116,8 +116,11 @@ apiClient.interceptors.response.use(
 
 export function getErrorMessage(error: unknown): string {
   if (axios.isAxiosError(error)) {
-    const errorData = error.response?.data as { message?: string };
-    return errorData?.message || error.message;
+    const data = error.response?.data as { message?: string | string[] };
+    const msg = data?.message;
+    if (Array.isArray(msg)) return msg.join(", ");
+    if (typeof msg === "string" && msg.trim()) return msg;
+    return error.message;
   }
 
   if (error instanceof Error) {
