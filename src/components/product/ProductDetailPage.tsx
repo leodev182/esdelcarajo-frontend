@@ -18,7 +18,7 @@ interface ProductDetailPageProps {
 export function ProductDetailPage({ slug }: ProductDetailPageProps) {
   const { data: product, isLoading, error } = useProductBySlug(slug);
   const { isAuthenticated } = useAuth();
-  const { addToCart, isAddingToCart } = useCart();
+  const { addToCart, isAddingToCart, cart } = useCart();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -31,6 +31,14 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
     product?.variants.find((v) => v.id === selectedVariantId) ||
     product?.variants[0] ||
     null;
+
+  const cartItem = cart?.items.find(
+    (item) => item.variantId === selectedVariant?.id
+  );
+  const quantityInCart = cartItem?.quantity ?? 0;
+  const remainingStock = selectedVariant
+    ? selectedVariant.stock - quantityInCart
+    : 0;
 
   const handleAddToCart = () => {
     if (!isAuthenticated) {
@@ -367,7 +375,7 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
             <Button
               size="lg"
               className="flex-1"
-              disabled={isAuthenticated && (!hasStock || !selectedVariant || isAddingToCart)}
+              disabled={isAuthenticated && (!selectedVariant || isAddingToCart || remainingStock <= 0)}
               onClick={handleAddToCart}
             >
               <ShoppingCart className="mr-2 h-5 w-5" />
@@ -375,6 +383,10 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
                 ? "Inicia sesión para comprar"
                 : isAddingToCart
                 ? "Agregando..."
+                : remainingStock <= 0 && selectedVariant
+                ? quantityInCart > 0
+                  ? "Máximo en carrito"
+                  : "Sin stock"
                 : "Agregar al Carrito"}
             </Button>
 

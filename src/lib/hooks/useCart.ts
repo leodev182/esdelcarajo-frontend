@@ -8,8 +8,10 @@ import {
   type AddToCartPayload,
   type UpdateCartItemPayload,
 } from "../api/cart.api";
+import { getErrorMessage } from "../api/client";
 import { useAuth } from "./useAuth";
 import { logger } from "../utils/logger";
+import { toast } from "sonner";
 
 export function useCart() {
   const queryClient = useQueryClient();
@@ -36,6 +38,7 @@ export function useCart() {
     },
     onError: (error) => {
       logger.error("Error agregando al carrito:", error);
+      toast.error(getErrorMessage(error) || "No se pudo agregar al carrito");
     },
   });
 
