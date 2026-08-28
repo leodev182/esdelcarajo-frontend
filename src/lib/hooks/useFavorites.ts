@@ -10,6 +10,7 @@ import { getErrorMessage } from "../api/client";
 import { useAuth } from "./useAuth";
 import { logger } from "../utils/logger";
 import { toast } from "sonner";
+import axios from "axios";
 
 export function useFavorites() {
   const queryClient = useQueryClient();
@@ -28,6 +29,10 @@ export function useFavorites() {
       queryClient.invalidateQueries({ queryKey: ["favorites"] });
     },
     onError: (error) => {
+      if (axios.isAxiosError(error) && error.response?.status === 409) {
+        queryClient.invalidateQueries({ queryKey: ["favorites"] });
+        return;
+      }
       logger.error("Error agregando a favoritos:", error);
       toast.error(getErrorMessage(error) || "No se pudo agregar a favoritos");
     },
