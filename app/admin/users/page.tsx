@@ -11,10 +11,11 @@ import { getErrorMessage } from "@/src/lib/api/client";
 import { logger } from "@/src/lib/utils/logger";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
-import { Shield, ShieldOff, UserCog } from "lucide-react";
+import { Shield, ShieldOff, UserCog, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import type { Role } from "@/src/lib/types";
+import { UserCartModal } from "./components/UserCartModal";
 
 interface AdminUser {
   id: string;
@@ -49,6 +50,8 @@ export default function AdminUsersPage() {
   const toggleBan = useToggleUserBan();
 
   const [editingUserId, setEditingUserId] = useState<string | null>(null);
+  const [cartUserId, setCartUserId] = useState<string | null>(null);
+  const cartUser = data?.users.find((u) => u.id === cartUserId);
 
   const handleRoleChange = async (userId: string, newRole: Role) => {
     try {
@@ -201,6 +204,14 @@ export default function AdminUsersPage() {
                               <Button
                                 size="sm"
                                 variant="outline"
+                                onClick={() => setCartUserId(user.id)}
+                                title="Ver carrito"
+                              >
+                                <ShoppingCart className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
                                 onClick={() =>
                                   handleToggleBan(user.id, user.isActive)
                                 }
@@ -230,6 +241,15 @@ export default function AdminUsersPage() {
           </>
         )}
       </div>
+
+      {cartUserId && cartUser && (
+        <UserCartModal
+          userId={cartUserId}
+          userName={cartUser.nickname || cartUser.name || cartUser.email}
+          open={!!cartUserId}
+          onClose={() => setCartUserId(null)}
+        />
+      )}
     </div>
   );
 }
