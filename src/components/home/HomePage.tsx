@@ -23,7 +23,7 @@ export function HomePage() {
       <section className="py-20 bg-background">
         <div className="container px-6 md:px-8">
           <div className="flex items-center justify-between mb-12">
-            <h2 className="text-4xl font-bold">Productos Destacados</h2>
+            <h2 className="text-5xl md:text-6xl font-bold tracking-wide uppercase">Destacados</h2>
             <Button variant="outline" className="font-bold" asChild>
               <Link href="/catalogo">Ver todos</Link>
             </Button>
