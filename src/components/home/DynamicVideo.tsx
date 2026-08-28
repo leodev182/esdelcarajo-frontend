@@ -1,6 +1,7 @@
 "use client";
 
 import { LandingSection } from "@/src/lib/api/landing.api";
+import { getFontStyle } from "@/src/lib/utils/font-family";
 
 interface DynamicVideoProps {
   section: LandingSection;
@@ -49,7 +50,7 @@ export function DynamicVideo({ section }: DynamicVideoProps) {
         {(section.title || section.description) && (
           <div className="text-center mb-10">
             {section.title && (
-              <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              <h2 className="text-4xl md:text-5xl font-bold mb-4" style={getFontStyle(section.fontFamily)}>
                 {section.title}
               </h2>
             )}

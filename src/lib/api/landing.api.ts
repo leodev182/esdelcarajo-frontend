@@ -11,6 +11,13 @@ export interface SectionImage {
 export type SectionType = "CAROUSEL" | "CUSTOM" | "VIDEO" | "GALLERY";
 export type TextPosition = "LEFT" | "CENTER" | "RIGHT" | "TOP" | "BOTTOM";
 
+export type FontFamily =
+  | "zuume-rough"
+  | "western-bang-bang"
+  | "special-elite"
+  | "life-is-so-wonderful"
+  | "cut-the-crap";
+
 export interface LandingSection {
   id: string;
   type: SectionType;
@@ -18,6 +25,7 @@ export interface LandingSection {
   description?: string;
   textPosition: TextPosition;
   bgColor: string;
+  fontFamily?: FontFamily | null;
   videoUrl?: string;
   order: number;
   isActive: boolean;
@@ -30,6 +38,7 @@ export interface CreateSectionPayload {
   description?: string;
   textPosition: TextPosition;
   bgColor: string;
+  fontFamily?: FontFamily | null;
   videoUrl?: string;
   order: number;
 }
@@ -40,6 +49,7 @@ export interface UpdateSectionPayload {
   description?: string;
   textPosition?: TextPosition;
   bgColor?: string;
+  fontFamily?: FontFamily | null;
   videoUrl?: string;
   order?: number;
   isActive?: boolean;

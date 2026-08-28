@@ -4,7 +4,13 @@ import { QueryProvider } from "@/src/lib/providers/QueryProvider";
 import { AuthProvider } from "@/src/context/AuthContext";
 import { ConditionalLayout } from "@/src/components/layout/ConditionalLayout";
 import { GlobalBackground } from "@/src/components/layout/GlobalBackground";
-import { zuumeRough } from "@/src/lib/fonts/fonts";
+import {
+  zuumeRough,
+  westernBangBang,
+  specialElite,
+  lifeIsSoWonderful,
+  cutTheCrap,
+} from "@/src/lib/fonts/fonts";
 import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
@@ -41,7 +47,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={zuumeRough.variable}>
+    <html lang="es" className={`${zuumeRough.variable} ${westernBangBang.variable} ${specialElite.variable} ${lifeIsSoWonderful.variable} ${cutTheCrap.variable}`}>
       <body className="antialiased">
         <GlobalBackground />
         <AuthProvider>

@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { LandingSection } from "@/src/lib/api/landing.api";
+import { getFontStyle } from "@/src/lib/utils/font-family";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface DynamicGalleryProps {
@@ -75,25 +76,14 @@ export function DynamicGallery({ section }: DynamicGalleryProps) {
           overflow: hidden;
         }
 
-        .gallery-figure::before,
-        .gallery-figure::after {
+        .gallery-figure::before {
           content: '';
           position: absolute;
           inset: 0;
-          border: 16px solid rgba(0,0,0,0.1);
-          transition: border-width 0.2s ease;
+          box-shadow: inset 0 0 0 0px rgba(0,0,0,0.1);
+          transition: box-shadow 200ms var(--ease-expo);
           z-index: 1;
           pointer-events: none;
-        }
-        .gallery-figure::after {
-          border-width: 0;
-        }
-
-        .gallery-item:hover .gallery-figure::before {
-          border-width: 16px;
-        }
-        .gallery-item:hover .gallery-figure::after {
-          border-width: 32px;
         }
 
         .gallery-figcaption {
@@ -113,23 +103,38 @@ export function DynamicGallery({ section }: DynamicGalleryProps) {
           pointer-events: none;
         }
 
-        .gallery-item:hover .gallery-figcaption {
-          color: rgba(255,255,255,1);
-          text-shadow: 0 0 1px rgba(0,0,0,0.2);
-        }
-
         .gallery-img {
           display: block;
           width: 100%;
           height: auto;
-          transition: transform 0.3s ease;
+          transition: transform 280ms var(--ease-expo);
         }
 
-        .gallery-item:hover .gallery-img {
-          transform: scale(1.03);
+        /* Hover effects only on real pointer devices */
+        @media (hover: hover) and (pointer: fine) {
+          .gallery-item:hover .gallery-figure::before {
+            box-shadow: inset 0 0 0 16px rgba(0,0,0,0.25);
+          }
+          .gallery-item:hover .gallery-figcaption {
+            color: rgba(255,255,255,1);
+            text-shadow: 0 0 1px rgba(0,0,0,0.2);
+          }
+          .gallery-item:hover .gallery-img {
+            transform: scale(1.03);
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .gallery-img { transition: none; }
+          .gallery-figure::before { transition: none; }
         }
 
         /* Lightbox */
+        @keyframes lightbox-in {
+          from { opacity: 0; }
+          to   { opacity: 1; }
+        }
+
         .lightbox-overlay {
           position: fixed;
           inset: 0;
@@ -138,6 +143,7 @@ export function DynamicGallery({ section }: DynamicGalleryProps) {
           display: flex;
           align-items: center;
           justify-content: center;
+          animation: lightbox-in 200ms var(--ease-expo);
         }
 
         .lightbox-img-wrap {
@@ -197,7 +203,7 @@ export function DynamicGallery({ section }: DynamicGalleryProps) {
         {(section.title || section.description) && (
           <div className="text-center mb-10">
             {section.title && (
-              <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              <h2 className="text-4xl md:text-5xl font-bold mb-4" style={getFontStyle(section.fontFamily)}>
                 {section.title}
               </h2>
             )}

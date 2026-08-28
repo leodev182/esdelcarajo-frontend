@@ -2,7 +2,12 @@
 
 import { useState } from "react";
 import { useCreateSection } from "@/src/lib/hooks/useLanding";
-import { CreateSectionPayload, SectionType } from "@/src/lib/api/landing.api";
+import {
+  CreateSectionPayload,
+  SectionType,
+  FontFamily,
+} from "@/src/lib/api/landing.api";
+import { FONT_OPTIONS } from "@/src/lib/utils/font-family";
 import { getErrorMessage } from "@/src/lib/api/client";
 import { logger } from "@/src/lib/utils/logger";
 import * as Sentry from "@sentry/nextjs";
@@ -40,6 +45,7 @@ export function CreateSectionModal({ open, onClose }: CreateSectionModalProps) {
     description: "",
     textPosition: "CENTER",
     bgColor: "#FFFFFF",
+    fontFamily: null,
     videoUrl: "",
     order: 0,
   });
@@ -59,6 +65,7 @@ export function CreateSectionModal({ open, onClose }: CreateSectionModalProps) {
         description: "",
         textPosition: "CENTER",
         bgColor: "#FFFFFF",
+        fontFamily: null,
         videoUrl: "",
         order: 0,
       });
@@ -125,6 +132,35 @@ export function CreateSectionModal({ open, onClose }: CreateSectionModalProps) {
               }
               placeholder="Ej: Nueva Colección"
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Fuente del Título</Label>
+            <div className="grid grid-cols-2 gap-2">
+              {FONT_OPTIONS.map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() =>
+                    setFormData({
+                      ...formData,
+                      fontFamily:
+                        formData.fontFamily === opt.value
+                          ? null
+                          : (opt.value as FontFamily),
+                    })
+                  }
+                  className={`px-3 py-2 rounded border text-left transition-colors ${
+                    formData.fontFamily === opt.value
+                      ? "border-primary bg-primary/10"
+                      : "border-gray-200 hover:border-gray-400"
+                  }`}
+                  style={{ fontFamily: `var(--font-${opt.value})` }}
+                >
+                  <span className="text-base">{opt.label}</span>
+                </button>
+              ))}
+            </div>
           </div>
 
           <div className="space-y-2">

@@ -10,7 +10,9 @@ import {
   LandingSection,
   UpdateSectionPayload,
   SectionType,
+  FontFamily,
 } from "@/src/lib/api/landing.api";
+import { FONT_OPTIONS } from "@/src/lib/utils/font-family";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -59,6 +61,7 @@ export function EditSectionModal({
     description: section.description,
     textPosition: section.textPosition,
     bgColor: section.bgColor,
+    fontFamily: section.fontFamily,
     videoUrl: section.videoUrl,
     order: section.order,
   });
@@ -73,6 +76,7 @@ export function EditSectionModal({
         description: section.description,
         textPosition: section.textPosition,
         bgColor: section.bgColor,
+        fontFamily: section.fontFamily,
         videoUrl: section.videoUrl,
         order: section.order,
       });
@@ -206,6 +210,35 @@ export function EditSectionModal({
               }
               placeholder="Ej: Nueva Colección"
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Fuente del Título</Label>
+            <div className="grid grid-cols-2 gap-2">
+              {FONT_OPTIONS.map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() =>
+                    setFormData({
+                      ...formData,
+                      fontFamily:
+                        formData.fontFamily === opt.value
+                          ? null
+                          : (opt.value as FontFamily),
+                    })
+                  }
+                  className={`px-3 py-2 rounded border text-left transition-colors ${
+                    formData.fontFamily === opt.value
+                      ? "border-primary bg-primary/10"
+                      : "border-gray-200 hover:border-gray-400"
+                  }`}
+                  style={{ fontFamily: `var(--font-${opt.value})` }}
+                >
+                  <span className="text-base">{opt.label}</span>
+                </button>
+              ))}
+            </div>
           </div>
 
           <div className="space-y-2">

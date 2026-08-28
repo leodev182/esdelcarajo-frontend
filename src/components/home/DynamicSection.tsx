@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { LandingSection } from "@/src/lib/api/landing.api";
+import { getFontStyle } from "@/src/lib/utils/font-family";
 
 interface DynamicSectionProps {
   section: LandingSection;
@@ -51,7 +52,7 @@ export function DynamicSection({ section }: DynamicSectionProps) {
       <div className="container px-6 md:px-8">
         <div className={getLayoutClass()}>
           <div className={getTextAlignClass()}>
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6" style={getFontStyle(section.fontFamily)}>
               {section.title}
             </h2>
             {section.description && (
@@ -78,13 +79,13 @@ export function DynamicSection({ section }: DynamicSectionProps) {
               {section.images.map((image) => (
                 <div
                   key={image.id}
-                  className="relative aspect-square rounded-lg overflow-hidden border-4 border-dark shadow-lg hover:scale-105 transition-transform"
+                  className="relative aspect-square rounded-lg overflow-hidden border-4 border-dark shadow-lg img-zoom-trigger"
                 >
                   <Image
                     src={image.url}
                     alt={image.alt}
                     fill
-                    className="object-cover"
+                    className="object-cover img-zoom"
                   />
                 </div>
               ))}

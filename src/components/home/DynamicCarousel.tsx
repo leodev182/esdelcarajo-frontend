@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { LandingSection } from "@/src/lib/api/landing.api";
+import { getFontStyle } from "@/src/lib/utils/font-family";
 
 interface DynamicCarouselProps {
   section: LandingSection;
@@ -20,25 +21,35 @@ const glassStyle: React.CSSProperties = {
 export function DynamicCarousel({ section }: DynamicCarouselProps) {
   const isGlass = section.bgColor === "glass";
   const [currentIndex, setCurrentIndex] = useState(0);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  useEffect(() => {
+  const startInterval = () => {
     if (section.images.length <= 1) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (intervalRef.current) clearInterval(intervalRef.current);
 
-    const interval = setInterval(() => {
+    intervalRef.current = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % section.images.length);
     }, 5000);
+  };
 
-    return () => clearInterval(interval);
+  useEffect(() => {
+    startInterval();
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
   }, [section.images.length]);
 
   const goToPrevious = () => {
     setCurrentIndex((prev) =>
       prev === 0 ? section.images.length - 1 : prev - 1
     );
+    startInterval();
   };
 
   const goToNext = () => {
     setCurrentIndex((prev) => (prev + 1) % section.images.length);
+    startInterval();
   };
 
   const getTextAlignment = () => {
@@ -64,7 +75,7 @@ export function DynamicCarousel({ section }: DynamicCarouselProps) {
         style={isGlass ? glassStyle : { backgroundColor: section.bgColor }}
       >
         <div className="text-center px-6">
-          <h2 className="text-4xl md:text-6xl font-bold uppercase mb-4">
+          <h2 className="text-4xl md:text-6xl font-bold uppercase mb-4" style={getFontStyle(section.fontFamily)}>
             {section.title}
           </h2>
           {section.description && (
@@ -83,7 +94,7 @@ export function DynamicCarousel({ section }: DynamicCarouselProps) {
       {section.images.map((image, index) => (
         <div
           key={image.id}
-          className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+          className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
             index === currentIndex ? "opacity-100 z-10" : "opacity-0 z-0"
           }`}
         >
@@ -103,7 +114,7 @@ export function DynamicCarousel({ section }: DynamicCarouselProps) {
       <div
         className={`absolute top-1/2 -translate-y-1/2 z-20 flex flex-col ${getTextAlignment()} max-w-5xl px-6`}
       >
-        <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold uppercase tracking-tight text-white drop-shadow-2xl mb-3 md:mb-4">
+        <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold uppercase tracking-tight text-white drop-shadow-2xl mb-3 md:mb-4" style={getFontStyle(section.fontFamily)}>
           {section.title}
         </h2>
         {section.description && (
@@ -118,7 +129,7 @@ export function DynamicCarousel({ section }: DynamicCarouselProps) {
         <>
           <button
             onClick={goToPrevious}
-            className="absolute left-4 md:left-6 top-1/2 -translate-y-1/2 z-30 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 transition-all duration-300 opacity-0 group-hover:opacity-100"
+            className="absolute left-4 md:left-6 top-1/2 -translate-y-1/2 z-30 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 transition-[opacity,transform] duration-200 opacity-100 md:opacity-0 md:group-hover:opacity-100 active:scale-90"
             aria-label="Anterior"
           >
             <ChevronLeft
@@ -129,7 +140,7 @@ export function DynamicCarousel({ section }: DynamicCarouselProps) {
 
           <button
             onClick={goToNext}
-            className="absolute right-4 md:right-6 top-1/2 -translate-y-1/2 z-30 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 transition-all duration-300 opacity-0 group-hover:opacity-100"
+            className="absolute right-4 md:right-6 top-1/2 -translate-y-1/2 z-30 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 transition-[opacity,transform] duration-200 opacity-100 md:opacity-0 md:group-hover:opacity-100 active:scale-90"
             aria-label="Siguiente"
           >
             <ChevronRight
@@ -147,7 +158,7 @@ export function DynamicCarousel({ section }: DynamicCarouselProps) {
             <button
               key={image.id}
               onClick={() => setCurrentIndex(index)}
-              className={`relative w-14 h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 overflow-hidden border-2 transition-all duration-300 ${
+              className={`relative w-14 h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 overflow-hidden border-2 transition-[opacity,transform,border-color] duration-200 active:scale-95 ${
                 index === currentIndex
                   ? "border-primary scale-110 shadow-lg shadow-primary/50"
                   : "border-white/30 hover:border-white/60 opacity-60 hover:opacity-100"

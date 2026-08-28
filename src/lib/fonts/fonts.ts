@@ -25,3 +25,23 @@ export const zuumeRough = localFont({
   ],
   variable: "--font-zuume-rough",
 });
+
+export const westernBangBang = localFont({
+  src: "../../../public/fonts/western-bang-bang.ttf",
+  variable: "--font-western-bang-bang",
+});
+
+export const specialElite = localFont({
+  src: "../../../public/fonts/special-elite.ttf",
+  variable: "--font-special-elite",
+});
+
+export const lifeIsSoWonderful = localFont({
+  src: "../../../public/fonts/life-is-so-wonderful.ttf",
+  variable: "--font-life-is-so-wonderful",
+});
+
+export const cutTheCrap = localFont({
+  src: "../../../public/fonts/cut-the-crap.ttf",
+  variable: "--font-cut-the-crap",
+});
