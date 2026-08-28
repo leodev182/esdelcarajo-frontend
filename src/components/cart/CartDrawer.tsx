@@ -43,7 +43,7 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
   const handleCheckout = () => {
     if (!isAuthenticated) {
       onOpenChange(false);
-      router.push("/login?redirect=/checkout");
+      router.push("/login?callbackUrl=/checkout");
       return;
     }
     router.push("/checkout");

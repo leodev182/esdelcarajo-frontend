@@ -58,6 +58,7 @@ export function useCart() {
     },
     onError: (error) => {
       logger.error("Error actualizando cantidad:", error);
+      toast.error(getErrorMessage(error) || "No se pudo actualizar la cantidad");
     },
   });
 
@@ -69,6 +70,7 @@ export function useCart() {
     },
     onError: (error) => {
       logger.error("Error eliminando producto:", error);
+      toast.error(getErrorMessage(error) || "No se pudo eliminar el producto");
     },
   });
 
@@ -80,6 +82,7 @@ export function useCart() {
     },
     onError: (error) => {
       logger.error("Error vaciando carrito:", error);
+      toast.error(getErrorMessage(error) || "No se pudo vaciar el carrito");
     },
   });
 
