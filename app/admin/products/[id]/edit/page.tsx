@@ -183,12 +183,12 @@ export default function EditProductPage() {
           sku: variantForm.sku,
           size: variantForm.size,
           color: variantForm.color,
-          shirtColor: variantForm.shirtColor || undefined,
+          shirtColor: variantForm.shirtColor,
           gender: variantForm.gender,
           price: variantForm.price,
           stock: variantForm.stock,
-          shortDescription: variantForm.shortDescription || undefined,
-          features: variantForm.features || undefined,
+          shortDescription: variantForm.shortDescription,
+          features: variantForm.features,
         },
       });
       toast.success("Variante actualizada");
