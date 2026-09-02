@@ -93,14 +93,18 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
   const currentImage = images[selectedImageIndex];
 
   const sizeOrder = { S: 1, M: 2, L: 3, XL: 4, XXL: 5, XXXL: 6 };
-  const availableSizes = [...new Set(product.variants.map((v) => v.size))].sort(
+  const getDisplayColor = (v: { shirtColor?: string | null; color: string }) =>
+    v.shirtColor || v.color;
+  const availableColors = [...new Set(product.variants.map(getDisplayColor))];
+  const sizesForColor = [...new Set(
+    product.variants
+      .filter((v) => getDisplayColor(v) === getDisplayColor(selectedVariant!))
+      .map((v) => v.size)
+  )].sort(
     (a, b) =>
       sizeOrder[a as keyof typeof sizeOrder] -
       sizeOrder[b as keyof typeof sizeOrder]
   );
-  const getDisplayColor = (v: { shirtColor?: string | null; color: string }) =>
-    v.shirtColor || v.color;
-  const availableColors = [...new Set(product.variants.map(getDisplayColor))];
   const availableGenders = [...new Set(product.variants.map((v) => v.gender))];
 
   const price = selectedVariant ? Number(selectedVariant.price) : 0;
@@ -120,32 +124,21 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
 
   const handleSizeChange = (size: string) => {
     const variant = product.variants.find(
-      (v) =>
-        v.size === size &&
-        getDisplayColor(v) === getDisplayColor(selectedVariant!) &&
-        v.gender === selectedVariant?.gender &&
-        v.stock > 0
+      (v) => v.size === size && getDisplayColor(v) === getDisplayColor(selectedVariant!)
     );
-
     if (variant) {
       setSelectedVariantId(variant.id);
-      setSelectedImageIndex(0); // Reset image index cuando cambia variante
+      setSelectedImageIndex(0);
     }
   };
 
   const handleColorChange = (color: string) => {
-    const variant =
-      product.variants.find(
-        (v) =>
-          getDisplayColor(v) === color &&
-          v.size === selectedVariant?.size &&
-          v.gender === selectedVariant?.gender &&
-          v.stock > 0
-      ) || product.variants.find((v) => getDisplayColor(v) === color && v.stock > 0);
-
+    const variant = product.variants.find(
+      (v) => getDisplayColor(v) === color && v.stock > 0
+    );
     if (variant) {
       setSelectedVariantId(variant.id);
-      setSelectedImageIndex(0); // Reset image index cuando cambia variante
+      setSelectedImageIndex(0);
     }
   };
 
@@ -267,18 +260,17 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
 
           {/* SELECTORES DE VARIANTE */}
           <div className="space-y-4 border-t pt-4">
-            {availableSizes.length > 0 && (
+            {sizesForColor.length > 0 && (
               <div>
                 <label className="text-sm font-semibold mb-2 block">
                   Talla: {selectedVariant?.size}
                 </label>
                 <div className="flex flex-wrap gap-2">
-                  {availableSizes.map((size) => {
-                    const hasVariantWithSize = product.variants.some(
+                  {sizesForColor.map((size) => {
+                    const hasStock = product.variants.some(
                       (v) =>
                         v.size === size &&
-                        v.color === selectedVariant?.color &&
-                        v.gender === selectedVariant?.gender &&
+                        getDisplayColor(v) === getDisplayColor(selectedVariant!) &&
                         v.stock > 0
                     );
                     const isSelected = selectedVariant?.size === size;
@@ -287,7 +279,7 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
                       <Button
                         key={size}
                         variant={isSelected ? "default" : "outline"}
-                        disabled={!hasVariantWithSize}
+                        disabled={!hasStock}
                         onClick={() => handleSizeChange(size)}
                       >
                         {size}
@@ -301,23 +293,19 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
             {availableColors.length > 1 && (
               <div>
                 <label className="text-sm font-semibold mb-2 block">
-                  Color: {selectedVariant?.shirtColor || selectedVariant?.color}
+                  Color: {getDisplayColor(selectedVariant!)}
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {availableColors.map((color) => {
-                    const hasVariantWithColor = product.variants.some(
-                      (v) => getDisplayColor(v) === color && v.stock > 0
-                    );
                     const isSelected = getDisplayColor(selectedVariant!) === color;
 
                     return (
                       <Button
                         key={color}
                         variant={isSelected ? "default" : "outline"}
-                        disabled={!hasVariantWithColor}
                         onClick={() => handleColorChange(color)}
                       >
-                        {product.variants.find((v) => v.color === color)?.shirtColor || color}
+                        {color}
                       </Button>
                     );
                   })}
