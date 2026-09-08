@@ -61,6 +61,7 @@ export function HomePage() {
         </div>
       </section>
 
+      <div className="min-h-[600px]">
       {!loadingSections &&
         sections &&
         sections.map((section, index) => (
@@ -76,6 +77,7 @@ export function HomePage() {
             )}
           </div>
         ))}
+      </div>
     </div>
   );
 }
