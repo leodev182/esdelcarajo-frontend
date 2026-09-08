@@ -1,9 +1,14 @@
 "use client";
 
 import { Mail, Instagram } from "lucide-react";
+import { FireHero } from "@/src/components/home/FireHero";
+
 export function HeroClient() {
   return (
     <section className="relative w-full min-h-screen overflow-hidden bg-black -mt-20">
+
+      {/* Fuego SVG animado */}
+      <FireHero />
 
       {/* Iconos sociales */}
       <div className="absolute bottom-12 left-12 z-20 flex gap-6">
