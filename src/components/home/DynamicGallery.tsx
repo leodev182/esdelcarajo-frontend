@@ -214,7 +214,7 @@ export function DynamicGallery({ section }: DynamicGalleryProps) {
         }
       `}</style>
 
-      <div className="container px-6 md:px-8">
+      <div className="container mx-auto px-6 md:px-8">
         {(section.title || section.description) && (
           <div className="text-center mb-10">
             {section.title && (

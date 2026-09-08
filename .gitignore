@@ -50,4 +50,6 @@ next-env.d.ts
 .claude/
 plans/
 design-proposals/
+.agents/
+skills-lock.json
 
