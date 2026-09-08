@@ -17,7 +17,7 @@ function getEmbedUrl(url: string): string | null {
         u.searchParams.get("v") ||
         (u.hostname === "youtu.be" ? u.pathname.slice(1) : null) ||
         (u.pathname.startsWith("/shorts/") ? u.pathname.split("/")[2] : null);
-      if (id) return `https://www.youtube.com/embed/${id}?rel=0&modestbranding=1&autoplay=1&mute=1&loop=1&playlist=${id}`;
+      if (id) return `https://www.youtube.com/embed/${id}?rel=0&modestbranding=1&autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&disablekb=1&iv_load_policy=3`;
     }
 
     // Vimeo: vimeo.com/ID

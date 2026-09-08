@@ -11,8 +11,8 @@ export function BcvDisplay() {
         <div className="bg-white text-black font-black px-4 py-2 border-4 border-orange-500">
           TASA $ BCV
         </div>
-        <div className="bg-white text-black font-black px-4 py-2 border-4 border-orange-500">
-          ...
+        <div className="bg-white text-black font-black px-4 py-2 border-4 border-orange-500 min-w-[110px] text-center">
+          &nbsp;
         </div>
       </div>
     );
@@ -23,7 +23,7 @@ export function BcvDisplay() {
       <div className="bg-white text-black font-black px-4 py-2 border-4 border-orange-500">
         TASA $ BCV
       </div>
-      <div className="bg-white text-black font-black px-4 py-2 border-4 border-orange-500">
+      <div className="bg-white text-black font-black px-4 py-2 border-4 border-orange-500 min-w-[110px] text-center">
         {rate.toFixed(2)} BS
       </div>
     </div>
