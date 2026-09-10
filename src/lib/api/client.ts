@@ -1,4 +1,5 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
+import * as Sentry from "@sentry/nextjs";
 import { logger } from "@/src/lib/utils/logger";
 
 export const apiClient = axios.create({
@@ -99,16 +100,35 @@ apiClient.interceptors.response.use(
 
     const status = error.response?.status;
     const isAuthFlow = status === 401 || status === 403;
+    const method = error.config?.method?.toUpperCase();
+    const url = error.config?.url;
+    const responseData = error.response?.data;
+
     logger.error(
-      "API Error:",
+      `API Error: ${status} ${method} ${url}`,
       {
-        message: error.response?.data || error.message,
         status,
-        url: error.config?.url,
-        method: error.config?.method,
+        url,
+        method,
+        responseData,
+        message: error.message,
       },
       { expected: isAuthFlow }
     );
+
+    if (!isAuthFlow) {
+      Sentry.withScope((scope) => {
+        scope.setTag("http.status_code", String(status ?? "unknown"));
+        scope.setTag("http.method", method ?? "unknown");
+        scope.setTag("http.url", url ?? "unknown");
+        scope.setExtra("response_data", responseData);
+        scope.setExtra("request_url", url);
+        scope.setExtra("request_method", method);
+        scope.setExtra("status_code", status);
+        scope.setExtra("error_message", error.message);
+        Sentry.captureException(error);
+      });
+    }
 
     return Promise.reject(error);
   }
