@@ -49,7 +49,7 @@ export function DynamicSection({ section }: DynamicSectionProps) {
 
   return (
     <section className="py-20" style={isGlass ? glassStyle : { backgroundColor: section.bgColor }}>
-      <div className="container px-6 md:px-8">
+      <div className="container mx-auto px-6 md:px-8">
         <div className={getLayoutClass()}>
           <div className={getTextAlignClass()}>
             <h2 className="text-4xl md:text-5xl font-bold mb-6" style={getFontStyle(section.fontFamily)}>

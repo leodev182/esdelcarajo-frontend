@@ -54,9 +54,14 @@ class Logger {
     }
 
     if (data instanceof Error) {
-      Sentry.captureException(data);
+      Sentry.captureException(data, {
+        extra: { context: message },
+      });
     } else {
-      Sentry.captureMessage(message, "error");
+      Sentry.captureMessage(message, {
+        level: "error",
+        extra: data as Record<string, unknown>,
+      });
     }
   }
 

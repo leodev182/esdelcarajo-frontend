@@ -49,6 +49,7 @@ export function Header() {
               alt="Del Carajo"
               width={150}
               height={50}
+              priority
               className="hidden lg:block absolute bottom-[-30px]"
               style={{ width: "290px", height: "auto" }}
             />
