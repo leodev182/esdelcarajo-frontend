@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { ShoppingCart, Heart, User, Menu } from "lucide-react";
+import { ShoppingCart, Heart, User, Menu, ChevronRight } from "lucide-react";
+import { useRef } from "react";
 import { useAuth } from "@/src/lib/hooks/useAuth";
 import { useCart } from "@/src/lib/hooks/useCart";
 import { Button } from "@/components/ui/button";
 import { CartDrawer } from "@/src/components/cart/CartDrawer";
-import { MegaMenu } from "./MegaMenu";
+import { GarageMenu } from "./GarageMenu";
 import { useState, useEffect } from "react";
 
 const MAIN_CATEGORIES = [
@@ -16,7 +17,6 @@ const MAIN_CATEGORIES = [
   { name: "CARAJITOS", slug: "carajitos" },
   { name: "OTRAS VAINAS", slug: "otras-vainas" },
 ];
-
 export function Header() {
   const { user, isAuthenticated, logout } = useAuth();
   const { cart } = useCart();
@@ -24,6 +24,18 @@ export function Header() {
   const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
   const [activeMegaMenu, setActiveMegaMenu] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
+  const [garageOpen, setGarageOpen] = useState(false);
+  const garageRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (garageRef.current && !garageRef.current.contains(e.target as Node)) {
+        setGarageOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     setMounted(true);
@@ -33,60 +45,59 @@ export function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 w-full bg-transparent shadow-sm">
-        <div className="container flex h-auto py-2 items-center justify-around px-10 mx-auto">
+      <header
+        className="sticky top-0 z-50 w-full shadow-sm backdrop-blur-md bg-black/30 border-b border-white/10 text-white"
+        style={{ fontFamily: "var(--font-zuume-rough)", letterSpacing: "0.28em", fontSize: "2rem" }}
+      >
+        <div className="container flex h-auto py-2 items-center px-10 mx-auto">
           {/* Logo */}
           <Link href="/" className="flex items-center">
             <Image
-              src="/Logo.svg"
-              alt="Del Carajo"
-              width={150}
-              height={144}
+              src="/images/logo-devotos.png"
+              alt="Del Carajo - Devotos del Arte"
+              width={160}
+              height={80}
               className="lg:hidden"
+              style={{ width: "140px", height: "auto" }}
             />
             <Image
-              src="/Logo.svg"
-              alt="Del Carajo"
-              width={150}
-              height={50}
+              src="/images/logo-devotos.png"
+              alt="Del Carajo - Devotos del Arte"
+              width={220}
+              height={110}
               priority
-              className="hidden lg:block absolute bottom-[-30px]"
-              style={{ width: "290px", height: "auto" }}
+              className="hidden lg:block"
+              style={{ width: "220px", height: "auto" }}
             />
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-6 bg-[#FF6501]">
-            <nav
-              className="flex items-center gap-1"
-              onMouseLeave={() => setActiveMegaMenu(null)}
-            >
-              {MAIN_CATEGORIES.map((category) => (
-                <div
-                  key={category.slug}
-                  className="relative"
-                  onMouseEnter={() => setActiveMegaMenu(category.slug)}
-                  onMouseLeave={() => setActiveMegaMenu(null)}
+          {/* Desktop Navigation — mx-auto centra el grupo en el espacio restante */}
+          <div className="hidden lg:flex items-center gap-10 mx-auto">
+            <nav className="flex items-center gap-1">
+
+              {/* GARAGE dropdown */}
+              <div ref={garageRef} className="relative">
+                <button
+                  onClick={() => setGarageOpen((o) => !o)}
+                  className="px-6 py-2 font-bold tracking-wide text-white hover:text-[#E1D7D7] transition-colors flex items-center gap-2"
                 >
-                  <Link
-                    href={`/catalogo/${category.slug}`}
-                    className="px-6 py-2 text-xl font-bold tracking-wide text-white hover:text-[#E1D7D7] transition-colors inline-block"
-                  >
-                    {category.name}
-                  </Link>
-                  <MegaMenu
-                    categorySlug={category.slug}
-                    isOpen={activeMegaMenu === category.slug}
+                  GARAGE
+                  <ChevronRight
+                    className={`h-4 w-4 transition-transform duration-200 ${garageOpen ? "rotate-90" : ""}`}
                   />
-                </div>
-              ))}
+                </button>
+
+                {garageOpen && (
+                  <GarageMenu onClose={() => setGarageOpen(false)} />
+                )}
+              </div>
             </nav>
 
             <div className="flex items-center space-x-3">
               {mounted && isAuthenticated && (
                 <Button variant="ghost" size="icon" asChild>
                   <Link href="/favoritos">
-                    <Heart className="h-5 w-5" />
+                    <Heart className="h-5 w-5 text-white" />
                     <span className="sr-only">Favoritos</span>
                   </Link>
                 </Button>
@@ -98,7 +109,7 @@ export function Header() {
                 className="relative"
                 onClick={() => setCartDrawerOpen(true)}
               >
-                <ShoppingCart className="h-5 w-5" />
+                <ShoppingCart className="h-5 w-5 text-white" />
                 {mounted && cartItemsCount > 0 && (
                   <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-white text-xs flex items-center justify-center font-bold">
                     {cartItemsCount}
@@ -112,16 +123,16 @@ export function Header() {
                   <div className="flex items-center space-x-2">
                     <Button variant="ghost" size="sm" asChild>
                       <Link href="/perfil">
-                        <User className="h-4 w-4 mr-2" />
-                        {user?.nickname || user?.name}
+                        <User className="h-4 w-4 mr-2 text-white" />
+                        <span className="text-white">{user?.nickname || user?.name}</span>
                       </Link>
                     </Button>
-                    <Button variant="ghost" size="sm" onClick={logout}>
+                    <Button variant="ghost" size="sm" onClick={logout} className="text-white">
                       Salir
                     </Button>
                   </div>
                 ) : (
-                  <Button variant="default" size="sm" asChild>
+                  <Button variant="ghost" size="sm" className="text-white border border-white/30 hover:bg-white/10" asChild>
                     <Link href="/login">Iniciar Sesión</Link>
                   </Button>
                 ))}
@@ -133,7 +144,7 @@ export function Header() {
             {mounted && isAuthenticated && (
               <Button variant="ghost" size="icon" asChild>
                 <Link href="/favoritos">
-                  <Heart className="h-5 w-5 text-[#FF6501] hover:text-[#FF6501]/80" />
+                  <Heart className="h-5 w-5 text-[#FF3500] hover:text-[#FF3500]/80" />
                 </Link>
               </Button>
             )}
@@ -144,7 +155,7 @@ export function Header() {
               className="relative"
               onClick={() => setCartDrawerOpen(true)}
             >
-              <ShoppingCart className="h-5 w-5 text-[#FF6501] hover:text-[#FF6501]/80" />
+              <ShoppingCart className="h-5 w-5 text-[#FF3500] hover:text-[#FF3500]/80" />
               {mounted && cartItemsCount > 0 && (
                 <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-white text-xs flex items-center justify-center font-bold">
                   {cartItemsCount}
@@ -155,7 +166,7 @@ export function Header() {
             <Button
               variant="ghost"
               size="icon"
-              className="text-[#FF6501] hover:text-[#FF6501]/80"
+              className="text-[#FF3500] hover:text-[#FF3500]/80"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               <Menu className="h-6 w-6" />
@@ -165,13 +176,13 @@ export function Header() {
 
         {/* Mobile Menu */}
         {mounted && mobileMenuOpen && (
-          <div className="lg:hidden bg-white border-t-2 border-dark w-full">
+          <div className="lg:hidden backdrop-blur-md bg-black/30 border-t border-white/10 w-full">
             <nav className="flex flex-col py-4">
               {MAIN_CATEGORIES.map((category) => (
                 <Link
                   key={category.slug}
                   href={`/catalogo/${category.slug}`}
-                  className="px-6 py-3 text-base font-bold hover:bg-gray-100 transition-colors"
+                  className="px-6 py-3 text-base font-bold text-white hover:bg-white/10 transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {category.name}
@@ -182,7 +193,7 @@ export function Header() {
                 <>
                   <Link
                     href="/perfil"
-                    className="px-6 py-3 text-base font-bold hover:bg-gray-100 transition-colors"
+                    className="px-6 py-3 text-base font-bold text-white hover:bg-white/10 transition-colors"
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     Mi Perfil
@@ -192,7 +203,7 @@ export function Header() {
                       setMobileMenuOpen(false);
                       logout();
                     }}
-                    className="px-6 py-3 text-base font-bold hover:bg-gray-100 transition-colors text-left"
+                    className="px-6 py-3 text-base font-bold text-white hover:bg-white/10 transition-colors text-left"
                   >
                     Cerrar Sesión
                   </button>
@@ -200,7 +211,7 @@ export function Header() {
               ) : (
                 <Link
                   href="/login"
-                  className="px-6 py-3 text-base font-bold hover:bg-gray-100 transition-colors"
+                  className="px-6 py-3 text-base font-bold text-white hover:bg-white/10 transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Iniciar Sesión

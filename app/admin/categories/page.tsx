@@ -40,7 +40,7 @@ export default function AdminCategoriesPage() {
   const [categoryForm, setCategoryForm] = useState({
     name: "",
     description: "",
-    color: "#FF6501",
+    color: "#FF3500",
     order: 0,
   });
 
@@ -81,7 +81,7 @@ export default function AdminCategoriesPage() {
       setCategoryForm({
         name: "",
         description: "",
-        color: "#FF6501",
+        color: "#FF3500",
         order: 0,
       });
       setIsCreatingCategory(false);
@@ -104,7 +104,7 @@ export default function AdminCategoriesPage() {
       setCategoryForm({
         name: "",
         description: "",
-        color: "#FF6501",
+        color: "#FF3500",
         order: 0,
       });
     } catch (error) {
@@ -194,7 +194,7 @@ export default function AdminCategoriesPage() {
     setCategoryForm({
       name: category.name,
       description: category.description || "",
-      color: category.color || "#FF6501",
+      color: category.color || "#FF3500",
       order: category.order,
     });
     setIsCreatingCategory(false);
@@ -216,7 +216,7 @@ export default function AdminCategoriesPage() {
     setEditingSubcategory(null);
     setIsCreatingCategory(false);
     setIsCreatingSubcategory(null);
-    setCategoryForm({ name: "", description: "", color: "#FF6501", order: 0 });
+    setCategoryForm({ name: "", description: "", color: "#FF3500", order: 0 });
     setSubcategoryForm({ categoryId: "", name: "", description: "", order: 0 });
   };
 
