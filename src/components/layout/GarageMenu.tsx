@@ -65,12 +65,12 @@ interface GarageMenuProps {
 
 export function GarageMenu({ onClose }: GarageMenuProps) {
   return (
-    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-52 rounded-2xl border border-white/20 bg-black/80 backdrop-blur-md shadow-xl py-3 z-50">
+    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-max min-w-[14rem] rounded-2xl border border-white/20 bg-black/80 backdrop-blur-md shadow-xl py-3 z-50">
       {/* Tendedero → /catalogo */}
       <Link
         href="/catalogo"
         onClick={onClose}
-        className="block px-6 py-2 text-white/70 hover:text-white hover:bg-white/10 transition-colors text-sm tracking-widest"
+        className="block px-6 py-2 text-white hover:text-[#E1D7D7] hover:bg-white/10 transition-colors text-2xl font-bold tracking-widest"
       >
         TENDEDERO
       </Link>
