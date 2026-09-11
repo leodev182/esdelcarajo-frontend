@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-// Brand fire palette: transparent → dark red → #FF6501 → #FFD42A → white
+// Brand fire palette: transparent → dark red → #FF3500 → #FFD42A → white
 function buildPalette(): Uint32Array {
   const p = new Uint32Array(256);
   p[0] = 0x00000000;

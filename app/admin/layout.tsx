@@ -48,14 +48,14 @@ export default function AdminLayout({
     <div className="min-h-screen bg-gray-50">
       <aside className="fixed left-0 top-0 h-full w-64 bg-[#2D2834] text-white p-6">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-[#FF6501]">DASHBOARD</h1>
+          <h1 className="text-2xl font-bold text-[#FF3500]">DASHBOARD</h1>
           <p className="text-sm text-gray-400 mt-1">Panel Admin</p>
         </div>
 
         <nav className="space-y-2">
           <Link
             href="/admin"
-            className="flex items-center gap-3 px-4 py-3 rounded-lg text-[#FF6501] hover:bg-[#FF6501] hover:text-white transition-colors font-bold"
+            className="flex items-center gap-3 px-4 py-3 rounded-lg text-[#FF3500] hover:bg-[#FF3500] hover:text-white transition-colors font-bold"
           >
             <LayoutDashboard className="h-5 w-5" />
             <span>Dashboard</span>
@@ -63,7 +63,7 @@ export default function AdminLayout({
 
           <Link
             href="/admin/orders"
-            className="flex items-center gap-3 px-4 py-3 rounded-lg text-[#FF6501] hover:bg-[#FF6501] hover:text-white transition-colors font-bold"
+            className="flex items-center gap-3 px-4 py-3 rounded-lg text-[#FF3500] hover:bg-[#FF3500] hover:text-white transition-colors font-bold"
           >
             <ShoppingBag className="h-5 w-5" />
             <span>Órdenes</span>
@@ -73,7 +73,7 @@ export default function AdminLayout({
             <>
               <Link
                 href="/admin/products"
-                className="flex items-center gap-3 px-4 py-3 rounded-lg text-[#FF6501] hover:bg-[#FF6501] hover:text-white transition-colors font-bold"
+                className="flex items-center gap-3 px-4 py-3 rounded-lg text-[#FF3500] hover:bg-[#FF3500] hover:text-white transition-colors font-bold"
               >
                 <Package className="h-5 w-5" />
                 <span>Productos</span>
@@ -81,7 +81,7 @@ export default function AdminLayout({
 
               <Link
                 href="/admin/categories"
-                className="flex items-center gap-3 px-4 py-3 rounded-lg text-[#FF6501] hover:bg-[#FF6501] hover:text-white transition-colors font-bold"
+                className="flex items-center gap-3 px-4 py-3 rounded-lg text-[#FF3500] hover:bg-[#FF3500] hover:text-white transition-colors font-bold"
               >
                 <FolderTree className="h-5 w-5" />
                 <span>Categorías</span>
@@ -89,7 +89,7 @@ export default function AdminLayout({
 
               <Link
                 href="/admin/landing"
-                className="flex items-center gap-3 px-4 py-3 rounded-lg text-[#FF6501] hover:bg-[#FF6501] hover:text-white transition-colors font-bold"
+                className="flex items-center gap-3 px-4 py-3 rounded-lg text-[#FF3500] hover:bg-[#FF3500] hover:text-white transition-colors font-bold"
               >
                 <Sparkles className="h-5 w-5" />
                 <span>Landing</span>
@@ -97,7 +97,7 @@ export default function AdminLayout({
 
               <Link
                 href="/admin/users"
-                className="flex items-center gap-3 px-4 py-3 rounded-lg text-[#FF6501] hover:bg-[#FF6501] hover:text-white transition-colors font-bold"
+                className="flex items-center gap-3 px-4 py-3 rounded-lg text-[#FF3500] hover:bg-[#FF3500] hover:text-white transition-colors font-bold"
               >
                 <Users className="h-5 w-5" />
                 <span>Usuarios</span>
@@ -105,7 +105,7 @@ export default function AdminLayout({
 
               <Link
                 href="/admin/logs"
-                className="flex items-center gap-3 px-4 py-3 rounded-lg text-[#FF6501] hover:bg-[#FF6501] hover:text-white transition-colors font-bold"
+                className="flex items-center gap-3 px-4 py-3 rounded-lg text-[#FF3500] hover:bg-[#FF3500] hover:text-white transition-colors font-bold"
               >
                 <ScrollText className="h-5 w-5" />
                 <span>Logs</span>
@@ -119,12 +119,12 @@ export default function AdminLayout({
             <p className="text-sm text-gray-400 mb-2">
               {user.nickname || user.name}
             </p>
-            <p className="text-xs text-[#FF6501] font-bold mb-4">
+            <p className="text-xs text-[#FF3500] font-bold mb-4">
               {user.role === "SUPER_ADMIN" ? "Super Admin" : "Admin"}
             </p>
             <button
               onClick={logout}
-              className="flex items-center gap-2 text-sm text-[#FF6501] hover:text-white transition-colors font-bold"
+              className="flex items-center gap-2 text-sm text-[#FF3500] hover:text-white transition-colors font-bold"
             >
               <LogOut className="h-4 w-4" />
               <span>Cerrar Sesión</span>

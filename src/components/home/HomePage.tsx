@@ -31,7 +31,7 @@ export function HomePage() {
                 <BcvDisplay />
               </div>
               <div className="w-full bg-[#C9BEA5] text-black p-8 border-4 border-black shadow-xl relative">
-                <div className="absolute -bottom-3 -right-3 w-full h-full border-4 border-[#FF6501] pointer-events-none" />
+                <div className="absolute -bottom-3 -right-3 w-full h-full border-4 border-[#FF3500] pointer-events-none" />
                 <h2 className="text-4xl font-black mb-5 uppercase">Visión</h2>
                 <p className="font-bold leading-relaxed text-lg">
                   Ser la marca de ropa referente de aquellos que se atreven a
@@ -61,7 +61,6 @@ export function HomePage() {
         </div>
       </section>
 
-      <div className="min-h-[600px]">
       {!loadingSections &&
         sections &&
         sections.map((section, index) => (
@@ -77,7 +76,6 @@ export function HomePage() {
             )}
           </div>
         ))}
-      </div>
     </div>
   );
 }

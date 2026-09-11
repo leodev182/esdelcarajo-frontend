@@ -46,12 +46,12 @@ export function FlamesBackground() {
 
         {/* ── LLAMAS IZQUIERDA ─────────────────────── */}
         <div style={{ position:'absolute', width:180, height:340,
-          background:'#FF6501', borderRadius:'50% 50% 42% 42%',
+          background:'#FF3500', borderRadius:'50% 50% 42% 42%',
           left:'16%', bottom:-40,
           animation:'fl1 2.2s ease-in-out infinite' }} />
 
         <div style={{ position:'absolute', width:130, height:260,
-          background:'#FF6501', borderRadius:'50% 50% 42% 42%',
+          background:'#FF3500', borderRadius:'50% 50% 42% 42%',
           left:'10%', bottom:-30,
           animation:'fl2 1.85s ease-in-out infinite',
           animationDelay:'-0.6s' }} />
@@ -77,13 +77,13 @@ export function FlamesBackground() {
 
         {/* ── LLAMAS DERECHA ───────────────────────── */}
         <div style={{ position:'absolute', width:180, height:340,
-          background:'#FF6501', borderRadius:'50% 50% 42% 42%',
+          background:'#FF3500', borderRadius:'50% 50% 42% 42%',
           right:'16%', bottom:-40,
           animation:'fl2 2.4s ease-in-out infinite',
           animationDelay:'-1.1s' }} />
 
         <div style={{ position:'absolute', width:130, height:260,
-          background:'#FF6501', borderRadius:'50% 50% 42% 42%',
+          background:'#FF3500', borderRadius:'50% 50% 42% 42%',
           right:'10%', bottom:-30,
           animation:'fl1 2s ease-in-out infinite',
           animationDelay:'-0.75s' }} />
@@ -110,20 +110,20 @@ export function FlamesBackground() {
 
         {/* ── LLAMAS CENTRO (detrás del personaje) ─── */}
         <div style={{ position:'absolute', width:200, height:300,
-          background:'#FF6501', borderRadius:'50% 50% 42% 42%',
+          background:'#FF3500', borderRadius:'50% 50% 42% 42%',
           left:'50%', bottom:-30,
           transform:'translateX(-50%)',
           animation:'fl3 2.1s ease-in-out infinite',
           animationDelay:'-0.35s' }} />
 
         <div style={{ position:'absolute', width:140, height:240,
-          background:'#FF6501', borderRadius:'50% 50% 42% 42%',
+          background:'#FF3500', borderRadius:'50% 50% 42% 42%',
           left:'43%', bottom:-20,
           animation:'fl1 1.9s ease-in-out infinite',
           animationDelay:'-0.8s' }} />
 
         <div style={{ position:'absolute', width:140, height:240,
-          background:'#FF6501', borderRadius:'50% 50% 42% 42%',
+          background:'#FF3500', borderRadius:'50% 50% 42% 42%',
           left:'57%', bottom:-20,
           animation:'fl2 2.0s ease-in-out infinite',
           animationDelay:'-1.4s' }} />

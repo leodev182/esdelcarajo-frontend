@@ -70,11 +70,11 @@ export function ProductCard({ product }: ProductCardProps) {
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
             <Link href={`/product/${product.slug}`}>
-              <h3 className="font-semibold truncate hover:text-primary transition-colors text-[#FF6501]">
+              <h3 className="font-semibold truncate hover:text-primary transition-colors text-[#FF3500]">
                 {product.name}
               </h3>
             </Link>
-            <p className="text-sm text-[#FF6501] font-semibold">
+            <p className="text-sm text-[#FF3500] font-semibold">
               {product.category?.name}
             </p>
           </div>
@@ -98,10 +98,10 @@ export function ProductCard({ product }: ProductCardProps) {
         <div className="flex items-center justify-between">
           <PriceDisplay
             priceUSD={minPrice}
-            className="text-lg text-[#FF6501] font-bold"
+            className="text-lg text-[#FF3500] font-bold"
           />
           {hasStock && (
-            <span className="text-xs text-[#FF6501] font-semibold">
+            <span className="text-xs text-[#FF3500] font-semibold">
               {product.variants.length} variante
               {product.variants.length > 1 ? "s" : ""}
             </span>

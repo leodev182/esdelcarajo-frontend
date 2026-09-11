@@ -23,7 +23,7 @@ export function GlobalBackground() {
         .scene__blob--1 {
           width: 700px;
           height: 700px;
-          background: radial-gradient(circle, #FF6501, #e34d00);
+          background: radial-gradient(circle, #FF3500, #e34d00);
           top: -200px;
           left: -150px;
           --dur: 22s;
@@ -44,7 +44,7 @@ export function GlobalBackground() {
         .scene__blob--3 {
           width: 500px;
           height: 500px;
-          background: radial-gradient(circle, #ffd42a, #FF6501);
+          background: radial-gradient(circle, #ffd42a, #FF3500);
           top: 40%;
           left: 45%;
           --dur: 26s;
