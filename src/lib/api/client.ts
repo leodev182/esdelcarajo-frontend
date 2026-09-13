@@ -83,7 +83,9 @@ apiClient.interceptors.response.use(
         );
         processQueue(refreshError as AxiosError);
 
-        const isAuthCheck = originalRequest.url?.includes("/auth/profile");
+        const isAuthCheck =
+          originalRequest.url?.includes("/auth/profile") ||
+          originalRequest.url?.includes("/users/me");
         if (
           !isAuthCheck &&
           typeof window !== "undefined" &&

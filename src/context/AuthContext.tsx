@@ -3,7 +3,6 @@
 import { createContext, useState, useEffect, ReactNode } from "react";
 import axios from "axios";
 import { User } from "@/src/lib/types";
-import { getProfile } from "@/src/lib/api/auth.api";
 import { getMyProfile } from "@/src/lib/api/users.api";
 import { AliasModal } from "@/src/components/auth/AliasModal";
 import { logger } from "@/src/lib/utils/logger";
@@ -40,8 +39,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const checkAuth = async () => {
     try {
       logger.info("Verificando autenticación...");
-      await getProfile(); // dispara el check de auth — el interceptor lo reconoce y no redirige si falla
-      const userData = await getMyProfile(); // trae el perfil completo con phone, createdAt, etc.
+      const userData = await getMyProfile();
       setUser(userData);
       logger.info(`Usuario autenticado: ${userData.email}`);
 

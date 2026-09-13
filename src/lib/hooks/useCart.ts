@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   getCart,
@@ -69,6 +70,14 @@ export function useCart() {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
     },
     onError: (error) => {
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        queryClient.invalidateQueries({ queryKey: ["cart"] });
+        return;
+      }
+      if (axios.isAxiosError(error) && error.code === "ECONNABORTED") {
+        toast.error("La conexión tardó demasiado. Por favor intenta de nuevo.");
+        return;
+      }
       logger.error("Error eliminando producto:", error);
       toast.error(getErrorMessage(error) || "No se pudo eliminar el producto");
     },
