@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -36,7 +37,7 @@ export function CatalogoPage({ categoria, subcategoria }: CatalogoPageProps) {
   const subcategoryId = subcategory?.id;
 
   const styleConfig = getCategoryStyle(categoria, subcategoria);
-  const backgroundClass = styleConfig?.background || "bg-white";
+  const backgroundClass = styleConfig?.background || "bg-transparent";
   const backgroundImage = styleConfig?.backgroundImage;
   const textColorClass = styleConfig?.textColor || "text-dark";
   const sideImage = styleConfig?.sideImage;
@@ -54,11 +55,11 @@ export function CatalogoPage({ categoria, subcategoria }: CatalogoPageProps) {
   const products = data?.data || [];
   const totalPages = data?.meta?.totalPages || 1;
 
-  const pageTitle = subcategory
-    ? `${category?.name.toUpperCase()} - ${subcategory.name.toUpperCase()}`
+  const titleParts = subcategory
+    ? [category?.name.toUpperCase(), subcategory.name.toUpperCase()]
     : category
-    ? category.name.toUpperCase()
-    : "TODOS LOS PRODUCTOS";
+    ? [category.name.toUpperCase()]
+    : ["TENDEDERO"];
 
   return (
     <div
@@ -73,8 +74,24 @@ export function CatalogoPage({ categoria, subcategoria }: CatalogoPageProps) {
         <div className="grid lg:grid-cols-[1fr_300px] gap-8">
           <div>
             <div className="mb-8">
-              <h1 className={`text-4xl font-bold mb-4 ${textColorClass}`}>
-                {pageTitle}
+              <h1
+                className={`flex items-center gap-3 font-bold mb-4 uppercase tracking-wide ${textColorClass}`}
+                style={{ fontFamily: "var(--font-zuume-rough)", fontSize: "clamp(2.5rem, 6vw, 5rem)" }}
+              >
+                {titleParts[0]}
+                {titleParts[1] && (
+                  <>
+                    <Image
+                      src="/images/goyo.svg"
+                      alt=""
+                      width={48}
+                      height={48}
+                      className="inline-block shrink-0"
+                      style={{ filter: textColorClass.includes("white") ? "invert(1)" : "none" }}
+                    />
+                    {titleParts[1]}
+                  </>
+                )}
               </h1>
 
               <div className="flex gap-4 max-w-xl">
