@@ -127,6 +127,13 @@ export function Header() {
                         <span className="text-white">{user?.nickname || user?.name}</span>
                       </Link>
                     </Button>
+                    {(user?.role === "ADMIN" || user?.role === "SUPER_ADMIN") && (
+                      <Button variant="ghost" size="sm" asChild>
+                        <Link href="/admin" className="text-[#FF3500] font-bold">
+                          Admin
+                        </Link>
+                      </Button>
+                    )}
                     <Button variant="ghost" size="sm" onClick={logout} className="text-white">
                       Salir
                     </Button>

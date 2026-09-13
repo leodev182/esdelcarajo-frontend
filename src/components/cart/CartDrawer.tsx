@@ -1,6 +1,7 @@
 "use client";
 
-import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
+import { useState } from "react";
+import { Minus, Plus, Trash2, ShoppingBag, Loader2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -27,6 +28,8 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
   const { isAuthenticated } = useAuth();
   const { cart, isLoading, removeCartItem, updateCartItem } = useCart();
 
+  const [deletingItems, setDeletingItems] = useState<Set<string>>(new Set());
+
   const items = cart?.items || [];
   const subtotal = cart?.subtotal || 0;
   const totalItems = cart?.totalItems || 0;
@@ -37,7 +40,14 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
   };
 
   const handleRemoveItem = async (itemId: string) => {
+    if (deletingItems.has(itemId)) return;
+    setDeletingItems((prev) => new Set(prev).add(itemId));
     await removeCartItem(itemId);
+    setDeletingItems((prev) => {
+      const next = new Set(prev);
+      next.delete(itemId);
+      return next;
+    });
   };
 
   const handleCheckout = () => {
@@ -169,8 +179,11 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
                             size="icon"
                             className="h-8 w-8 text-destructive hover:text-destructive"
                             onClick={() => handleRemoveItem(item.id)}
+                            disabled={deletingItems.has(item.id)}
                           >
-                            <Trash2 className="h-4 w-4" />
+                            {deletingItems.has(item.id)
+                              ? <Loader2 className="h-4 w-4 animate-spin" />
+                              : <Trash2 className="h-4 w-4" />}
                           </Button>
                         </div>
                       </div>
