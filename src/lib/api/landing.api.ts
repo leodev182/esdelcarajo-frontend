@@ -113,3 +113,35 @@ export async function addSectionImage(
 export async function deleteSectionImage(imageId: string): Promise<void> {
   await apiClient.delete(`/landing/sections/images/${imageId}`);
 }
+
+// ── Partners ────────────────────────────────────────
+
+export interface Partner {
+  id: string;
+  imageUrl: string;
+  publicId: string;
+  linkUrl?: string | null;
+  order: number;
+  isActive: boolean;
+}
+
+export interface CreatePartnerPayload {
+  imageUrl: string;
+  publicId: string;
+  linkUrl?: string;
+  order?: number;
+}
+
+export async function getPartners(): Promise<Partner[]> {
+  const { data } = await apiClient.get<Partner[]>("/landing/partners");
+  return data;
+}
+
+export async function createPartner(payload: CreatePartnerPayload): Promise<Partner> {
+  const { data } = await apiClient.post<Partner>("/landing/partners", payload);
+  return data;
+}
+
+export async function deletePartner(id: string): Promise<void> {
+  await apiClient.delete(`/landing/partners/${id}`);
+}

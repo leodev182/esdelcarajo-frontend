@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Plus, Loader2 } from "lucide-react";
 import { SectionCard } from "./components/SectionCard";
 import { CreateSectionModal } from "./components/CreateSectionModal";
+import { PartnersAdmin } from "./components/PartnersAdmin";
 
 export default function LandingPage() {
   const { data: sections, isLoading } = useLandingSections();
@@ -61,6 +62,8 @@ export default function LandingPage() {
         open={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
       />
+
+      <PartnersAdmin />
     </div>
   );
 }

@@ -11,6 +11,7 @@ import { DynamicSection } from "@/src/components/home/DynamicSection";
 import { DynamicVideo } from "@/src/components/home/DynamicVideo";
 import { DynamicGallery } from "@/src/components/home/DynamicGallery";
 import { BcvDisplay } from "@/src/components/bcv/BcvDisplay";
+import { PartnersStrip } from "@/src/components/home/PartnersStrip";
 
 export function HomePage() {
   const { data: products, isLoading: loadingProducts } = useFeaturedProducts(8);
@@ -26,16 +27,15 @@ export function HomePage() {
           <div className="flex flex-col lg:flex-row gap-10 lg:gap-12">
 
             {/* SIDEBAR — arriba en mobile, derecha en desktop */}
-            <div className="w-full lg:w-[22%] lg:order-2 flex flex-col gap-6 justify-center">
+            <div className="w-full lg:w-[28%] lg:order-2 flex flex-col gap-6 justify-center">
               <div className="flex justify-center">
                 <BcvDisplay />
               </div>
-              <div className="w-full bg-[#C9BEA5] text-black p-8 border-4 border-black shadow-xl relative">
+              <div className="w-full bg-[#C9BEA5] text-black px-5 py-6 border-4 border-black shadow-xl relative">
                 <div className="absolute -bottom-3 -right-3 w-full h-full border-4 border-[#FF3500] pointer-events-none" />
-                <h2 className="text-4xl font-black mb-5 uppercase">Visión</h2>
-                <p className="font-bold leading-relaxed text-lg">
-                  Ser la marca de ropa referente de aquellos que se atreven a
-                  vestirse diferente a través de prendas que cuenten una historia
+                <h3 className="text-xl font-black mb-4 uppercase">¿Quién coño somos?</h3>
+                <p className="font-medium leading-relaxed text-base text-black/70">
+                  Una marca de indumentaria alternativa hecha para almas rebeldes que aman vestirse con personalidad y fuera de lo común; fusionamos la música y el arte y lo convertimos en piezas que cuentan una historia.
                 </p>
               </div>
             </div>
@@ -76,6 +76,7 @@ export function HomePage() {
             )}
           </div>
         ))}
+      <PartnersStrip />
     </div>
   );
 }

@@ -113,3 +113,40 @@ export function usePublicLandingSections() {
     staleTime: CACHE_TIME.LONG,
   });
 }
+
+// ── Partners ────────────────────────────────────────
+
+import {
+  getPartners,
+  createPartner,
+  deletePartner,
+  CreatePartnerPayload,
+} from "../api/landing.api";
+
+export function usePartners() {
+  return useQuery({
+    queryKey: ["landing", "partners"],
+    queryFn: getPartners,
+    staleTime: CACHE_TIME.MEDIUM,
+  });
+}
+
+export function useCreatePartner() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: CreatePartnerPayload) => createPartner(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["landing", "partners"] });
+    },
+  });
+}
+
+export function useDeletePartner() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => deletePartner(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["landing", "partners"] });
+    },
+  });
+}
