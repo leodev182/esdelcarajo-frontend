@@ -33,7 +33,7 @@ export function HomePage() {
               </div>
               <div className="w-full bg-[#C9BEA5] text-black px-5 py-6 border-4 border-black shadow-xl relative">
                 <div className="absolute -bottom-3 -right-3 w-full h-full border-4 border-[#FF3500] pointer-events-none" />
-                <h3 className="text-xl font-black mb-4 uppercase">¿Quién coño somos?</h3>
+                <h3 className="text-xl font-black mb-4 uppercase">¿Quién carajos somos?</h3>
                 <p className="font-medium leading-relaxed text-base text-black/70">
                   Una marca de indumentaria alternativa hecha para almas rebeldes que aman vestirse con personalidad y fuera de lo común; fusionamos la música y el arte y lo convertimos en piezas que cuentan una historia.
                 </p>

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/src/lib/hooks/useAuth";
 import { useCart } from "@/src/lib/hooks/useCart";
 import { useCreateOrder } from "@/src/lib/hooks/useOrders";
+import { useAddresses } from "@/src/lib/hooks/useAddresses";
 import { AddressSelector } from "./AddressSelector";
 import { AddressForm } from "@/src/components/forms/AddressForm";
 import { PaymentMethodSelector, PaymentMethod } from "./PaymentMethodSelector";
@@ -18,9 +19,10 @@ import { PriceDisplay } from "../product/PriceDisplay";
 
 export function CheckoutPage() {
   const router = useRouter();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
   const { cart } = useCart();
   const createOrder = useCreateOrder();
+  const { data: addresses } = useAddresses();
   const [isCreatingOrder, setIsCreatingOrder] = useState(false);
 
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(
@@ -33,16 +35,23 @@ export function CheckoutPage() {
   const [editingAddress, setEditingAddress] = useState<Address | null>(null);
 
   useEffect(() => {
-    if (isCreatingOrder) return;
+    if (isCreatingOrder || authLoading) return;
 
     if (!isAuthenticated) {
-      router.push("/");
+      router.push("/login?callbackUrl=/checkout");
+      return;
     }
 
     if (!cart || cart.items.length === 0) {
       router.push("/");
     }
-  }, [isAuthenticated, cart, router, isCreatingOrder]);
+  }, [isAuthenticated, authLoading, cart, router, isCreatingOrder]);
+
+  useEffect(() => {
+    if (!addresses || selectedAddressId) return;
+    const def = addresses.find((a) => a.isDefault) ?? addresses[0];
+    if (def) setSelectedAddressId(def.id);
+  }, [addresses, selectedAddressId]);
 
   if (!cart || cart.items.length === 0) {
     return null;
