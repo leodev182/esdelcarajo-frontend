@@ -142,7 +142,7 @@
 
 @media (hover: hover) and (pointer: fine) {
   .img-zoom-trigger:hover .img-zoom {
-    transform: scale(1.03);
+    transform: scale(1.07);
   }
 }
 

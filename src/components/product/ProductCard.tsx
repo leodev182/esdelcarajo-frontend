@@ -39,7 +39,7 @@ export function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <div className="group relative">
+    <div className="group relative transition-[box-shadow,transform] duration-280 ease-[cubic-bezier(0.23,1,0.32,1)] hover:shadow-xl hover:-translate-y-0.5">
       <Link href={`/product/${product.slug}`}>
         <div className="relative aspect-square overflow-hidden rounded-lg border bg-muted img-zoom-trigger">
           <Image
