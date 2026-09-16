@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Instagram, Mail } from "lucide-react";
 
 export function Footer() {
@@ -113,11 +114,26 @@ export function Footer() {
         </div>
 
         {/* Bottom */}
-        <div className="mt-12 pt-8 border-t text-center text-sm text-muted-foreground">
+        <div className="mt-12 pt-8 border-t flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
           <p>
             &copy; 2025 – {currentYear} Del Carajo. Todos los derechos
             reservados.
           </p>
+          <a
+            href="https://noneworks.dev"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 opacity-60 hover:opacity-100 transition-opacity"
+          >
+            <span className="text-xs">Engineered by</span>
+            <Image
+              src="/images/nonenamesolo.png"
+              alt="noneworks"
+              width={72}
+              height={20}
+              className="object-contain"
+            />
+          </a>
         </div>
       </div>
     </footer>
